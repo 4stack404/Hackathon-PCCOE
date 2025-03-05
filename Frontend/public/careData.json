@@ -1,0 +1,46 @@
+{
+  "prenatal": {
+    "title": "Prenatal Care",
+    "description": "Comprehensive guidance for expectant mothers during pregnancy",
+    "theory": "Prenatal care is the healthcare you receive during your pregnancy. It involves regular check-ups, screenings, and education to ensure both you and your baby stay healthy. Starting prenatal care early and continuing it throughout pregnancy significantly reduces the risk of complications.\n\nDuring your prenatal visits, your healthcare provider will monitor your baby's development, track your health, and address any concerns you might have. These visits typically include weight checks, blood pressure monitoring, urine tests, and measurements of your baby's growth.\n\nAs your pregnancy progresses, you'll also undergo various screenings and tests, such as ultrasounds, blood tests, and possibly genetic testing, depending on your age, health history, and preferences. These tests help identify potential issues early, allowing for timely intervention if needed.",
+    "exerciseImage": "/prenatal.jpg",
+    "mentalWellness": [
+      "Practice daily mindfulness meditation for 10-15 minutes to reduce anxiety and stress",
+      "Join a pregnancy support group to connect with other expectant mothers",
+      "Maintain a pregnancy journal to express your thoughts and track your journey",
+      "Communicate openly with your partner about your feelings and concerns",
+      "Set realistic expectations and don't hesitate to ask for help when needed",
+      "Ensure you get adequate sleep and rest throughout the day"
+    ],
+    "babyCare": [
+      "Take prenatal vitamins as recommended by your healthcare provider",
+      "Stay hydrated by drinking at least 8-10 glasses of water daily",
+      "Eat a balanced diet rich in fruits, vegetables, lean proteins, and whole grains",
+      "Avoid alcohol, tobacco, and caffeine during pregnancy",
+      "Monitor your baby's movements daily in the third trimester",
+      "Prepare for labor by learning breathing techniques and relaxation methods"
+    ]
+  },
+  "postnatal": {
+    "title": "Postnatal Care",
+    "description": "Essential guidance for new mothers after childbirth",
+    "theory": "Postnatal care, also known as postpartum care, refers to the support and medical attention provided to new mothers and their babies after childbirth. This period typically covers the first six weeks after delivery, though many aspects of recovery and adjustment continue beyond this timeframe.\n\nPhysical recovery from childbirth varies for each woman. Your body undergoes significant changes as it returns to its pre-pregnancy state. You may experience vaginal discharge (lochia), breast engorgement, perineal pain, and fatigue. It's important to rest as much as possible, stay hydrated, and eat nutritious foods to support your recovery.\n\nEmotional well-being is equally important during this time. Many new mothers experience mood swings, known as the 'baby blues,' due to hormonal changes. However, if feelings of sadness or anxiety persist or worsen, it could indicate postpartum depression, which requires professional help.",
+    "exerciseImage": "/postnatal.jpg",
+    "mentalWellness": [
+      "Accept help from family and friends for household chores and baby care",
+      "Prioritize sleep whenever possible, even if it means napping when your baby naps",
+      "Connect with other new mothers through support groups or online communities",
+      "Set aside time for self-care, even if it's just 15 minutes a day",
+      "Communicate openly with your partner about your feelings and needs",
+      "Remember that it's okay to not feel okay - seek professional help if needed"
+    ],
+    "babyCare": [
+      "Learn to recognize your baby's hunger cues and feed on demand",
+      "Practice proper latch techniques if breastfeeding to prevent soreness",
+      "Change diapers frequently to prevent diaper rash",
+      "Support your baby's head and neck when holding or carrying them",
+      "Establish a simple routine for feeding, sleeping, and bathing",
+      "Monitor your baby's weight gain and development at regular check-ups"
+    ]
+  }
+}
