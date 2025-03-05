@@ -251,10 +251,10 @@ function Dashboard() {
 
   return (
     <Box sx={{ 
+      bgcolor: '#FFF5F8',
       minHeight: '100vh',
-      pt: 2,
       pb: 6,
-      transition: 'all 0.5s ease-in-out'
+      pt: 2
     }}>
       <Container maxWidth="xl">
         {/* Personalized Header with Baby Icon */}

@@ -8,6 +8,7 @@ import LoginDebug from './components/LoginDebug';
 import ScrollToTop from './components/common/ScrollToTop';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Box } from '@mui/material';
 
 // Pages
 import Home from './pages/Home';
@@ -85,46 +86,51 @@ function App() {
       <AuthProvider>
         <LoadingProvider>
           <AppProvider>
-            <Router>
-              <ScrollToTop />
-              <Navbar />
-              <RouteChangeLoader />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/appointments" element={<Appointments />} />
-                <Route path="/appointments/new" element={<Appointments newAppointment={true} />} />
-                <Route path="/care" element={<Care />} />
-                <Route path="/care/:type" element={<CareDetails />} />
-                <Route path="/week/:weekNumber" element={<WeekPage />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/debug-login" element={<LoginDebug />} />
-                <Route path="/community" element={<Community />} />
-                <Route path="/diet" element={<Diet />} />
-                <Route path="/diet-planning" element={<DietPlanning />} />
-                <Route path="/healthy-recipes" element={<HealthyRecipes />} />
-                <Route path="/meal-logging" element={<MealLogging />} />
-                <Route path="/loading-example" element={<LoadingExample />} />
-              </Routes>
-              <Footer />
-              <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
-            </Router>
+            <Box sx={{ 
+              bgcolor: '#FFF5F8',
+              minHeight: '100vh'
+            }}>
+              <Router>
+                <ScrollToTop />
+                <Navbar />
+                <RouteChangeLoader />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/appointments" element={<Appointments />} />
+                  <Route path="/appointments/new" element={<Appointments newAppointment={true} />} />
+                  <Route path="/care" element={<Care />} />
+                  <Route path="/care/:type" element={<CareDetails />} />
+                  <Route path="/week/:weekNumber" element={<WeekPage />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/debug-login" element={<LoginDebug />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/diet" element={<Diet />} />
+                  <Route path="/diet-planning" element={<DietPlanning />} />
+                  <Route path="/healthy-recipes" element={<HealthyRecipes />} />
+                  <Route path="/meal-logging" element={<MealLogging />} />
+                  <Route path="/loading-example" element={<LoadingExample />} />
+                </Routes>
+                <Footer />
+                <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </Router>
+            </Box>
           </AppProvider>
         </LoadingProvider>
       </AuthProvider>

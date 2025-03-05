@@ -64,6 +64,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { motion, AnimatePresence } from 'framer-motion';
+import { commonStyles } from '../styles/common';
 
 // Register the required Chart.js components
 ChartJS.register(ArcElement, ChartTooltip, Legend);
@@ -673,796 +674,789 @@ function MealLogging() {
   }, [dailyTotals]);
 
   return (
-    <motion.div
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageTransition}
-    >
-      <Box sx={{ bgcolor: COLORS.background, minHeight: '100vh', pb: 6 }}>
-        <Container maxWidth="lg">
-          {/* Header with Title and Date */}
-          <Grid 
-            container 
-            spacing={3} 
-            sx={{ 
-              pt: 4,
-              mb: 4,
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <Grid item xs={12} md={6}>
-              <Typography 
-                variant="h3" 
-                sx={{ 
-                  ...typography.mainHeading,
-                  fontSize: { xs: '2.5rem', md: '3rem' },
-                  backgroundImage: `linear-gradient(135deg, ${COLORS.primary} 0%, #FF92B4 100%)`,
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  color: 'transparent',
-                  mb: { xs: 2, md: 0 }
-                }}
-              >
-                Meal Logger
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={selectedDate}
-                  onChange={setSelectedDate}
-                  sx={{
-                    width: '100%',
-                    '& .MuiInputBase-root': {
-                      borderRadius: 2,
-                      bgcolor: 'white'
-                    }
-                  }}
-                />
-              </LocalizationProvider>
-            </Grid>
-          </Grid>
-
-          {/* Full-width Calorie Counter */}
-          <motion.div
-            variants={counterVariants}
-            initial="initial"
-            animate="animate"
-            whileHover="hover"
-          >
-            <Card 
-              elevation={2}
+    <Box sx={commonStyles.pageContainer}>
+      <Container maxWidth="lg">
+        {/* Header with Title and Date */}
+        <Grid 
+          container 
+          spacing={3} 
+          sx={{ 
+            pt: 4,
+            mb: 4,
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Grid item xs={12} md={6}>
+            <Typography 
+              variant="h3" 
               sx={{ 
-                mb: 4,
-                borderRadius: 3,
-                bgcolor: 'white',
-                overflow: 'hidden',
-                position: 'relative'
+                ...typography.mainHeading,
+                fontSize: { xs: '2.5rem', md: '3rem' },
+                backgroundImage: `linear-gradient(135deg, ${COLORS.primary} 0%, #FF92B4 100%)`,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                mb: { xs: 2, md: 0 }
               }}
             >
-              {/* Background decoration */}
-              <Box 
-                sx={{ 
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: '30%',
-                  height: '100%',
-                  background: `linear-gradient(135deg, ${COLORS.primary}10, ${COLORS.primary}05)`,
-                  clipPath: 'polygon(100% 0, 0 0, 100% 100%)',
+              Meal Logger
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={selectedDate}
+                onChange={setSelectedDate}
+                sx={{
+                  width: '100%',
+                  '& .MuiInputBase-root': {
+                    borderRadius: 2,
+                    bgcolor: 'white'
+                  }
                 }}
               />
+            </LocalizationProvider>
+          </Grid>
+        </Grid>
 
-              <CardContent sx={{ py: 4 }}>
-                <Grid container spacing={3} alignItems="center">
-                  {/* Main Calorie Display */}
-                  <Grid item xs={12} md={4}>
-                    <motion.div
-                      initial={{ scale: 0.9 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <Box sx={{ 
-                        textAlign: 'center',
-                        position: 'relative'
-                      }}>
-                        <motion.div
-                          initial={{ rotate: -5 }}
-                          animate={{ rotate: 0 }}
-                          transition={{ duration: 0.5 }}
-                        >
-                          <LocalFireDepartmentIcon 
-                            sx={{ 
-                              fontSize: '2.5rem', 
-                              color: COLORS.primary,
-                              mb: 1
-                            }} 
-                          />
-                        </motion.div>
-                        <Typography 
-                          variant="h2" 
-                          sx={{ 
-                            fontWeight: 700,
-                            fontSize: { xs: '2.5rem', md: '3.5rem' },
-                            color: COLORS.primary,
-                            lineHeight: 1,
-                            mb: 1
-                          }}
-                        >
-                          <motion.span
-                            key={dailyTotals.calories}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            {Math.round(dailyTotals.calories)}
-                          </motion.span>
-                        </Typography>
-                        <Typography 
-                          variant="body1" 
-                          sx={{ 
-                            color: 'text.secondary',
-                            fontWeight: 500
-                          }}
-                        >
-                          Calories Today
-                        </Typography>
-                      </Box>
-                    </motion.div>
-                  </Grid>
+        {/* Full-width Calorie Counter */}
+        <motion.div
+          variants={counterVariants}
+          initial="initial"
+          animate="animate"
+          whileHover="hover"
+        >
+          <Card 
+            elevation={2}
+            sx={{ 
+              mb: 4,
+              borderRadius: 3,
+              bgcolor: 'white',
+              overflow: 'hidden',
+              position: 'relative'
+            }}
+          >
+            {/* Background decoration */}
+            <Box 
+              sx={{ 
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '30%',
+                height: '100%',
+                background: `linear-gradient(135deg, ${COLORS.primary}10, ${COLORS.primary}05)`,
+                clipPath: 'polygon(100% 0, 0 0, 100% 100%)',
+              }}
+            />
 
-                  {/* Progress Section */}
-                  <Grid item xs={12} md={4}>
-                    <Box sx={{ px: 2 }}>
-                      <Box sx={{ 
-                        mb: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
-                      }}>
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
-                            color: 'text.secondary',
-                            fontWeight: 500
-                          }}
-                        >
-                          Daily Goal Progress
-                        </Typography>
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
-                            color: COLORS.primary,
-                            fontWeight: 600
-                          }}
-                        >
-                          {caloriePercentage}%
-                        </Typography>
-                      </Box>
+            <CardContent sx={{ py: 4 }}>
+              <Grid container spacing={3} alignItems="center">
+                {/* Main Calorie Display */}
+                <Grid item xs={12} md={4}>
+                  <motion.div
+                    initial={{ scale: 0.9 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Box sx={{ 
+                      textAlign: 'center',
+                      position: 'relative'
+                    }}>
                       <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: '100%' }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        initial={{ rotate: -5 }}
+                        animate={{ rotate: 0 }}
+                        transition={{ duration: 0.5 }}
                       >
-                        <LinearProgress
-                          variant="determinate"
-                          value={caloriePercentage}
-                          sx={{
-                            height: 10,
-                            borderRadius: 5,
-                            bgcolor: `${COLORS.primary}15`,
-                            '& .MuiLinearProgress-bar': {
-                              bgcolor: COLORS.primary,
-                              borderRadius: 5,
-                              background: `linear-gradient(90deg, ${COLORS.primary}, #FF92B4)`
-                            }
-                          }}
+                        <LocalFireDepartmentIcon 
+                          sx={{ 
+                            fontSize: '2.5rem', 
+                            color: COLORS.primary,
+                            mb: 1
+                          }} 
                         />
                       </motion.div>
+                      <Typography 
+                        variant="h2" 
+                        sx={{ 
+                          fontWeight: 700,
+                          fontSize: { xs: '2.5rem', md: '3.5rem' },
+                          color: COLORS.primary,
+                          lineHeight: 1,
+                          mb: 1
+                        }}
+                      >
+                        <motion.span
+                          key={dailyTotals.calories}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {Math.round(dailyTotals.calories)}
+                        </motion.span>
+                      </Typography>
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          color: 'text.secondary',
+                          fontWeight: 500
+                        }}
+                      >
+                        Calories Today
+                      </Typography>
+                    </Box>
+                  </motion.div>
+                </Grid>
+
+                {/* Progress Section */}
+                <Grid item xs={12} md={4}>
+                  <Box sx={{ px: 2 }}>
+                    <Box sx={{ 
+                      mb: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
                       <Typography 
                         variant="body2" 
                         sx={{ 
                           color: 'text.secondary',
-                          mt: 1,
-                          textAlign: 'center',
-                          fontSize: '0.875rem'
+                          fontWeight: 500
                         }}
                       >
-                        Target: {userDailyTargets.calories} kcal
+                        Daily Goal Progress
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: COLORS.primary,
+                          fontWeight: 600
+                        }}
+                      >
+                        {caloriePercentage}%
                       </Typography>
                     </Box>
-                  </Grid>
-
-                  {/* Stats Section */}
-                  <Grid item xs={12} md={4}>
-                    <Box sx={{ 
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 2,
-                      pl: { md: 3 },
-                      borderLeft: { md: `2px solid ${COLORS.primary}20` }
-                    }}>
-                      <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
-                      >
-                        <Box sx={{ 
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          p: 1.5,
-                          bgcolor: `${COLORS.primary}08`,
-                          borderRadius: 2
-                        }}>
-                          <TrendingUpIcon sx={{ color: COLORS.primary }} />
-                          <Box>
-                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                              Remaining
-                            </Typography>
-                            <Typography variant="h6" sx={{ fontWeight: 600, color: COLORS.primary }}>
-                              {remainingCalories} kcal
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </motion.div>
-
-                      <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 }}
-                      >
-                        <Box sx={{ 
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          p: 1.5,
-                          bgcolor: `${COLORS.primary}08`,
-                          borderRadius: 2
-                        }}>
-                          <Box sx={{ 
-                            width: 24, 
-                            height: 24, 
-                            borderRadius: '50%',
-                            bgcolor: COLORS.primary,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            fontSize: '0.875rem',
-                            fontWeight: 600
-                          }}>
-                            %
-                          </Box>
-                          <Box>
-                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                              Macro Split
-                            </Typography>
-                            <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                              P: {macroPercentages.protein}% • 
-                              C: {macroPercentages.carbs}% • 
-                              F: {macroPercentages.fat}%
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </motion.div>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Macro Distribution and Progress */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12} md={6}>
-              <motion.div
-                variants={cardVariants}
-                initial="initial"
-                animate="animate"
-                whileHover="hover"
-              >
-                <Card sx={{ borderRadius: 3 }}>
-                  <CardContent sx={{ p: 3 }}>
-                    <Typography variant="h6" sx={{ ...typography.subHeading, mb: 3 }}>
-                      Macro Distribution
-                    </Typography>
-                    <Box sx={{ 
-                      height: 250,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}>
-                      <motion.div
-                        initial={{ rotate: -90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                        style={{ width: '100%', height: '100%' }}
-                      >
-                        <Doughnut data={macroChartData} options={chartOptions} />
-                      </motion.div>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <motion.div
-                variants={cardVariants}
-                initial="initial"
-                animate="animate"
-                whileHover="hover"
-              >
-                <Card sx={{ borderRadius: 3 }}>
-                  <CardContent sx={{ p: 3 }}>
-                    <Typography variant="h6" sx={{ ...typography.subHeading, mb: 3 }}>
-                      Daily Progress
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      {[
-                        { label: 'Protein', value: dailyTotals.protein, target: userDailyTargets.protein, color: COLORS.protein },
-                        { label: 'Carbs', value: dailyTotals.carbs, target: userDailyTargets.carbs, color: COLORS.carbs },
-                        { label: 'Fat', value: dailyTotals.fat, target: userDailyTargets.fat, color: COLORS.fat }
-                      ].map((macro, index) => (
-                        <motion.div
-                          key={macro.label}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                        >
-                          <Box sx={{ mb: 1 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                              <Typography sx={{ fontWeight: 500 }}>{macro.label}</Typography>
-                              <Typography sx={{ color: macro.color, fontWeight: 600 }}>
-                                {Math.round(macro.value)}g / {macro.target}g
-                              </Typography>
-                            </Box>
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: '100%' }}
-                              transition={{ duration: 0.8, delay: index * 0.2 }}
-                            >
-                              <LinearProgress
-                                variant="determinate"
-                                value={calculateProgress(macro.value, macro.target)}
-                                sx={{
-                                  height: 8,
-                                  borderRadius: 4,
-                                  bgcolor: `${macro.color}20`,
-                                  '& .MuiLinearProgress-bar': {
-                                    bgcolor: macro.color,
-                                    borderRadius: 4
-                                  }
-                                }}
-                              />
-                            </motion.div>
-                          </Box>
-                        </motion.div>
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </Grid>
-          </Grid>
-
-          {/* Meal Logging Section */}
-          <motion.div
-            variants={cardVariants}
-            initial="initial"
-            animate="animate"
-            whileHover="hover"
-          >
-            <Card sx={{ borderRadius: 3, mb: 4 }}>
-              <CardContent sx={{ p: 3 }}>
-                <Box sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  mb: 3 
-                }}>
-                  <Typography variant="h6" sx={typography.subHeading}>
-                    Logged Meals
-                  </Typography>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      variant="contained"
-                      startIcon={<AddIcon />}
-                      onClick={handleAddMeal}
-                      sx={{
-                        bgcolor: COLORS.primary,
-                        '&:hover': {
-                          bgcolor: '#FF1F71'
-                        }
-                      }}
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
                     >
-                      Add Meal
-                    </Button>
-                  </motion.div>
-                </Box>
-
-                <Tabs 
-                  value={currentTab} 
-                  onChange={(e, newValue) => setCurrentTab(newValue)}
-                  variant="fullWidth"
-                  sx={{
-                    mb: 3,
-                    '& .MuiTab-root': {
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        transform: 'translateY(-2px)'
-                      }
-                    }
-                  }}
-                >
-                  <Tab icon={<FreeBreakfast />} label="Breakfast" />
-                  <Tab icon={<LocalDining />} label="Lunch" />
-                  <Tab icon={<DinnerDining />} label="Dinner" />
-                  <Tab icon={<Fastfood />} label="Snacks" />
-                </Tabs>
-
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentTab}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <List>
-                      <AnimatePresence>
-                        {(loggedMeals[selectedDate.format('YYYY-MM-DD')]?.[
-                          ['breakfast', 'lunch', 'dinner', 'snacks'][currentTab]
-                        ] || []).map((meal, index) => (
-                          <motion.div
-                            key={meal.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
-                            transition={{ delay: index * 0.1 }}
-                          >
-                            <ListItem
-                              sx={{
-                                mb: 1,
-                                bgcolor: '#F8FAFC',
-                                borderRadius: 2,
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                  transform: 'translateX(8px)',
-                                  bgcolor: '#F1F5F9'
-                                }
-                              }}
-                            >
-                              <ListItemText
-                                primary={
-                                  <Typography 
-                                    sx={{ 
-                                      fontFamily: "'Poppins', sans-serif",
-                                      fontWeight: 600,
-                                      color: '#2D3748',
-                                      fontSize: '1rem',
-                                      mb: 0.5
-                                    }}
-                                  >
-                                    {/* Use multiple fallbacks to ensure name is displayed */}
-                                    {meal.name || meal.food || 'Unnamed Meal'}
-                                  </Typography>
-                                }
-                                secondary={
-                                  <Box sx={{ mt: 0.5 }}>
-                                    <Typography 
-                                      component="div" 
-                                      sx={{ 
-                                        color: 'text.secondary',
-                                        fontSize: '0.875rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1,
-                                        mb: 0.5
-                                      }}
-                                    >
-                                      <Restaurant />
-                                      {meal.calories} kcal
-                                    </Typography>
-                                    <Typography 
-                                      component="div" 
-                                      sx={{ 
-                                        color: 'text.secondary',
-                                        fontSize: '0.75rem',
-                                        display: 'flex',
-                                        gap: 2
-                                      }}
-                                    >
-                                      <span>Protein: {meal.protein}g</span>
-                                      <span>Carbs: {meal.carbs}g</span>
-                                      <span>Fat: {meal.fat}g</span>
-                                    </Typography>
-                                  </Box>
-                                }
-                              />
-                              <Box sx={{ display: 'flex', gap: 1 }}>
-                                <IconButton
-                                  size="small"
-                                  onClick={() => handleEditMeal(meal)}
-                                  sx={{
-                                    color: COLORS.primary,
-                                    '&:hover': {
-                                      bgcolor: `${COLORS.primary}15`
-                                    }
-                                  }}
-                                >
-                                  <EditIcon fontSize="small" />
-                                </IconButton>
-                                <IconButton
-                                  size="small"
-                                  onClick={() => handleDeleteMeal(meal.id, ['breakfast', 'lunch', 'dinner', 'snacks'][currentTab])}
-                                  sx={{
-                                    color: '#EF5350',
-                                    '&:hover': {
-                                      bgcolor: '#EF535015'
-                                    }
-                                  }}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </Box>
-                            </ListItem>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
-                    </List>
-                  </motion.div>
-                </AnimatePresence>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Diet Plan Button */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                variant="contained"
-                size="large"
-                onClick={handleDietPlanClick}
-                startIcon={<RestaurantMenuIcon />}
-                sx={{
-                  bgcolor: COLORS.primary,
-                  color: 'white',
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 2,
-                  fontSize: '1.1rem',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  '&:hover': {
-                    bgcolor: '#FF1F71',
-                  },
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Get Your Personalized Diet Plan
-              </Button>
-            </motion.div>
-          </Box>
-
-          {/* Add Dialog Animation */}
-          <AnimatePresence>
-            {openDialog && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-              >
-                <Dialog 
-                  open={openDialog} 
-                  onClose={() => setOpenDialog(false)}
-                  maxWidth="sm"
-                  fullWidth
-                >
-                  <DialogTitle sx={{ pb: 1 }}>Add Meal</DialogTitle>
-                  <DialogContent>
-                    <Box sx={{ mb: 2 }}>
-                      {/* Meal Type Selection First */}
-                      <FormControl fullWidth sx={{ mb: 3 }}>
-                        <InputLabel>Meal Type</InputLabel>
-                        <Select
-                          value={selectedMealType}
-                          onChange={(e) => setSelectedMealType(e.target.value)}
-                          label="Meal Type"
-                        >
-                          <MenuItem value="breakfast">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <FreeBreakfast fontSize="small" />
-                              Breakfast
-                            </Box>
-                          </MenuItem>
-                          <MenuItem value="lunch">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <LocalDining fontSize="small" />
-                              Lunch
-                            </Box>
-                          </MenuItem>
-                          <MenuItem value="dinner">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <DinnerDining fontSize="small" />
-                              Dinner
-                            </Box>
-                          </MenuItem>
-                          <MenuItem value="snacks">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Fastfood fontSize="small" />
-                              Snacks
-                            </Box>
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-
-                      {/* Search Section with Selection Indicator */}
-                      <Box sx={{ mb: 2 }}>
-                        <TextField
-                          fullWidth
-                          label="Search Foods"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <SearchIcon color="action" />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                        {selectedFood && (
-                          <Box 
-                            sx={{ 
-                              mt: 1,
-                              p: 1.5,
-                              borderRadius: 1,
-                              bgcolor: `${COLORS.primary}15`,
-                              border: `1px solid ${COLORS.primary}40`,
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <Box>
-                              <Typography 
-                                variant="subtitle2" 
-                                sx={{ 
-                                  color: COLORS.primary,
-                                  fontWeight: 600 
-                                }}
-                              >
-                                Selected: {selectedFood.name}
-                              </Typography>
-                              <Typography 
-                                variant="caption" 
-                                sx={{ 
-                                  color: 'text.secondary',
-                                  display: 'block'
-                                }}
-                              >
-                                {selectedFood.calories} kcal | P: {selectedFood.protein}g • C: {selectedFood.carbs}g • F: {selectedFood.fat}g
-                              </Typography>
-                            </Box>
-                            <IconButton 
-                              size="small" 
-                              onClick={() => setSelectedFood(null)}
-                              sx={{ color: COLORS.primary }}
-                            >
-                              <CloseIcon fontSize="small" />
-                            </IconButton>
-                          </Box>
-                        )}
-                      </Box>
-
-                      {/* Food List */}
-                      <List 
-                        sx={{ 
-                          maxHeight: 300, 
-                          overflow: 'auto',
-                          bgcolor: '#F8FAFC',
-                          borderRadius: 1,
-                          '& .MuiListItem-root': {
-                            transition: 'all 0.2s ease'
+                      <LinearProgress
+                        variant="determinate"
+                        value={caloriePercentage}
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          bgcolor: `${COLORS.primary}15`,
+                          '& .MuiLinearProgress-bar': {
+                            bgcolor: COLORS.primary,
+                            borderRadius: 5,
+                            background: `linear-gradient(90deg, ${COLORS.primary}, #FF92B4)`
                           }
                         }}
+                      />
+                    </motion.div>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: 'text.secondary',
+                        mt: 1,
+                        textAlign: 'center',
+                        fontSize: '0.875rem'
+                      }}
+                    >
+                      Target: {userDailyTargets.calories} kcal
+                    </Typography>
+                  </Box>
+                </Grid>
+
+                {/* Stats Section */}
+                <Grid item xs={12} md={4}>
+                  <Box sx={{ 
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    pl: { md: 3 },
+                    borderLeft: { md: `2px solid ${COLORS.primary}20` }
+                  }}>
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <Box sx={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        p: 1.5,
+                        bgcolor: `${COLORS.primary}08`,
+                        borderRadius: 2
+                      }}>
+                        <TrendingUpIcon sx={{ color: COLORS.primary }} />
+                        <Box>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            Remaining
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 600, color: COLORS.primary }}>
+                            {remainingCalories} kcal
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <Box sx={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        p: 1.5,
+                        bgcolor: `${COLORS.primary}08`,
+                        borderRadius: 2
+                      }}>
+                        <Box sx={{ 
+                          width: 24, 
+                          height: 24, 
+                          borderRadius: '50%',
+                          bgcolor: COLORS.primary,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontSize: '0.875rem',
+                          fontWeight: 600
+                        }}>
+                          %
+                        </Box>
+                        <Box>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            Macro Split
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            P: {macroPercentages.protein}% • 
+                            C: {macroPercentages.carbs}% • 
+                            F: {macroPercentages.fat}%
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </motion.div>
+                  </Box>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Macro Distribution and Progress */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} md={6}>
+            <motion.div
+              variants={cardVariants}
+              initial="initial"
+              animate="animate"
+              whileHover="hover"
+            >
+              <Card sx={{ borderRadius: 3 }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="h6" sx={{ ...typography.subHeading, mb: 3 }}>
+                    Macro Distribution
+                  </Typography>
+                  <Box sx={{ 
+                    height: 250,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                    <motion.div
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      style={{ width: '100%', height: '100%' }}
+                    >
+                      <Doughnut data={macroChartData} options={chartOptions} />
+                    </motion.div>
+                  </Box>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <motion.div
+              variants={cardVariants}
+              initial="initial"
+              animate="animate"
+              whileHover="hover"
+            >
+              <Card sx={{ borderRadius: 3 }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography variant="h6" sx={{ ...typography.subHeading, mb: 3 }}>
+                    Daily Progress
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    {[
+                      { label: 'Protein', value: dailyTotals.protein, target: userDailyTargets.protein, color: COLORS.protein },
+                      { label: 'Carbs', value: dailyTotals.carbs, target: userDailyTargets.carbs, color: COLORS.carbs },
+                      { label: 'Fat', value: dailyTotals.fat, target: userDailyTargets.fat, color: COLORS.fat }
+                    ].map((macro, index) => (
+                      <motion.div
+                        key={macro.label}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
                       >
-                        {filteredFoods.map((food) => (
-                          <ListItem
-                            key={food.name}
-                            button
-                            onClick={() => handleFoodSelection(food)}
-                            selected={selectedFood?.name === food.name}
-                            sx={{
-                              borderRadius: 1,
-                              mb: 0.5,
-                              '&.Mui-selected': {
-                                bgcolor: `${COLORS.primary}15`,
-                                '&:hover': {
-                                  bgcolor: `${COLORS.primary}20`,
+                        <Box sx={{ mb: 1 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                            <Typography sx={{ fontWeight: 500 }}>{macro.label}</Typography>
+                            <Typography sx={{ color: macro.color, fontWeight: 600 }}>
+                              {Math.round(macro.value)}g / {macro.target}g
+                            </Typography>
+                          </Box>
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: '100%' }}
+                            transition={{ duration: 0.8, delay: index * 0.2 }}
+                          >
+                            <LinearProgress
+                              variant="determinate"
+                              value={calculateProgress(macro.value, macro.target)}
+                              sx={{
+                                height: 8,
+                                borderRadius: 4,
+                                bgcolor: `${macro.color}20`,
+                                '& .MuiLinearProgress-bar': {
+                                  bgcolor: macro.color,
+                                  borderRadius: 4
                                 }
-                              },
+                              }}
+                            />
+                          </motion.div>
+                        </Box>
+                      </motion.div>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Grid>
+        </Grid>
+
+        {/* Meal Logging Section */}
+        <motion.div
+          variants={cardVariants}
+          initial="initial"
+          animate="animate"
+          whileHover="hover"
+        >
+          <Card sx={{ borderRadius: 3, mb: 4 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                mb: 3 
+              }}>
+                <Typography variant="h6" sx={typography.subHeading}>
+                  Logged Meals
+                </Typography>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={handleAddMeal}
+                    sx={{
+                      bgcolor: COLORS.primary,
+                      '&:hover': {
+                        bgcolor: '#FF1F71'
+                      }
+                    }}
+                  >
+                    Add Meal
+                  </Button>
+                </motion.div>
+              </Box>
+
+              <Tabs 
+                value={currentTab} 
+                onChange={(e, newValue) => setCurrentTab(newValue)}
+                variant="fullWidth"
+                sx={{
+                  mb: 3,
+                  '& .MuiTab-root': {
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)'
+                    }
+                  }
+                }}
+              >
+                <Tab icon={<FreeBreakfast />} label="Breakfast" />
+                <Tab icon={<LocalDining />} label="Lunch" />
+                <Tab icon={<DinnerDining />} label="Dinner" />
+                <Tab icon={<Fastfood />} label="Snacks" />
+              </Tabs>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentTab}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <List>
+                    <AnimatePresence>
+                      {(loggedMeals[selectedDate.format('YYYY-MM-DD')]?.[
+                        ['breakfast', 'lunch', 'dinner', 'snacks'][currentTab]
+                      ] || []).map((meal, index) => (
+                        <motion.div
+                          key={meal.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <ListItem
+                            sx={{
+                              mb: 1,
+                              bgcolor: '#F8FAFC',
+                              borderRadius: 2,
+                              transition: 'all 0.3s ease',
                               '&:hover': {
-                                bgcolor: `${COLORS.primary}10`,
+                                transform: 'translateX(8px)',
+                                bgcolor: '#F1F5F9'
                               }
                             }}
                           >
                             <ListItemText
                               primary={
-                                <Typography sx={{ 
-                                  fontWeight: selectedFood?.name === food.name ? 600 : 400,
-                                  color: selectedFood?.name === food.name ? COLORS.primary : 'inherit'
-                                }}>
-                                  {food.name}
+                                <Typography 
+                                  sx={{ 
+                                    fontFamily: "'Poppins', sans-serif",
+                                    fontWeight: 600,
+                                    color: '#2D3748',
+                                    fontSize: '1rem',
+                                    mb: 0.5
+                                  }}
+                                >
+                                  {/* Use multiple fallbacks to ensure name is displayed */}
+                                  {meal.name || meal.food || 'Unnamed Meal'}
                                 </Typography>
                               }
                               secondary={
-                                <Typography variant="body2" color="text.secondary">
-                                  {food.calories} kcal | P: {food.protein}g • C: {food.carbs}g • F: {food.fat}g
-                                </Typography>
+                                <Box sx={{ mt: 0.5 }}>
+                                  <Typography 
+                                    component="div" 
+                                    sx={{ 
+                                      color: 'text.secondary',
+                                      fontSize: '0.875rem',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 1,
+                                      mb: 0.5
+                                    }}
+                                  >
+                                    <Restaurant />
+                                    {meal.calories} kcal
+                                  </Typography>
+                                  <Typography 
+                                    component="div" 
+                                    sx={{ 
+                                      color: 'text.secondary',
+                                      fontSize: '0.75rem',
+                                      display: 'flex',
+                                      gap: 2
+                                    }}
+                                  >
+                                    <span>Protein: {meal.protein}g</span>
+                                    <span>Carbs: {meal.carbs}g</span>
+                                    <span>Fat: {meal.fat}g</span>
+                                  </Typography>
+                                </Box>
                               }
                             />
-                            {selectedFood?.name === food.name && (
-                              <CheckCircleIcon sx={{ color: COLORS.primary, ml: 1 }} />
-                            )}
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                              <IconButton
+                                size="small"
+                                onClick={() => handleEditMeal(meal)}
+                                sx={{
+                                  color: COLORS.primary,
+                                  '&:hover': {
+                                    bgcolor: `${COLORS.primary}15`
+                                  }
+                                }}
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                onClick={() => handleDeleteMeal(meal.id, ['breakfast', 'lunch', 'dinner', 'snacks'][currentTab])}
+                                sx={{
+                                  color: '#EF5350',
+                                  '&:hover': {
+                                    bgcolor: '#EF535015'
+                                  }
+                                }}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Box>
                           </ListItem>
-                        ))}
-                        {filteredFoods.length === 0 && (
-                          <Box sx={{ p: 3, textAlign: 'center' }}>
-                            <Typography color="text.secondary">
-                              No foods found matching your search
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </List>
+                </motion.div>
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Diet Plan Button */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handleDietPlanClick}
+              startIcon={<RestaurantMenuIcon />}
+              sx={{
+                bgcolor: COLORS.primary,
+                color: 'white',
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
+                fontSize: '1.1rem',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                '&:hover': {
+                  bgcolor: '#FF1F71',
+                },
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Get Your Personalized Diet Plan
+            </Button>
+          </motion.div>
+        </Box>
+
+        {/* Add Dialog Animation */}
+        <AnimatePresence>
+          {openDialog && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+            >
+              <Dialog 
+                open={openDialog} 
+                onClose={() => setOpenDialog(false)}
+                maxWidth="sm"
+                fullWidth
+              >
+                <DialogTitle sx={{ pb: 1 }}>Add Meal</DialogTitle>
+                <DialogContent>
+                  <Box sx={{ mb: 2 }}>
+                    {/* Meal Type Selection First */}
+                    <FormControl fullWidth sx={{ mb: 3 }}>
+                      <InputLabel>Meal Type</InputLabel>
+                      <Select
+                        value={selectedMealType}
+                        onChange={(e) => setSelectedMealType(e.target.value)}
+                        label="Meal Type"
+                      >
+                        <MenuItem value="breakfast">
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <FreeBreakfast fontSize="small" />
+                            Breakfast
+                          </Box>
+                        </MenuItem>
+                        <MenuItem value="lunch">
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <LocalDining fontSize="small" />
+                            Lunch
+                          </Box>
+                        </MenuItem>
+                        <MenuItem value="dinner">
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <DinnerDining fontSize="small" />
+                            Dinner
+                          </Box>
+                        </MenuItem>
+                        <MenuItem value="snacks">
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Fastfood fontSize="small" />
+                            Snacks
+                          </Box>
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+
+                    {/* Search Section with Selection Indicator */}
+                    <Box sx={{ mb: 2 }}>
+                      <TextField
+                        fullWidth
+                        label="Search Foods"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <SearchIcon color="action" />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      {selectedFood && (
+                        <Box 
+                          sx={{ 
+                            mt: 1,
+                            p: 1.5,
+                            borderRadius: 1,
+                            bgcolor: `${COLORS.primary}15`,
+                            border: `1px solid ${COLORS.primary}40`,
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <Box>
+                            <Typography 
+                              variant="subtitle2" 
+                              sx={{ 
+                                color: COLORS.primary,
+                                fontWeight: 600 
+                              }}
+                            >
+                              Selected: {selectedFood.name}
+                            </Typography>
+                            <Typography 
+                              variant="caption" 
+                              sx={{ 
+                                color: 'text.secondary',
+                                display: 'block'
+                              }}
+                            >
+                              {selectedFood.calories} kcal | P: {selectedFood.protein}g • C: {selectedFood.carbs}g • F: {selectedFood.fat}g
                             </Typography>
                           </Box>
-                        )}
-                      </List>
+                          <IconButton 
+                            size="small" 
+                            onClick={() => setSelectedFood(null)}
+                            sx={{ color: COLORS.primary }}
+                          >
+                            <CloseIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      )}
                     </Box>
-                  </DialogContent>
-                  <DialogActions sx={{ px: 3, pb: 3 }}>
-                    <Button 
-                      onClick={() => setOpenDialog(false)}
+
+                    {/* Food List */}
+                    <List 
                       sx={{ 
-                        color: 'text.secondary',
-                        '&:hover': {
-                          bgcolor: '#F1F5F9'
+                        maxHeight: 300, 
+                        overflow: 'auto',
+                        bgcolor: '#F8FAFC',
+                        borderRadius: 1,
+                        '& .MuiListItem-root': {
+                          transition: 'all 0.2s ease'
                         }
                       }}
                     >
-                      Cancel
-                    </Button>
-                    <Button 
-                      onClick={handleAddMealSubmit}
-                      variant="contained"
-                      disabled={!selectedFood || !selectedMealType}
-                      sx={{
-                        bgcolor: COLORS.primary,
-                        '&:hover': {
-                          bgcolor: '#FF1F71'
-                        },
-                        '&.Mui-disabled': {
-                          bgcolor: '#E2E8F0',
-                          color: '#94A3B8'
-                        }
-                      }}
-                    >
-                      Add Meal
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Container>
-      </Box>
-    </motion.div>
+                      {filteredFoods.map((food) => (
+                        <ListItem
+                          key={food.name}
+                          button
+                          onClick={() => handleFoodSelection(food)}
+                          selected={selectedFood?.name === food.name}
+                          sx={{
+                            borderRadius: 1,
+                            mb: 0.5,
+                            '&.Mui-selected': {
+                              bgcolor: `${COLORS.primary}15`,
+                              '&:hover': {
+                                bgcolor: `${COLORS.primary}20`,
+                              }
+                            },
+                            '&:hover': {
+                              bgcolor: `${COLORS.primary}10`,
+                            }
+                          }}
+                        >
+                          <ListItemText
+                            primary={
+                              <Typography sx={{ 
+                                fontWeight: selectedFood?.name === food.name ? 600 : 400,
+                                color: selectedFood?.name === food.name ? COLORS.primary : 'inherit'
+                              }}>
+                                {food.name}
+                              </Typography>
+                            }
+                            secondary={
+                              <Typography variant="body2" color="text.secondary">
+                                {food.calories} kcal | P: {food.protein}g • C: {food.carbs}g • F: {food.fat}g
+                              </Typography>
+                            }
+                          />
+                          {selectedFood?.name === food.name && (
+                            <CheckCircleIcon sx={{ color: COLORS.primary, ml: 1 }} />
+                          )}
+                        </ListItem>
+                      ))}
+                      {filteredFoods.length === 0 && (
+                        <Box sx={{ p: 3, textAlign: 'center' }}>
+                          <Typography color="text.secondary">
+                            No foods found matching your search
+                          </Typography>
+                        </Box>
+                      )}
+                    </List>
+                  </Box>
+                </DialogContent>
+                <DialogActions sx={{ px: 3, pb: 3 }}>
+                  <Button 
+                    onClick={() => setOpenDialog(false)}
+                    sx={{ 
+                      color: 'text.secondary',
+                      '&:hover': {
+                        bgcolor: '#F1F5F9'
+                      }
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleAddMealSubmit}
+                    variant="contained"
+                    disabled={!selectedFood || !selectedMealType}
+                    sx={{
+                      bgcolor: COLORS.primary,
+                      '&:hover': {
+                        bgcolor: '#FF1F71'
+                      },
+                      '&.Mui-disabled': {
+                        bgcolor: '#E2E8F0',
+                        color: '#94A3B8'
+                      }
+                    }}
+                  >
+                    Add Meal
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Container>
+    </Box>
   );
 }
 

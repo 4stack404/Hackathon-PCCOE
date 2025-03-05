@@ -66,7 +66,12 @@ function DietPlanning() {
   ];
 
   return (
-    <Box sx={{ py: 6, bgcolor: '#FFF5F8', minHeight: '100vh' }}>
+    <Box sx={{ 
+      bgcolor: '#FFF5F8',
+      minHeight: '100vh',
+      pb: 6,
+      pt: 2
+    }}>
       <Container maxWidth="lg">
         <Button
           component={RouterLink}
