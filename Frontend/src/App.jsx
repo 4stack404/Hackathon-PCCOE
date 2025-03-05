@@ -9,6 +9,7 @@ import ScrollToTop from './components/common/ScrollToTop';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Box } from '@mui/material';
+import ChatBot from './components/chatbot/ChatBot';
 
 // Pages
 import Home from './pages/Home';
@@ -117,6 +118,7 @@ function App() {
                   <Route path="/loading-example" element={<LoadingExample />} />
                 </Routes>
                 <Footer />
+                <ChatBot />
                 <ToastContainer
                   position="top-right"
                   autoClose={5000}
