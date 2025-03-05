@@ -17,7 +17,7 @@ const LoadingHeart = ({ size = 200 }) => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #fff0f3 0%, #ff4d6d 100%)",
+          background: "radial-gradient(circle at center, #ffffff 0%, #fff5f8 30%, #fde2eb 60%, #fcadc7 100%)",
           backdropFilter: "blur(5px)",
           overflow: "hidden",
         }}

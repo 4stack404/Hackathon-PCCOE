@@ -197,3 +197,39 @@ button:focus-visible {
   font-size: 18px;
   color: #5e35b1;
 }
+
+/* Reset Password Styles */
+.auth-gradient {
+  background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
+  min-height: 100vh;
+  width: 100%;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button {
+  background: linear-gradient(90deg, #6e45e2 0%, #88d3ce 100%);
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.primary-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+}
