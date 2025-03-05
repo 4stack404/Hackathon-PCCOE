@@ -28,6 +28,9 @@ import ResetPassword from './pages/ResetPassword';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import RouteChangeLoader from './components/common/RouteChangeLoader';
+import DietPlanning from './pages/DietPlanning';
+import HealthyRecipes from './pages/HealthyRecipes';
+import MealLogging from './pages/MealLogging';
 
 // Create a theme
 const theme = createTheme({
@@ -103,6 +106,9 @@ function App() {
                 <Route path="/debug-login" element={<LoginDebug />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/diet" element={<Diet />} />
+                <Route path="/diet-planning" element={<DietPlanning />} />
+                <Route path="/healthy-recipes" element={<HealthyRecipes />} />
+                <Route path="/meal-logging" element={<MealLogging />} />
                 <Route path="/loading-example" element={<LoadingExample />} />
               </Routes>
               <Footer />
