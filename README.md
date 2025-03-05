@@ -7,7 +7,7 @@ A comprehensive pregnancy wellness platform designed to provide support, informa
 
 ## ✨ Features
 
-### 🔐 User Authentication System
+### 🔐 User's Authentication System
 - Secure login and signup functionality
 - Profile creation with pregnancy details and due date
 - Password recovery and account management
