@@ -174,7 +174,7 @@ function Login() {
                 }
                 label="Remember me"
               />
-              <Link component={RouterLink} to="/forgot-password" variant="body2">
+              <Link component={RouterLink} to="/reset-password" variant="body2">
                 Forgot password?
               </Link>
             </Box>

@@ -2,7 +2,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './contexts/AuthContext';
+import { LoadingProvider } from './contexts/LoadingContext';
+import { AppProvider } from './context/AppContext';
 import LoginDebug from './components/LoginDebug';
+import ScrollToTop from './components/common/ScrollToTop';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Box } from '@mui/material';
+import ChatBot from './components/chatbot/ChatBot';
 
 // Pages
 import Home from './pages/Home';
@@ -18,8 +25,14 @@ import CareDetails from './pages/CareDetails';
 import Community from './pages/Community';
 import Diet from './pages/Diet';
 import AuthPage from './pages/AuthPage';
+import LoadingExample from './pages/LoadingExample';
+import ResetPassword from './pages/ResetPassword';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import RouteChangeLoader from './components/common/RouteChangeLoader';
+import DietPlanning from './pages/DietPlanning';
+import HealthyRecipes from './pages/HealthyRecipes';
+import MealLogging from './pages/MealLogging';
 
 // Create a theme
 const theme = createTheme({
@@ -72,30 +85,59 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <Router>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/appointments/new" element={<Appointments newAppointment={true} />} />
-            <Route path="/care" element={<Care />} />
-            <Route path="/care/:type" element={<CareDetails />} />
-            <Route path="/week/:weekNumber" element={<WeekPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/debug-login" element={<LoginDebug />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/diet" element={<Diet />} />
-          </Routes>
-          <Footer />
-        </Router>
+        <LoadingProvider>
+          <AppProvider>
+            <Box sx={{ 
+              bgcolor: '#FFF5F8',
+              minHeight: '100vh'
+            }}>
+              <Router>
+                <ScrollToTop />
+                <Navbar />
+                <RouteChangeLoader />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/appointments" element={<Appointments />} />
+                  <Route path="/appointments/new" element={<Appointments newAppointment={true} />} />
+                  <Route path="/care" element={<Care />} />
+                  <Route path="/care/:type" element={<CareDetails />} />
+                  <Route path="/week/:weekNumber" element={<WeekPage />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/debug-login" element={<LoginDebug />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/diet" element={<Diet />} />
+                  <Route path="/diet-planning" element={<DietPlanning />} />
+                  <Route path="/healthy-recipes" element={<HealthyRecipes />} />
+                  <Route path="/meal-logging" element={<MealLogging />} />
+                  <Route path="/loading-example" element={<LoadingExample />} />
+                </Routes>
+                <Footer />
+                <ChatBot />
+                <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </Router>
+            </Box>
+          </AppProvider>
+        </LoadingProvider>
       </AuthProvider>
     </ThemeProvider>
   );
 }
 
-export default App; 
+export default App;
