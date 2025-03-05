@@ -52,6 +52,7 @@ import {
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import usePageLoading from '../hooks/usePageLoading';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 import dayjs from 'dayjs';
@@ -156,6 +157,9 @@ function Dashboard() {
   const [currentDate] = useState(new Date());
   const [loaded, setLoaded] = useState(false);
   
+  // Use our custom hook to show loading animation
+  usePageLoading(!loaded);
+  
   // Define custom colors for consistent styling
   const customColors = {
     accentPink: '#FF5A8C',
@@ -200,7 +204,7 @@ function Dashboard() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoaded(true);
-    }, 500);
+    }, 1500); // Increased to 1.5 seconds to better see the loading animation
     return () => clearTimeout(timer);
   }, []);
 
