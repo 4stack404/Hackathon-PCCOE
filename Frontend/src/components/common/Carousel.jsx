@@ -8,7 +8,7 @@ const slides = [
     id: 1,
     title: 'Personalized Pregnancy Journey',
     description: 'Track your pregnancy milestones with customized guidance and support.',
-    image: '/public/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Get Started',
     buttonLink: '/signup'
   },
@@ -16,7 +16,7 @@ const slides = [
     id: 2,
     title: 'Expert Nutrition Advice',
     description: 'Receive tailored nutrition plans and meal suggestions for a healthy pregnancy.',
-    image: '/public/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Learn More',
     buttonLink: '/signup'
   },
@@ -24,7 +24,7 @@ const slides = [
     id: 3,
     title: 'Prenatal & Postnatal Care',
     description: 'Comprehensive care guides for before and after your baby arrives.',
-    image: '/public/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Explore',
     buttonLink: '/signup'
   },
@@ -32,7 +32,7 @@ const slides = [
     id: 4,
     title: 'Community Support',
     description: 'Connect with other expecting mothers and share your journey together.',
-    image: '/public/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Join Now',
     buttonLink: '/signup'
   }
