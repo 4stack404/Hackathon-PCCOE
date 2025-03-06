@@ -165,7 +165,7 @@ const Diet = () => {
               }}
             >
               Pregnancy Nutrition Hub
-            </Typography>
+                </Typography>
             <Typography 
               variant="h5" 
               color="text.secondary" 
@@ -175,7 +175,7 @@ const Diet = () => {
               }}
             >
               Nourish your body and your baby with our specialized tools
-            </Typography>
+              </Typography>
           </motion.div>
         </Box>
 
@@ -234,12 +234,12 @@ const Diet = () => {
                     bottom: 0,
                     background: `linear-gradient(to bottom, transparent, ${section.color}88)`
                   }} />
-                </Box>
-
+      </Box>
+      
                 <Box sx={{ p: 3 }}>
                   <Typography 
                     variant="overline" 
-                    sx={{ 
+          sx={{ 
                       color: section.color, 
                       fontWeight: 600,
                       letterSpacing: 1.2
@@ -247,27 +247,27 @@ const Diet = () => {
                   >
                     {section.subtitle}
                   </Typography>
-                  <Typography 
+        <Typography 
                     variant="h4" 
-                    sx={{ 
-                      mb: 2, 
+          sx={{ 
+            mb: 2, 
                       fontWeight: 700,
                       color: '#2D3748'
-                    }}
-                  >
+          }}
+        >
                     {section.title}
-                  </Typography>
-                  <Typography 
+        </Typography>
+        <Typography 
                     variant="body1" 
                     color="text.secondary" 
-                    sx={{ 
+          sx={{ 
                       mb: 3,
                       lineHeight: 1.6
                     }}
                   >
                     {section.description}
-                  </Typography>
-
+        </Typography>
+        
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                     {section.features.map((feature, idx) => (
                       <motion.div
@@ -288,7 +288,7 @@ const Diet = () => {
                             sx={{ fontWeight: 500 }}
                           >
                             {feature}
-                          </Typography>
+                    </Typography>
                         </Box>
                       </motion.div>
                     ))}
@@ -304,10 +304,10 @@ const Diet = () => {
                   transition: 'all 0.3s ease'
                 }}>
                   <IconButton 
-                    sx={{ 
+                sx={{ 
                       bgcolor: section.color,
                       color: 'white',
-                      '&:hover': {
+                  '&:hover': {
                         bgcolor: section.color,
                         transform: 'scale(1.1)'
                       }
@@ -319,10 +319,10 @@ const Diet = () => {
               </Card>
             </motion.div>
           ))}
-        </Box>
+          </Box>
       </motion.div>
-    </Container>
+      </Container>
   );
 };
 
-export default Diet;
+export default Diet; 
