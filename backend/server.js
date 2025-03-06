@@ -59,7 +59,12 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from the uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Test route
+app.get('/', (req, res) => {
+  res.json({ message: 'API is working!' });
+});
 
 // Test route
 app.get('/api/test', (req, res) => {
