@@ -38,7 +38,6 @@ app.use(helmet.contentSecurityPolicy({
   }
 }));
 
-const cors = require("cors");
 app.use(cors({ origin: "*" }));
 
 app.use(express.json());
