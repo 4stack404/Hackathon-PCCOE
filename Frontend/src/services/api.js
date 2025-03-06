@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://hackathon-pccoe.onrender.com',
+  baseURL: 'https://hackathon-pccoe.onrender.com/api',
   headers: {
     'Content-Type': 'application/json'
   }
