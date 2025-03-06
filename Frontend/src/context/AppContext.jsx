@@ -2,12 +2,12 @@ import React, { createContext } from 'react';
 
 // Create the app context
 export const AppContent = createContext({
-  backendUrl: import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
+  backendUrl: import.meta.env.VITE_BACKEND_URL
 });
 
 // Create a provider component
 export const AppProvider = ({ children }) => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const value = {
     backendUrl
