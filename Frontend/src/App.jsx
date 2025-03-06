@@ -33,6 +33,14 @@ import RouteChangeLoader from './components/common/RouteChangeLoader';
 import DietPlanning from './pages/DietPlanning';
 import HealthyRecipes from './pages/HealthyRecipes';
 import MealLogging from './pages/MealLogging';
+import PrenatalCare from './pages/care/PrenatalCare';
+import WeeklyTips from './pages/care/prenatal/WeeklyTips';
+import PrenatalInfo from './pages/care/prenatal/PrenatalInfo';
+import PrenatalExercises from './pages/care/prenatal/PrenatalExercises';
+import PrenatalDiet from './pages/care/prenatal/PrenatalDiet';
+import PrenatalSymptoms from './pages/care/prenatal/PrenatalSymptoms';
+import PrenatalSelfCare from './pages/care/prenatal/PrenatalSelfCare';
+import LaborPrep from './pages/care/prenatal/LaborPrep';
 
 // Create a theme
 const theme = createTheme({
@@ -116,6 +124,14 @@ function App() {
                   <Route path="/healthy-recipes" element={<HealthyRecipes />} />
                   <Route path="/meal-logging" element={<MealLogging />} />
                   <Route path="/loading-example" element={<LoadingExample />} />
+                  <Route path="/care/prenatal" element={<PrenatalCare />} />
+                  <Route path="/care/prenatal/weekly-tips" element={<WeeklyTips />} />
+                  <Route path="/care/prenatal/information" element={<PrenatalInfo />} />
+                  <Route path="/care/prenatal/exercises" element={<PrenatalExercises />} />
+                  <Route path="/care/prenatal/diet" element={<PrenatalDiet />} />
+                  <Route path="/care/prenatal/symptoms" element={<PrenatalSymptoms />} />
+                  <Route path="/care/prenatal/self-care" element={<PrenatalSelfCare />} />
+                  <Route path="/care/prenatal/labor-prep" element={<LaborPrep />} />
                 </Routes>
                 <Footer />
                 <ChatBot />
