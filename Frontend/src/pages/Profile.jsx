@@ -23,7 +23,11 @@ import {
   IconButton,
   alpha,
   Fade,
-  Zoom
+  Zoom,
+  Card,
+  CardContent,
+  Chip,
+  LinearProgress
 } from '@mui/material';
 import {
   Edit,
@@ -35,10 +39,15 @@ import {
   CloudUpload,
   CalendarMonth,
   LocalHospital,
-  Restaurant
+  Restaurant,
+  NavigateNext,
+  Add
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { motion } from 'framer-motion';
+import { appointmentService } from '../services/appointmentService';
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 // Custom colors to match Dashboard.jsx
 const customColors = {
@@ -263,468 +272,468 @@ function Profile() {
               </Grid>
             </Box>
 
-          {/* Tabs Navigation */}
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-            <Tabs 
-              value={tabValue} 
-              onChange={handleTabChange} 
-              aria-label="profile tabs"
-              centered
-              sx={{ 
-                '& .MuiTab-root': { 
-                  fontWeight: 'medium',
-                  transition: 'all 0.3s ease',
-                },
-                '& .Mui-selected': {
-                  color: customColors.accentPink,
-                },
-                '& .MuiTabs-indicator': {
-                  backgroundColor: customColors.accentPink,
-                  height: 3,
-                  borderRadius: 1.5
-                }
-              }}
-            >
-              <Tab label="Personal Information" icon={<Person />} iconPosition="start" />
-              <Tab label="Activity History" icon={<CalendarMonth />} iconPosition="start" />
-              <Tab label="Preferences" icon={<Language />} iconPosition="start" />
-            </Tabs>
-          </Box>
+            {/* Tabs Navigation */}
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+              <Tabs 
+                value={tabValue} 
+                onChange={handleTabChange} 
+                aria-label="profile tabs"
+                centered
+                sx={{ 
+                  '& .MuiTab-root': { 
+                    fontWeight: 'medium',
+                    transition: 'all 0.3s ease',
+                  },
+                  '& .Mui-selected': {
+                    color: customColors.accentPink,
+                  },
+                  '& .MuiTabs-indicator': {
+                    backgroundColor: customColors.accentPink,
+                    height: 3,
+                    borderRadius: 1.5
+                  }
+                }}
+              >
+                <Tab label="Personal Information" icon={<Person />} iconPosition="start" />
+                <Tab label="Activity History" icon={<CalendarMonth />} iconPosition="start" />
+                <Tab label="Preferences" icon={<Language />} iconPosition="start" />
+              </Tabs>
+            </Box>
 
-          {/* Personal Information Tab */}
-          <TabPanel value={tabValue} index={0}>
-            <Container maxWidth="md">
-              {error && (
-                <Alert severity="error" sx={{ mb: 3 }}>
-                  {error}
-                </Alert>
-              )}
-              
-              <Fade in={true} timeout={800}>
-                <Box component="form" onSubmit={handleSubmit}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Full Name"
-                        name="name"
-                        value={userData.name}
-                        onChange={handleInputChange}
-                        disabled={!editing}
-                        required
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Email"
-                        name="email"
-                        type="email"
-                        value={userData.email}
-                        onChange={handleInputChange}
-                        disabled={!editing}
-                        required
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Phone Number"
-                        name="phone"
-                        value={userData.phone}
-                        onChange={handleInputChange}
-                        disabled={!editing}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Date of Birth"
-                        name="dateOfBirth"
-                        type="date"
-                        value={userData.dateOfBirth}
-                        onChange={handleInputChange}
-                        disabled={!editing}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Gender"
-                        name="gender"
-                        value={userData.gender}
-                        onChange={handleInputChange}
-                        disabled={!editing}
-                        select
-                        SelectProps={{
-                          native: true,
-                        }}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      >
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
-                        <option value="other">Other</option>
-                        <option value="prefer-not-to-say">Prefer not to say</option>
-                      </TextField>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Address"
-                        name="address"
-                        value={userData.address}
-                        onChange={handleInputChange}
-                        disabled={!editing}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        label="Bio"
-                        name="bio"
-                        value={userData.bio}
-                        onChange={handleInputChange}
-                        disabled={!editing}
-                        multiline
-                        rows={4}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      />
-                    </Grid>
-                    {editing && (
-                      <Grid item xs={12}>
-                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                          <Button
-                            component="label"
-                            variant="outlined"
-                            startIcon={<CloudUpload />}
-                            sx={{ 
-                              mt: 2,
-                              borderRadius: 2,
-                              borderColor: customColors.accentPink,
-                              color: customColors.accentPink,
-                              '&:hover': {
-                                borderColor: customColors.accentPink,
-                                bgcolor: alpha(customColors.accentPink, 0.1)
-                              }
-                            }}
-                          >
-                            Upload Profile Picture
-                            <input
-                              type="file"
-                              hidden
-                              accept="image/*"
-                              onChange={handleFileChange}
-                            />
-                          </Button>
-                        </motion.div>
-                      </Grid>
-                    )}
-                  </Grid>
-                </Box>
-              </Fade>
-            </Container>
-          </TabPanel>
-
-          {/* Activity History Tab */}
-          <TabPanel value={tabValue} index={1}>
-            <Container maxWidth="md">
-              <Fade in={true} timeout={800}>
-                <Box>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
-                    Recent Activity
-                  </Typography>
-                  <List>
-                    {activities.map((activity, index) => (
-                      <Zoom in={true} style={{ transitionDelay: `${index * 100}ms` }} key={activity.id}>
-                        <ListItem 
+            {/* Personal Information Tab */}
+            <TabPanel value={tabValue} index={0}>
+              <Container maxWidth="md">
+                {error && (
+                  <Alert severity="error" sx={{ mb: 3 }}>
+                    {error}
+                  </Alert>
+                )}
+                
+                <Fade in={true} timeout={800}>
+                  <Box component="form" onSubmit={handleSubmit}>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Full Name"
+                          name="name"
+                          value={userData.name}
+                          onChange={handleInputChange}
+                          disabled={!editing}
+                          required
                           sx={{ 
-                            mb: 2, 
-                            bgcolor: 'background.paper', 
-                            borderRadius: 3,
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                              transform: 'translateY(-3px)',
-                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Email"
+                          name="email"
+                          type="email"
+                          value={userData.email}
+                          onChange={handleInputChange}
+                          disabled={!editing}
+                          required
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Phone Number"
+                          name="phone"
+                          value={userData.phone}
+                          onChange={handleInputChange}
+                          disabled={!editing}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Date of Birth"
+                          name="dateOfBirth"
+                          type="date"
+                          value={userData.dateOfBirth}
+                          onChange={handleInputChange}
+                          disabled={!editing}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Gender"
+                          name="gender"
+                          value={userData.gender}
+                          onChange={handleInputChange}
+                          disabled={!editing}
+                          select
+                          SelectProps={{
+                            native: true,
+                          }}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
                             }
                           }}
                         >
+                          <option value="female">Female</option>
+                          <option value="male">Male</option>
+                          <option value="other">Other</option>
+                          <option value="prefer-not-to-say">Prefer not to say</option>
+                        </TextField>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Address"
+                          name="address"
+                          value={userData.address}
+                          onChange={handleInputChange}
+                          disabled={!editing}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="Bio"
+                          name="bio"
+                          value={userData.bio}
+                          onChange={handleInputChange}
+                          disabled={!editing}
+                          multiline
+                          rows={4}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        />
+                      </Grid>
+                      {editing && (
+                        <Grid item xs={12}>
+                          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                            <Button
+                              component="label"
+                              variant="outlined"
+                              startIcon={<CloudUpload />}
+                              sx={{ 
+                                mt: 2,
+                                borderRadius: 2,
+                                borderColor: customColors.accentPink,
+                                color: customColors.accentPink,
+                                '&:hover': {
+                                  borderColor: customColors.accentPink,
+                                  bgcolor: alpha(customColors.accentPink, 0.1)
+                                }
+                              }}
+                            >
+                              Upload Profile Picture
+                              <input
+                                type="file"
+                                hidden
+                                accept="image/*"
+                                onChange={handleFileChange}
+                              />
+                            </Button>
+                          </motion.div>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </Box>
+                </Fade>
+              </Container>
+            </TabPanel>
+
+            {/* Activity History Tab */}
+            <TabPanel value={tabValue} index={1}>
+              <Container maxWidth="md">
+                <Fade in={true} timeout={800}>
+                  <Box>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
+                      Recent Activity
+                    </Typography>
+                    <List>
+                      {activities.map((activity, index) => (
+                        <Zoom in={true} style={{ transitionDelay: `${index * 100}ms` }} key={activity.id}>
+                          <ListItem 
+                            sx={{ 
+                              mb: 2, 
+                              bgcolor: 'background.paper', 
+                              borderRadius: 3,
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                              transition: 'all 0.3s ease',
+                              '&:hover': {
+                                transform: 'translateY(-3px)',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                              }
+                            }}
+                          >
+                            <ListItemIcon>
+                              <Avatar sx={{ bgcolor: alpha(customColors.accentPink, 0.2), color: customColors.accentPink }}>
+                                {activity.icon}
+                              </Avatar>
+                            </ListItemIcon>
+                            <ListItemText 
+                              primary={<Typography fontWeight="medium">{activity.title}</Typography>} 
+                              secondary={new Date(activity.date).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                              })} 
+                            />
+                          </ListItem>
+                        </Zoom>
+                      ))}
+                    </List>
+                    <Box sx={{ textAlign: 'center', mt: 3 }}>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button 
+                          variant="outlined" 
+                          sx={{ 
+                            borderRadius: 2,
+                            borderColor: customColors.accentPink,
+                            color: customColors.accentPink,
+                            px: 3,
+                            py: 1,
+                            '&:hover': {
+                              borderColor: customColors.accentPink,
+                              bgcolor: alpha(customColors.accentPink, 0.1)
+                            }
+                          }}
+                        >
+                          View All Activity
+                        </Button>
+                      </motion.div>
+                    </Box>
+                  </Box>
+                </Fade>
+              </Container>
+            </TabPanel>
+
+            {/* Preferences Tab */}
+            <TabPanel value={tabValue} index={2}>
+              <Container maxWidth="md">
+                <Fade in={true} timeout={800}>
+                  <Box>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
+                      Notification Settings
+                    </Typography>
+                    <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', mb: 4 }}>
+                      <List>
+                        <ListItem>
                           <ListItemIcon>
                             <Avatar sx={{ bgcolor: alpha(customColors.accentPink, 0.2), color: customColors.accentPink }}>
-                              {activity.icon}
+                              <Notifications />
                             </Avatar>
                           </ListItemIcon>
                           <ListItemText 
-                            primary={<Typography fontWeight="medium">{activity.title}</Typography>} 
-                            secondary={new Date(activity.date).toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
-                            })} 
+                            primary={<Typography fontWeight="medium">Email Notifications</Typography>} 
+                            secondary="Receive updates and reminders via email" 
+                          />
+                          <Switch
+                            edge="end"
+                            checked={userData.notifications.email}
+                            onChange={handleNotificationChange('email')}
+                            disabled={!editing}
+                            sx={{
+                              '& .MuiSwitch-switchBase.Mui-checked': {
+                                color: customColors.accentPink,
+                                '&:hover': {
+                                  backgroundColor: alpha(customColors.accentPink, 0.1),
+                                },
+                              },
+                              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                backgroundColor: customColors.accentPink,
+                              },
+                            }}
                           />
                         </ListItem>
-                      </Zoom>
-                    ))}
-                  </List>
-                  <Box sx={{ textAlign: 'center', mt: 3 }}>
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button 
-                        variant="outlined" 
-                        sx={{ 
-                          borderRadius: 2,
-                          borderColor: customColors.accentPink,
-                          color: customColors.accentPink,
-                          px: 3,
-                          py: 1,
-                          '&:hover': {
-                            borderColor: customColors.accentPink,
-                            bgcolor: alpha(customColors.accentPink, 0.1)
-                          }
-                        }}
-                      >
-                        View All Activity
-                      </Button>
-                    </motion.div>
+                        <Divider />
+                        <ListItem>
+                          <ListItemIcon>
+                            <Avatar sx={{ bgcolor: alpha(customColors.accentPink, 0.2), color: customColors.accentPink }}>
+                              <Notifications />
+                            </Avatar>
+                          </ListItemIcon>
+                          <ListItemText 
+                            primary={<Typography fontWeight="medium">Push Notifications</Typography>} 
+                            secondary="Receive notifications on your device" 
+                          />
+                          <Switch
+                            edge="end"
+                            checked={userData.notifications.push}
+                            onChange={handleNotificationChange('push')}
+                            disabled={!editing}
+                            sx={{
+                              '& .MuiSwitch-switchBase.Mui-checked': {
+                                color: customColors.accentPink,
+                                '&:hover': {
+                                  backgroundColor: alpha(customColors.accentPink, 0.1),
+                                },
+                              },
+                              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                backgroundColor: customColors.accentPink,
+                              },
+                            }}
+                          />
+                        </ListItem>
+                        <Divider />
+                        <ListItem>
+                          <ListItemIcon>
+                            <Avatar sx={{ bgcolor: alpha(customColors.accentPink, 0.2), color: customColors.accentPink }}>
+                              <Notifications />
+                            </Avatar>
+                          </ListItemIcon>
+                          <ListItemText 
+                            primary={<Typography fontWeight="medium">SMS Notifications</Typography>} 
+                            secondary="Receive text messages for important updates" 
+                          />
+                          <Switch
+                            edge="end"
+                            checked={userData.notifications.sms}
+                            onChange={handleNotificationChange('sms')}
+                            disabled={!editing}
+                            sx={{
+                              '& .MuiSwitch-switchBase.Mui-checked': {
+                                color: customColors.accentPink,
+                                '&:hover': {
+                                  backgroundColor: alpha(customColors.accentPink, 0.1),
+                                },
+                              },
+                              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                backgroundColor: customColors.accentPink,
+                              },
+                            }}
+                          />
+                        </ListItem>
+                      </List>
+                    </Paper>
+
+                    <Typography variant="h6" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
+                      Application Preferences
+                    </Typography>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Language"
+                          name="language"
+                          value={userData.preferences.language}
+                          onChange={handlePreferenceChange('language')}
+                          disabled={!editing}
+                          select
+                          SelectProps={{
+                            native: true,
+                          }}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        >
+                          <option value="English">English</option>
+                          <option value="Spanish">Spanish</option>
+                          <option value="French">French</option>
+                          <option value="German">German</option>
+                        </TextField>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Theme"
+                          name="theme"
+                          value={userData.preferences.theme}
+                          onChange={handlePreferenceChange('theme')}
+                          disabled={!editing}
+                          select
+                          SelectProps={{
+                            native: true,
+                          }}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        >
+                          <option value="Light">Light</option>
+                          <option value="Dark">Dark</option>
+                          <option value="System">System Default</option>
+                        </TextField>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          fullWidth
+                          label="Units"
+                          name="units"
+                          value={userData.preferences.units}
+                          onChange={handlePreferenceChange('units')}
+                          disabled={!editing}
+                          select
+                          SelectProps={{
+                            native: true,
+                          }}
+                          sx={{ 
+                            '& .MuiOutlinedInput-root': {
+                              borderRadius: 2
+                            }
+                          }}
+                        >
+                          <option value="Imperial">Imperial (lbs, in)</option>
+                          <option value="Metric">Metric (kg, cm)</option>
+                        </TextField>
+                      </Grid>
+                    </Grid>
                   </Box>
-                </Box>
-              </Fade>
-            </Container>
-          </TabPanel>
+                </Fade>
+              </Container>
+            </TabPanel>
+          </Paper>
+        </Fade>
 
-          {/* Preferences Tab */}
-          <TabPanel value={tabValue} index={2}>
-            <Container maxWidth="md">
-              <Fade in={true} timeout={800}>
-                <Box>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
-                    Notification Settings
-                  </Typography>
-                  <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', mb: 4 }}>
-                    <List>
-                      <ListItem>
-                        <ListItemIcon>
-                          <Avatar sx={{ bgcolor: alpha(customColors.accentPink, 0.2), color: customColors.accentPink }}>
-                            <Notifications />
-                          </Avatar>
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary={<Typography fontWeight="medium">Email Notifications</Typography>} 
-                          secondary="Receive updates and reminders via email" 
-                        />
-                        <Switch
-                          edge="end"
-                          checked={userData.notifications.email}
-                          onChange={handleNotificationChange('email')}
-                          disabled={!editing}
-                          sx={{
-                            '& .MuiSwitch-switchBase.Mui-checked': {
-                              color: customColors.accentPink,
-                              '&:hover': {
-                                backgroundColor: alpha(customColors.accentPink, 0.1),
-                              },
-                            },
-                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                              backgroundColor: customColors.accentPink,
-                            },
-                          }}
-                        />
-                      </ListItem>
-                      <Divider />
-                      <ListItem>
-                        <ListItemIcon>
-                          <Avatar sx={{ bgcolor: alpha(customColors.accentPink, 0.2), color: customColors.accentPink }}>
-                            <Notifications />
-                          </Avatar>
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary={<Typography fontWeight="medium">Push Notifications</Typography>} 
-                          secondary="Receive notifications on your device" 
-                        />
-                        <Switch
-                          edge="end"
-                          checked={userData.notifications.push}
-                          onChange={handleNotificationChange('push')}
-                          disabled={!editing}
-                          sx={{
-                            '& .MuiSwitch-switchBase.Mui-checked': {
-                              color: customColors.accentPink,
-                              '&:hover': {
-                                backgroundColor: alpha(customColors.accentPink, 0.1),
-                              },
-                            },
-                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                              backgroundColor: customColors.accentPink,
-                            },
-                          }}
-                        />
-                      </ListItem>
-                      <Divider />
-                      <ListItem>
-                        <ListItemIcon>
-                          <Avatar sx={{ bgcolor: alpha(customColors.accentPink, 0.2), color: customColors.accentPink }}>
-                            <Notifications />
-                          </Avatar>
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary={<Typography fontWeight="medium">SMS Notifications</Typography>} 
-                          secondary="Receive text messages for important updates" 
-                        />
-                        <Switch
-                          edge="end"
-                          checked={userData.notifications.sms}
-                          onChange={handleNotificationChange('sms')}
-                          disabled={!editing}
-                          sx={{
-                            '& .MuiSwitch-switchBase.Mui-checked': {
-                              color: customColors.accentPink,
-                              '&:hover': {
-                                backgroundColor: alpha(customColors.accentPink, 0.1),
-                              },
-                            },
-                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                              backgroundColor: customColors.accentPink,
-                            },
-                          }}
-                        />
-                      </ListItem>
-                    </List>
-                  </Paper>
-
-                  <Typography variant="h6" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
-                    Application Preferences
-                  </Typography>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Language"
-                        name="language"
-                        value={userData.preferences.language}
-                        onChange={handlePreferenceChange('language')}
-                        disabled={!editing}
-                        select
-                        SelectProps={{
-                          native: true,
-                        }}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      >
-                        <option value="English">English</option>
-                        <option value="Spanish">Spanish</option>
-                        <option value="French">French</option>
-                        <option value="German">German</option>
-                      </TextField>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Theme"
-                        name="theme"
-                        value={userData.preferences.theme}
-                        onChange={handlePreferenceChange('theme')}
-                        disabled={!editing}
-                        select
-                        SelectProps={{
-                          native: true,
-                        }}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      >
-                        <option value="Light">Light</option>
-                        <option value="Dark">Dark</option>
-                        <option value="System">System Default</option>
-                      </TextField>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Units"
-                        name="units"
-                        value={userData.preferences.units}
-                        onChange={handlePreferenceChange('units')}
-                        disabled={!editing}
-                        select
-                        SelectProps={{
-                          native: true,
-                        }}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2
-                          }
-                        }}
-                      >
-                        <option value="Imperial">Imperial (lbs, in)</option>
-                        <option value="Metric">Metric (kg, cm)</option>
-                      </TextField>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Fade>
-            </Container>
-          </TabPanel>
-        </Paper>
-      </Fade>
-      </Container>
-
-      <Snackbar
-        open={success}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity="success" 
-          sx={{ 
-            width: '100%',
-            borderRadius: 2
-          }}
+        <Snackbar
+          open={success}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
-          Profile updated successfully!
-        </Alert>
-      </Snackbar>
+          <Alert 
+            onClose={handleCloseSnackbar} 
+            severity="success" 
+            sx={{ 
+              width: '100%',
+              borderRadius: 2
+            }}
+          >
+            Profile updated successfully!
+          </Alert>
+        </Snackbar>
+      </Container>
     </Box>
   );
 }

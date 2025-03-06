@@ -104,6 +104,7 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/appointments" element={<Appointments />} />
                   <Route path="/appointments/new" element={<Appointments newAppointment={true} />} />
+                  <Route path="/appointments/edit/:id" element={<Appointments />} />
                   <Route path="/care" element={<Care />} />
                   <Route path="/care/:type" element={<CareDetails />} />
                   <Route path="/week/:weekNumber" element={<WeekPage />} />

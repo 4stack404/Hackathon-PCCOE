@@ -94,7 +94,7 @@ const ResetPassword = () => {
     setError("");
     
     try {
-      const {data} = await axios.post(backendUrl + '/api/auth/send-reset-otp', {email})
+      const {data} = await axios.post(backendUrl + '/api/auth/forgot-password', {email})
       if (data.success) {
         toast.success(data.message);
         setIsEmailSent(true);

@@ -1,16 +1,13 @@
 import axios from 'axios';
 
-// Create an axios instance with the base URL from environment variables
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: 'http://localhost:5000/api',
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
-// Add a request interceptor to include the auth token in all requests
+// Add request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -20,50 +17,85 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('API Request Error:', error);
     return Promise.reject(error);
   }
 );
 
-// Add a response interceptor to handle common errors
+// Add response interceptor for error handling
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.status, error.config?.url);
-    
-    // Handle 401 Unauthorized errors (token expired, etc.)
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      // Redirect to login page
-      window.location.href = '/login';
-    }
+    console.error('API Error:', {
+      status: error.response?.status,
+      url: error.config?.url,
+      message: error.response?.data?.message || 'Server error'
+    });
     return Promise.reject(error);
   }
 );
 
 // Auth API calls
 export const authAPI = {
-  login: (credentials) => api.post('/api/auth/login', credentials),
-  register: (userData) => api.post('/api/auth/register', userData),
-  getCurrentUser: () => api.get('/api/auth/me'),
+  login: async (credentials) => {
+    try {
+      const response = await api.post('/auth/login', credentials);
+      return response;
+    } catch (error) {
+      console.error('Login API Error:', error);
+      throw error;
+    }
+  },
+  register: async (userData) => {
+    try {
+      const response = await api.post('/auth/register', userData);
+      return response;
+    } catch (error) {
+      console.error('Register API Error:', error);
+      throw error;
+    }
+  },
+  getCurrentUser: async () => {
+    try {
+      const response = await api.get('/auth/me');
+      return response;
+    } catch (error) {
+      console.error('Get Current User API Error:', error);
+      throw error;
+    }
+  },
+  forgotPassword: async (email) => {
+    try {
+      const response = await api.post('/auth/forgot-password', { email });
+      return response;
+    } catch (error) {
+      console.error('Forgot Password API Error:', error);
+      throw error;
+    }
+  },
+  resetPassword: async (data) => {
+    try {
+      const response = await api.post('/auth/reset-password', data);
+      return response;
+    } catch (error) {
+      console.error('Reset Password API Error:', error);
+      throw error;
+    }
+  }
 };
 
 // User API calls
 export const userAPI = {
-  getProfile: () => api.get('/api/users/profile'),
-  updateProfile: (userData) => api.put('/api/users/profile', userData),
+  getProfile: () => api.get('/users/profile'),
+  updateProfile: (userData) => api.put('/users/profile', userData),
 };
 
 // Appointment API calls
 export const appointmentAPI = {
-  getAppointments: () => api.get('/api/appointments'),
-  getAppointment: (id) => api.get(`/api/appointments/${id}`),
-  createAppointment: (appointmentData) => api.post('/api/appointments', appointmentData),
-  updateAppointment: (id, appointmentData) => api.put(`/api/appointments/${id}`, appointmentData),
-  deleteAppointment: (id) => api.delete(`/api/appointments/${id}`),
+  getAppointments: () => api.get('/appointments'),
+  getAppointment: (id) => api.get(`/appointments/${id}`),
+  createAppointment: (appointmentData) => api.post('/appointments', appointmentData),
+  updateAppointment: (id, appointmentData) => api.put(`/appointments/${id}`, appointmentData),
+  deleteAppointment: (id) => api.delete(`/appointments/${id}`),
 };
 
 export default api; 

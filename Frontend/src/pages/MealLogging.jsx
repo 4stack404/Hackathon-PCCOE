@@ -34,7 +34,8 @@ import {
   Zoom,
   Avatar,
   Autocomplete,
-  InputAdornment
+  InputAdornment,
+  CircularProgress
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -65,6 +66,8 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { commonStyles } from '../styles/common';
+import { mealService } from '../services/mealService';
+import { toast } from 'react-toastify';
 
 // Register the required Chart.js components
 ChartJS.register(ArcElement, ChartTooltip, Legend);
@@ -336,6 +339,7 @@ function MealLogging() {
   const [currentTab, setCurrentTab] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const [editingMeal, setEditingMeal] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Dummy logged meals state (in a real app, this would come from a backend)
   const [loggedMeals, setLoggedMeals] = useState({
@@ -359,6 +363,39 @@ function MealLogging() {
     fat: 0,
     fiber: 0
   });
+
+  // Update the useEffect that calculates daily totals
+  useEffect(() => {
+    const dateKey = selectedDate.format('YYYY-MM-DD');
+    const meals = loggedMeals[dateKey] || {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      snacks: []
+    };
+
+    const totals = {
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+      fiber: 0
+    };
+
+    // Calculate totals from all meal types
+    Object.values(meals).forEach(mealTypeArray => {
+      mealTypeArray.forEach(meal => {
+        totals.calories += Number(meal.calories) || 0;
+        totals.protein += Number(meal.protein) || 0;
+        totals.carbs += Number(meal.carbs) || 0;
+        totals.fat += Number(meal.fat) || 0;
+        totals.fiber += Number(meal.fiber) || 0;
+      });
+    });
+
+    console.log('Updated totals:', totals); // Debug log
+    setDailyTotals(totals);
+  }, [loggedMeals, selectedDate]);
 
   // Calculate daily totals whenever meals change
   useEffect(() => {
@@ -488,39 +525,52 @@ function MealLogging() {
     setSelectedFood(food);
   };
 
-  const handleAddMealSubmit = () => {
-    if (!selectedFood || !selectedMealType) return;
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
 
-    const dateKey = selectedDate.format('YYYY-MM-DD');
-    const newMeal = {
-      id: Date.now(),
-      name: selectedFood.name,
-      calories: Number(selectedFood.calories),
-      protein: Number(selectedFood.protein),
-      carbs: Number(selectedFood.carbs),
-      fat: Number(selectedFood.fat),
-      fiber: Number(selectedFood.fiber),
-      timestamp: new Date().toISOString()
-    };
+      // Validate required fields
+      if (!selectedFood && !mealData.name) {
+        toast.error('Please select a food or enter meal details');
+        return;
+      }
 
-    setLoggedMeals(prevMeals => {
-      const newMeals = {
-        ...prevMeals,
-        [dateKey]: {
-          ...prevMeals[dateKey],
-          [selectedMealType]: [
-            ...(prevMeals[dateKey]?.[selectedMealType] || []),
-            newMeal
-          ]
-        }
+      // Validate meal type
+      if (!selectedMealType || !['breakfast', 'lunch', 'dinner', 'snack'].includes(selectedMealType)) {
+        toast.error('Please select a valid meal type');
+        return;
+      }
+
+      const data = {
+        name: selectedFood ? selectedFood.name : mealData.name,
+        type: selectedMealType,
+        calories: selectedFood ? Number(selectedFood.calories) : Number(mealData.calories || 0),
+        protein: selectedFood ? Number(selectedFood.protein) : Number(mealData.protein || 0),
+        carbs: selectedFood ? Number(selectedFood.carbs) : Number(mealData.carbs || 0),
+        fat: selectedFood ? Number(selectedFood.fat) : Number(mealData.fat || 0),
+        notes: mealData.notes || ''
       };
-      return newMeals;
-    });
 
-    setOpenDialog(false);
-    setSelectedFood(null);
-    setSelectedMealType('');
-    setSearchQuery('');
+      console.log('Submitting meal data:', data); // Debug log
+
+      let response;
+      if (editingMeal && editingMeal._id) {
+        response = await mealService.updateMeal(editingMeal._id, data);
+      } else {
+        response = await mealService.createMeal(data);
+      }
+
+      if (response.success) {
+        toast.success(editingMeal ? 'Meal updated successfully' : 'Meal logged successfully');
+        await fetchMeals();
+        handleCloseDialog();
+      }
+    } catch (error) {
+      console.error('Error saving meal:', error);
+      toast.error(editingMeal ? 'Failed to update meal' : 'Failed to log meal');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Expanded food database
@@ -661,9 +711,9 @@ function MealLogging() {
 
   // Calculate macro percentages for the chart
   const macroPercentages = useMemo(() => {
-    const proteinCals = dailyTotals.protein * 4;
-    const carbsCals = dailyTotals.carbs * 4;
-    const fatCals = dailyTotals.fat * 9;
+    const proteinCals = dailyTotals?.protein * 4 || 0;
+    const carbsCals = dailyTotals?.carbs * 4 || 0;
+    const fatCals = dailyTotals?.fat * 9 || 0;
     const totalCals = proteinCals + carbsCals + fatCals;
 
     return {
@@ -672,6 +722,157 @@ function MealLogging() {
       fat: totalCals ? Math.round((fatCals / totalCals) * 100) : 0
     };
   }, [dailyTotals]);
+
+  const [meals, setMeals] = useState([]);
+
+  // Form states
+  const [mealData, setMealData] = useState({
+    name: '',
+    type: 'breakfast',
+    calories: '',
+    protein: '',
+    carbs: '',
+    fat: '',
+    notes: ''
+  });
+
+  // Meal types
+  const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
+
+  useEffect(() => {
+    fetchMeals();
+  }, [selectedDate]);
+
+  const fetchMeals = async () => {
+    try {
+      setLoading(true);
+      const response = await mealService.getMeals(selectedDate.format('YYYY-MM-DD'));
+      if (response.success) {
+        // Initialize the structure for the selected date
+        const dateKey = selectedDate.format('YYYY-MM-DD');
+        const newMealsByDate = {
+          [dateKey]: {
+            breakfast: [],
+            lunch: [],
+            dinner: [],
+            snack: []
+          }
+        };
+
+        // Sort meals by type
+        response.data.forEach(meal => {
+          if (meal.type && newMealsByDate[dateKey][meal.type]) {
+            newMealsByDate[dateKey][meal.type].push(meal);
+          }
+        });
+
+        setLoggedMeals(newMealsByDate);
+        setMeals(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching meals:', error);
+      toast.error('Failed to fetch meals');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setMealData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleOpenDialog = (meal = null) => {
+    if (meal) {
+      setEditingMeal(meal);
+      setSelectedMealType(meal.type || 'breakfast');
+      setMealData({
+        name: meal.name,
+        type: meal.type || 'breakfast',
+        calories: meal.calories,
+        protein: meal.protein,
+        carbs: meal.carbs,
+        fat: meal.fat,
+        notes: meal.notes || ''
+      });
+    } else {
+      setEditingMeal(null);
+      setSelectedMealType('breakfast');
+      setMealData({
+        name: '',
+        type: 'breakfast',
+        calories: '',
+        protein: '',
+        carbs: '',
+        fat: '',
+        notes: ''
+      });
+    }
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setEditingMeal(null);
+    setSelectedFood(null);
+    setSelectedMealType('breakfast');
+    setMealData({
+      name: '',
+      type: 'breakfast',
+      calories: '',
+      protein: '',
+      carbs: '',
+      fat: '',
+      notes: ''
+    });
+    setSearchQuery('');
+  };
+
+  const handleDelete = async (id) => {
+    if (!id) {
+      toast.error('Invalid meal ID');
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to delete this meal?')) {
+      try {
+        setLoading(true);
+        const response = await mealService.deleteMeal(id);
+        if (response.success) {
+          toast.success('Meal deleted successfully');
+          // Fetch updated meals after successful deletion
+          await fetchMeals();
+        }
+      } catch (error) {
+        console.error('Error deleting meal:', error);
+        toast.error('Failed to delete meal');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  // Update the getMealsForCurrentTab function to ensure proper meal type mapping
+  const getMealsForCurrentTab = () => {
+    const dateKey = selectedDate.format('YYYY-MM-DD');
+    const mealTypeMap = {
+      0: 'breakfast',
+      1: 'lunch',
+      2: 'dinner',
+      3: 'snack'
+    };
+    const mealType = mealTypeMap[currentTab];
+    return (loggedMeals[dateKey]?.[mealType] || []).map(meal => ({
+      ...meal,
+      calories: Number(meal.calories) || 0,
+      protein: Number(meal.protein) || 0,
+      carbs: Number(meal.carbs) || 0,
+      fat: Number(meal.fat) || 0
+    }));
+  };
 
   return (
     <Box sx={commonStyles.pageContainer}>
@@ -1069,7 +1270,7 @@ function MealLogging() {
                   <Button
                     variant="contained"
                     startIcon={<AddIcon />}
-                    onClick={handleAddMeal}
+                    onClick={handleOpenDialog}
                     sx={{
                       bgcolor: COLORS.primary,
                       '&:hover': {
@@ -1112,11 +1313,9 @@ function MealLogging() {
                 >
                   <List>
                     <AnimatePresence>
-                      {(loggedMeals[selectedDate.format('YYYY-MM-DD')]?.[
-                        ['breakfast', 'lunch', 'dinner', 'snacks'][currentTab]
-                      ] || []).map((meal, index) => (
+                      {getMealsForCurrentTab().map((meal, index) => (
                         <motion.div
-                          key={meal.id}
+                          key={meal._id || `meal-${index}`}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20 }}
@@ -1137,6 +1336,7 @@ function MealLogging() {
                             <ListItemText
                               primary={
                                 <Typography 
+                                  component="div"
                                   sx={{ 
                                     fontFamily: "'Poppins', sans-serif",
                                     fontWeight: 600,
@@ -1145,13 +1345,12 @@ function MealLogging() {
                                     mb: 0.5
                                   }}
                                 >
-                                  {/* Use multiple fallbacks to ensure name is displayed */}
-                                  {meal.name || meal.food || 'Unnamed Meal'}
+                                  {meal.name}
                                 </Typography>
                               }
                               secondary={
-                                <Box sx={{ mt: 0.5 }}>
-                                  <Typography 
+                                <Typography component="div">
+                                  <Box 
                                     component="div" 
                                     sx={{ 
                                       color: 'text.secondary',
@@ -1164,8 +1363,8 @@ function MealLogging() {
                                   >
                                     <Restaurant />
                                     {meal.calories} kcal
-                                  </Typography>
-                                  <Typography 
+                                  </Box>
+                                  <Box 
                                     component="div" 
                                     sx={{ 
                                       color: 'text.secondary',
@@ -1177,14 +1376,14 @@ function MealLogging() {
                                     <span>Protein: {meal.protein}g</span>
                                     <span>Carbs: {meal.carbs}g</span>
                                     <span>Fat: {meal.fat}g</span>
-                                  </Typography>
-                                </Box>
+                                  </Box>
+                                </Typography>
                               }
                             />
                             <Box sx={{ display: 'flex', gap: 1 }}>
                               <IconButton
                                 size="small"
-                                onClick={() => handleEditMeal(meal)}
+                                onClick={() => handleOpenDialog(meal)}
                                 sx={{
                                   color: COLORS.primary,
                                   '&:hover': {
@@ -1196,11 +1395,15 @@ function MealLogging() {
                               </IconButton>
                               <IconButton
                                 size="small"
-                                onClick={() => handleDeleteMeal(meal.id, ['breakfast', 'lunch', 'dinner', 'snacks'][currentTab])}
+                                onClick={() => handleDelete(meal._id)}
+                                disabled={loading}
                                 sx={{
                                   color: '#EF5350',
                                   '&:hover': {
                                     bgcolor: '#EF535015'
+                                  },
+                                  '&.Mui-disabled': {
+                                    color: '#EF535080'
                                   }
                                 }}
                               >
@@ -1258,45 +1461,34 @@ function MealLogging() {
             >
               <Dialog 
                 open={openDialog} 
-                onClose={() => setOpenDialog(false)}
+                onClose={handleCloseDialog}
                 maxWidth="sm"
                 fullWidth
+                PaperProps={{
+                  sx: {
+                    borderRadius: 2,
+                    maxWidth: 600
+                  }
+                }}
               >
-                <DialogTitle sx={{ pb: 1 }}>Add Meal</DialogTitle>
+                <DialogTitle sx={{ pb: 1 }}>{editingMeal ? 'Edit Meal' : 'Log New Meal'}</DialogTitle>
                 <DialogContent>
                   <Box sx={{ mb: 2 }}>
                     {/* Meal Type Selection First */}
                     <FormControl fullWidth sx={{ mb: 3 }}>
-                      <InputLabel>Meal Type</InputLabel>
+                      <InputLabel id="meal-type-label">Meal Type</InputLabel>
                       <Select
-                        value={selectedMealType}
+                        labelId="meal-type-label"
+                        id="meal-type"
+                        value={selectedMealType || 'breakfast'}
                         onChange={(e) => setSelectedMealType(e.target.value)}
                         label="Meal Type"
                       >
-                        <MenuItem value="breakfast">
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <FreeBreakfast fontSize="small" />
-                            Breakfast
-                          </Box>
-                        </MenuItem>
-                        <MenuItem value="lunch">
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <LocalDining fontSize="small" />
-                            Lunch
-                          </Box>
-                        </MenuItem>
-                        <MenuItem value="dinner">
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <DinnerDining fontSize="small" />
-                            Dinner
-                          </Box>
-                        </MenuItem>
-                        <MenuItem value="snacks">
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Fastfood fontSize="small" />
-                            Snacks
-                          </Box>
-                        </MenuItem>
+                        {mealTypes.map((type) => (
+                          <MenuItem key={type} value={type} sx={{ textTransform: 'capitalize' }}>
+                            {type}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
 
@@ -1423,7 +1615,7 @@ function MealLogging() {
                 </DialogContent>
                 <DialogActions sx={{ px: 3, pb: 3 }}>
                   <Button 
-                    onClick={() => setOpenDialog(false)}
+                    onClick={handleCloseDialog}
                     sx={{ 
                       color: 'text.secondary',
                       '&:hover': {
@@ -1434,9 +1626,9 @@ function MealLogging() {
                     Cancel
                   </Button>
                   <Button 
-                    onClick={handleAddMealSubmit}
+                    onClick={handleSubmit}
                     variant="contained"
-                    disabled={!selectedFood || !selectedMealType}
+                    disabled={(!selectedFood && !mealData.name) || loading}
                     sx={{
                       bgcolor: COLORS.primary,
                       '&:hover': {
@@ -1448,7 +1640,7 @@ function MealLogging() {
                       }
                     }}
                   >
-                    Add Meal
+                    {loading ? <CircularProgress size={24} /> : editingMeal ? 'Update' : 'Save'}
                   </Button>
                 </DialogActions>
               </Dialog>

@@ -27,7 +27,8 @@ import {
   Fade,
   Grow,
   Zoom,
-  Slide
+  Slide,
+  CircularProgress
 } from '@mui/material';
 import { 
   Notifications, 
@@ -60,6 +61,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { motion } from 'framer-motion';
 import { keyframes } from '@emotion/react';
 import { styled } from '@mui/material/styles';
+import { appointmentService } from '../services/appointmentService';
+import { toast } from 'react-toastify';
 
 dayjs.extend(relativeTime);
 
@@ -156,6 +159,8 @@ function Dashboard() {
   const theme = useTheme();
   const [currentDate] = useState(new Date());
   const [loaded, setLoaded] = useState(false);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [loading, setLoading] = useState(false);
   
   // Use our custom hook to show loading animation
   usePageLoading(!loaded);
@@ -189,7 +194,7 @@ function Dashboard() {
 
   const [currentWeek, setCurrentWeek] = useState(calculateCurrentWeek());
   const dueDate = dayjs().add(40 - currentWeek, 'weeks');
-  const nextAppointment = dayjs().add(5, 'days');
+  const [nextAppointment, setNextAppointment] = useState(null);
 
   // Update current week periodically
   useEffect(() => {
@@ -249,6 +254,65 @@ function Dashboard() {
     }
   };
 
+  // Fetch upcoming appointments
+  const fetchUpcomingAppointments = async () => {
+    try {
+      setLoading(true);
+      const response = await appointmentService.getAppointments();
+      if (response.success) {
+        // Filter and sort upcoming appointments
+        const upcoming = response.data
+          .filter(app => new Date(app.date) >= new Date()) // Filter future appointments
+          .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date ascending
+        setUpcomingAppointments(upcoming);
+        // Set the next appointment (first upcoming)
+        setNextAppointment(upcoming.length > 0 ? upcoming[0] : null);
+      }
+    } catch (error) {
+      console.error('Failed to fetch appointments:', error);
+      toast.error('Failed to load appointments');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUpcomingAppointments();
+  }, []);
+
+  // Add handlers for updating and deleting appointments
+  const handleUpdateAppointment = async (appointmentId, updatedData) => {
+    try {
+      setLoading(true);
+      const response = await appointmentService.updateAppointment(appointmentId, updatedData);
+      if (response.success) {
+        toast.success('Appointment updated successfully');
+        fetchUpcomingAppointments(); // Refresh the appointments list
+      }
+    } catch (error) {
+      console.error('Failed to update appointment:', error);
+      toast.error('Failed to update appointment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAppointment = async (appointmentId) => {
+    try {
+      setLoading(true);
+      const response = await appointmentService.deleteAppointment(appointmentId);
+      if (response.success) {
+        toast.success('Appointment cancelled successfully');
+        fetchUpcomingAppointments(); // Refresh the appointments list
+      }
+    } catch (error) {
+      console.error('Failed to cancel appointment:', error);
+      toast.error('Failed to cancel appointment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box sx={{ 
       bgcolor: '#FFF5F8',
@@ -276,7 +340,7 @@ function Dashboard() {
           }}>
             <Box>
               <Typography variant="h4" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
-                Hi {currentUser?.firstName || 'Mommy'}! 👋
+              Hi, {currentUser?.name?.split(' ')[0] || 'there'}! 👋
               </Typography>
               <Typography variant="subtitle1" color="text.secondary">
                 {currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
@@ -418,76 +482,148 @@ function Dashboard() {
                 <CardContent sx={{ p: 3 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
                     <Typography variant="h5" fontWeight="bold" gutterBottom color={customColors.darkBlue}>Next Appointment</Typography>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Chip 
-                        icon={<CalendarMonth />} 
-                        label={`${nextAppointment.fromNow(true)} away`}
-                        sx={{ 
-                          bgcolor: '#4A90E2', 
-                          color: 'white',
-                          fontWeight: 'bold'
-                        }} 
-                      />
-                    </motion.div>
+                    {nextAppointment && (
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Chip 
+                          icon={<CalendarMonth />} 
+                          label={`${dayjs(nextAppointment.date).fromNow()}`}
+                          sx={{ 
+                            bgcolor: '#4A90E2', 
+                            color: 'white',
+                            fontWeight: 'bold'
+                          }} 
+                        />
+                      </motion.div>
+                    )}
                   </Box>
                   
-                  <Slide direction="up" in={loaded} timeout={1200}>
+                  {loading ? (
+                    <Box sx={{ p: 3, display: 'flex', justifyContent: 'center' }}>
+                      <CircularProgress sx={{ color: customColors.accentPink }} />
+                    </Box>
+                  ) : nextAppointment ? (
+                    <Slide direction="up" in={loaded} timeout={1200}>
+                      <Box sx={{ 
+                        p: 3, 
+                        borderRadius: 3, 
+                        bgcolor: customColors.lightPink,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          bgcolor: customColors.mediumPink,
+                          transform: 'scale(1.02)'
+                        }
+                      }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <motion.div
+                            whileHover={{ rotate: 360 }}
+                            transition={{ duration: 0.5 }}
+                          >
+                            <Avatar sx={{ bgcolor: customColors.accentPink, color: 'white' }}>
+                              <LocalHospital />
+                            </Avatar>
+                          </motion.div>
+                          <Box>
+                            <Typography variant="h6" fontWeight="bold" color={customColors.darkBlue}>
+                              {nextAppointment.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {nextAppointment.doctor?.name || 'Doctor not specified'}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        
+                        <Divider />
+                        
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                            <Typography variant="h4" fontWeight="bold" color={customColors.accentPink}>
+                              {dayjs(nextAppointment.date).format('DD')}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {dayjs(nextAppointment.date).format('MMM YYYY')}
+                            </Typography>
+                          </Box>
+                          <Divider orientation="vertical" flexItem />
+                          <Box>
+                            <Typography variant="h5" fontWeight="bold" color={customColors.darkBlue}>
+                              {dayjs(nextAppointment.date).format('h:mm A')}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {nextAppointment.location?.name || 'Location not specified'}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        
+                        {/* Add action buttons */}
+                        <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            component={Link}
+                            to={`/appointments/edit/${nextAppointment._id}`}
+                            sx={{ 
+                              flex: 1,
+                              borderColor: customColors.accentPink,
+                              color: customColors.accentPink,
+                              '&:hover': {
+                                borderColor: customColors.accentPink,
+                                bgcolor: alpha(customColors.accentPink, 0.1)
+                              }
+                            }}
+                          >
+                            Reschedule
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleDeleteAppointment(nextAppointment._id)}
+                            sx={{ 
+                              flex: 1,
+                              borderColor: 'error.main',
+                              color: 'error.main',
+                              '&:hover': {
+                                borderColor: 'error.main',
+                                bgcolor: alpha('#ff0000', 0.1)
+                              }
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Slide>
+                  ) : (
                     <Box sx={{ 
                       p: 3, 
                       borderRadius: 3, 
                       bgcolor: customColors.lightPink,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 2,
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        bgcolor: customColors.mediumPink,
-                        transform: 'scale(1.02)'
-                      }
+                      textAlign: 'center' 
                     }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <motion.div
-                          whileHover={{ rotate: 360 }}
-                          transition={{ duration: 0.5 }}
-                        >
-                          <Avatar sx={{ bgcolor: customColors.accentPink, color: 'white' }}>
-                            <LocalHospital />
-                          </Avatar>
-                        </motion.div>
-                        <Box>
-                          <Typography variant="h6" fontWeight="bold" color={customColors.darkBlue}>Regular Checkup</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Dr. Sarah Johnson
-                          </Typography>
-                        </Box>
-                      </Box>
-                      
-                      <Divider />
-                      
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                          <Typography variant="h4" fontWeight="bold" color={customColors.accentPink}>
-                            {nextAppointment.format('DD')}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {nextAppointment.format('MMM YYYY')}
-                          </Typography>
-                        </Box>
-                        <Divider orientation="vertical" flexItem />
-                        <Box>
-                          <Typography variant="h5" fontWeight="bold" color={customColors.darkBlue}>
-                            {nextAppointment.format('h:mm A')}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Memorial Hospital, Room 305
-                          </Typography>
-                        </Box>
-                      </Box>
+                      <Typography color="text.secondary">
+                        No upcoming appointments
+                      </Typography>
+                      <Button
+                        component={Link}
+                        to="/appointments/new"
+                        startIcon={<AddIcon />}
+                        sx={{ 
+                          mt: 2,
+                          color: customColors.accentPink,
+                          '&:hover': {
+                            bgcolor: alpha(customColors.accentPink, 0.1)
+                          }
+                        }}
+                      >
+                        Schedule New Appointment
+                      </Button>
                     </Box>
-                  </Slide>
+                  )}
                   
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -511,7 +647,7 @@ function Dashboard() {
                         }
                       }}
                     >
-                      View Appointment Details
+                      View All Appointments
                     </Button>
                   </motion.div>
                 </CardContent>
@@ -828,70 +964,51 @@ function Dashboard() {
                     bgcolor: customColors.lightPink,
                     boxShadow: 'inset 0 0 10px rgba(0,0,0,0.05)'
                   }}>
-                    {[1, 2, 3].map((_, index) => (
-                      <Slide 
-                        direction="right" 
-                        in={true} 
-                        timeout={500 + index * 200}
-                        key={index}
-                      >
-                        <Box 
-                          sx={{ 
-                            p: 2, 
-                            borderBottom: index < 2 ? `1px solid ${alpha('#000', 0.1)}` : 'none',
-                            transition: 'all 0.3s ease',
-                            '&:hover': { 
-                              bgcolor: customColors.mediumPink,
-                              cursor: 'pointer',
-                              transform: 'translateX(5px)'
-                            }
-                          }}
-                        >
-                          <Grid container alignItems="center" spacing={2}>
-                            <Grid item xs={1}>
-                              <Avatar sx={{ 
-                                bgcolor: customColors.accentPink,
-                                color: 'white',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                  transform: 'rotate(10deg)'
+                    {loading ? (
+                      <Box sx={{ py: 2 }}>
+                        <LinearProgress sx={{ borderRadius: 1 }} />
+                      </Box>
+                    ) : upcomingAppointments.length > 0 ? (
+                      <List>
+                        {upcomingAppointments.slice(0, 3).map((appointment, index) => (
+                          <React.Fragment key={appointment._id}>
+                            {index > 0 && <Divider />}
+                            <ListItem>
+                              <ListItemIcon>
+                                <CalendarMonth sx={{ color: customColors.accentPink }} />
+                              </ListItemIcon>
+                              <ListItemText
+                                primary={appointment.title}
+                                secondary={
+                                  <>
+                                    <Typography variant="body2" component="span">
+                                      {new Date(appointment.date).toLocaleDateString('en-US', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                      })}
+                                    </Typography>
+                                    <br />
+                                    <Typography variant="body2" component="span">
+                                      {appointment.doctor.name} - {appointment.location.name}
+                                    </Typography>
+                                  </>
                                 }
-                              }}>
-                                <LocalHospital />
-                              </Avatar>
-                            </Grid>
-                            <Grid item xs={3} md={2}>
-                              <Typography variant="h6" fontWeight="bold" color={customColors.darkBlue}>
-                                June {15 + index * 7}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                10:00 AM
-                              </Typography>
-                            </Grid>
-                            <Grid item xs={7} md={8}>
-                              <Typography variant="body1" fontWeight="medium" color={customColors.darkBlue}>
-                                {index === 0 ? 'Regular Checkup' : index === 1 ? 'Ultrasound Scan' : 'Blood Work'}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                Dr. {index === 0 ? 'Johnson' : index === 1 ? 'Williams' : 'Garcia'} • Memorial Hospital, Room {300 + index * 5}
-                              </Typography>
-                            </Grid>
-                            <Grid item xs={1} textAlign="right">
-                              <IconButton sx={{
-                                color: customColors.darkBlue,
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                  color: customColors.accentPink,
-                                  transform: 'translateX(3px)'
-                                }
-                              }}>
-                                <NavigateNext />
-                              </IconButton>
-                            </Grid>
-                          </Grid>
-                        </Box>
-                      </Slide>
-                    ))}
+                              />
+                            </ListItem>
+                          </React.Fragment>
+                        ))}
+                      </List>
+                    ) : (
+                      <Box sx={{ py: 2, textAlign: 'center' }}>
+                        <Typography color="text.secondary">
+                          No upcoming appointments
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                   
                   <Fade in={true} timeout={1500}>
