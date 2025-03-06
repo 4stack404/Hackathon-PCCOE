@@ -1,7 +1,11 @@
 import express from 'express';
-import { body } from 'express-validator';
-import { registerUser, loginUser, getCurrentUser } from '../controllers/authController.js';
-import { validateRequest } from '../middleware/validationMiddleware.js';
+import {
+  register,
+  login,
+  getCurrentUser,
+  sendPasswordResetOTP,
+  resetPassword
+} from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import User from '../models/userModel.js';
 
@@ -10,18 +14,7 @@ const router = express.Router();
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
-router.post(
-  '/register',
-  [
-    body('name').notEmpty().withMessage('Name is required'),
-    body('email').isEmail().withMessage('Please include a valid email'),
-    body('password')
-      .isLength({ min: 6 })
-      .withMessage('Password must be at least 6 characters long')
-  ],
-  validateRequest,
-  registerUser
-);
+router.post('/register', register);
 
 // @route   GET /api/auth/login
 // @desc    Provide helpful error for incorrect method
@@ -33,20 +26,22 @@ router.get('/login', (req, res) => {
 // @route   POST /api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
-router.post(
-  '/login',
-  [
-    body('email').isEmail().withMessage('Please include a valid email'),
-    body('password').exists().withMessage('Password is required')
-  ],
-  validateRequest,
-  loginUser
-);
+router.post('/login', login);
 
 // @route   GET /api/auth/me
 // @desc    Get current user
 // @access  Private
 router.get('/me', protect, getCurrentUser);
+
+// @route   POST /api/auth/forgot-password
+// @desc    Send password reset OTP
+// @access  Public
+router.post('/forgot-password', sendPasswordResetOTP);
+
+// @route   POST /api/auth/reset-password
+// @desc    Reset password
+// @access  Public
+router.post('/reset-password', resetPassword);
 
 // @route   GET /api/auth/debug
 // @desc    Debug endpoint to check user existence

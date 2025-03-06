@@ -1,38 +1,26 @@
 import express from 'express';
 import {
-  createAppointment,
   getAppointments,
-  getAppointmentById,
+  getAppointment,
+  createAppointment,
   updateAppointment,
-  deleteAppointment
+  deleteAppointment,
+  cancelAppointment
 } from '../controllers/appointmentController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// @route   GET /api/appointments
-// @desc    Get all appointments for a user
-// @access  Private
-router.get('/', protect, getAppointments);
+router.route('/')
+  .get(protect, getAppointments)
+  .post(protect, createAppointment);
 
-// @route   POST /api/appointments
-// @desc    Create a new appointment
-// @access  Private
-router.post('/', protect, createAppointment);
+router.route('/:id')
+  .get(protect, getAppointment)
+  .put(protect, updateAppointment)
+  .delete(protect, deleteAppointment);
 
-// @route   GET /api/appointments/:id
-// @desc    Get an appointment by ID
-// @access  Private
-router.get('/:id', protect, getAppointmentById);
-
-// @route   PUT /api/appointments/:id
-// @desc    Update an appointment
-// @access  Private
-router.put('/:id', protect, updateAppointment);
-
-// @route   DELETE /api/appointments/:id
-// @desc    Delete an appointment
-// @access  Private
-router.delete('/:id', protect, deleteAppointment);
+router.route('/:id/cancel')
+  .put(protect, cancelAppointment);
 
 export default router; 
