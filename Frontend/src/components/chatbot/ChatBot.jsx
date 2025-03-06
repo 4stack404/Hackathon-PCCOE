@@ -18,7 +18,8 @@ import {
   Button,
   Tooltip,
   Fade,
-  Chip
+  Chip,
+  CircularProgress
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
@@ -45,6 +46,8 @@ import { chatService } from '../../services/chatbotService';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { keyframes } from '@mui/system';
+import MarkdownPreview from '@uiw/react-markdown-preview';
+import { COLORS } from '../../theme/colors';
 
 // Animation variants
 const chatButtonVariants = {
@@ -138,6 +141,7 @@ const ChatBot = () => {
   const [expandedMessages, setExpandedMessages] = useState(new Set());
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
   const [typedMessages, setTypedMessages] = useState(new Map());
+  const [isLoading, setIsLoading] = useState(false);
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
@@ -166,8 +170,9 @@ const ChatBot = () => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && inputValue.trim()) {
-      handleSendMessage();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
@@ -194,19 +199,20 @@ const ChatBot = () => {
     }, 30); // Reduced interval time
   };
 
-  const handleSendMessage = async () => {
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
 
     const userMessage = {
       id: messages.length + 1,
       text: inputValue.trim(),
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date().toISOString()
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
+    setIsLoading(true);
 
     try {
       const response = await chatService.askQuestion(inputValue.trim());
@@ -214,7 +220,7 @@ const ChatBot = () => {
         id: messages.length + 2,
         text: response.answer.replace('**Direct Answer:**', ''),
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
       };
       
       setMessages(prev => [...prev, botMessage]);
@@ -226,11 +232,12 @@ const ChatBot = () => {
         id: prev.length + 1,
         text: "I'm sorry, I'm having trouble connecting right now. Please try again later.",
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
       }]);
       console.error('Chat error:', error);
     } finally {
       setIsTyping(false);
+      setIsLoading(false);
     }
   };
 
@@ -269,8 +276,20 @@ const ChatBot = () => {
     }
   };
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (timestamp) => {
+    try {
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) {
+        return '';
+      }
+      return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return '';
+    }
   };
 
   const toggleMessageExpansion = (messageId) => {
@@ -625,80 +644,13 @@ const ChatBot = () => {
                                     } : {}
                                   }}
                                 >
-                                  <ReactMarkdown 
-                                    remarkPlugins={[remarkGfm]}
-                                    components={{
-                                      p: ({node, ...props}) => (
-                                        <Typography 
-                                          variant="body2" 
-                                          sx={{ 
-                                            mb: 1,
-                                            fontFamily: "'Poppins', sans-serif",
-                                            lineHeight: 1.8,
-                                            '&:last-child': { mb: 0 }
-                                          }} 
-                                          {...props}
-                                        />
-                                      ),
-                                      h2: ({node, ...props}) => (
-                                        <Typography 
-                                          variant="h6" 
-                                          sx={{ 
-                                            fontWeight: 600,
-                                            mb: 1,
-                                            color: CHAT_COLORS.primary,
-                                            fontFamily: "'Playfair Display', serif",
-                                          }} 
-                                          {...props}
-                                        />
-                                      ),
-                                      h3: ({node, ...props}) => (
-                                        <Typography 
-                                          variant="subtitle1" 
-                                          sx={{ 
-                                            fontWeight: 600,
-                                            mb: 1,
-                                            fontFamily: "'Poppins', sans-serif",
-                                          }} 
-                                          {...props}
-                                        />
-                                      ),
-                                      ul: ({node, ...props}) => (
-                                        <Box 
-                                          component="ul" 
-                                          sx={{ 
-                                            pl: 2,
-                                            mb: 1,
-                                            '&:last-child': { mb: 0 }
-                                          }} 
-                                          {...props}
-                                        />
-                                      ),
-                                      li: ({node, ...props}) => (
-                                        <Typography 
-                                          component="li" 
-                                          variant="body2" 
-                                          sx={{ 
-                                            mb: 0.5,
-                                            fontFamily: "'Poppins', sans-serif",
-                                          }} 
-                                          {...props}
-                                        />
-                                      ),
-                                      strong: ({node, ...props}) => (
-                                        <Box 
-                                          component="strong" 
-                                          sx={{ 
-                                            color: message.sender === 'user' ? 'inherit' : CHAT_COLORS.primary,
-                                            fontWeight: 600
-                                          }} 
-                                          {...props}
-                                        />
-                                      )
+                                  <MarkdownPreview 
+                                    source={message.text}
+                                    style={{
+                                      backgroundColor: 'transparent',
+                                      color: message.sender === 'user' ? 'white' : 'inherit'
                                     }}
-                                  >
-                                    {typedMessages.get(message.id) || ''}
-                                  </ReactMarkdown>
+                                  />
                                 </Box>
 
                                 {/* Navigation Button - only show after typing is complete */}
@@ -974,7 +926,7 @@ const ChatBot = () => {
                       startIcon={<button.icon />}
                       onClick={() => {
                         setInputValue(button.query);
-                        handleSendMessage();
+                        handleSend();
                       }}
                       sx={{
                         borderColor: alpha(CHAT_COLORS.primary, 0.3),
@@ -1022,8 +974,8 @@ const ChatBot = () => {
                         <InputAdornment position="end">
                           <IconButton
                             color="primary"
-                            onClick={handleSendMessage}
-                            disabled={!inputValue.trim()}
+                            onClick={handleSend}
+                            disabled={!inputValue.trim() || isLoading}
                             sx={{
                               color: inputValue.trim() ? CHAT_COLORS.primary : 'text.disabled',
                               transition: 'all 0.2s',
@@ -1032,7 +984,7 @@ const ChatBot = () => {
                               }
                             }}
                           >
-                            <SendIcon />
+                            {isLoading ? <CircularProgress size={24} color="inherit" /> : <SendIcon />}
                           </IconButton>
                         </InputAdornment>
                       ),
