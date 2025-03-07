@@ -1,58 +1,52 @@
 import mongoose from 'mongoose';
 
-const appointmentSchema = mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: 'User',
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    date: {
-      type: Date,
-      required: true,
-    },
-    time: {
-      type: String,
-      required: true,
-    },
-    doctor: {
-      name: String,
-      specialty: String,
-      contact: String,
-    },
-    location: {
-      address: String,
-      city: String,
-      state: String,
-      zipCode: String,
-    },
-    notes: {
-      type: String,
-    },
-    reminder: {
-      enabled: {
-        type: Boolean,
-        default: true,
-      },
-      time: {
-        type: Number, // hours before appointment
-        default: 24,
-      },
-    },
-    status: {
-      type: String,
-      enum: ['scheduled', 'completed', 'cancelled', 'rescheduled'],
-      default: 'scheduled',
-    },
+const appointmentSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
-  {
-    timestamps: true,
+  title: {
+    type: String,
+    required: [true, 'Please add a title']
+  },
+  date: {
+    type: Date,
+    required: [true, 'Please add a date']
+  },
+  type: {
+    type: String,
+    enum: ['checkup', 'ultrasound', 'test', 'consultation', 'other'],
+    required: true
+  },
+  doctor: {
+    name: String,
+    specialty: String,
+    contact: String
+  },
+  location: {
+    name: String,
+    address: String,
+    coordinates: {
+      lat: Number,
+      lng: Number
+    }
+  },
+  notes: String,
+  reminders: [{
+    type: Date,
+    notification: {
+      type: String,
+      enum: ['email', 'sms', 'push'],
+      default: 'email'
+    }
+  }],
+  status: {
+    type: String,
+    enum: ['scheduled', 'completed', 'cancelled', 'rescheduled'],
+    default: 'scheduled'
   }
-);
+});
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Container, 
@@ -18,7 +18,8 @@ import {
   DialogContent, 
   DialogActions,
   CircularProgress,
-  Chip
+  Chip,
+  alpha
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -27,6 +28,10 @@ import CommentIcon from '@mui/icons-material/Comment';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CloseIcon from '@mui/icons-material/Close';
+import { motion } from 'framer-motion';
+import { communityService } from '../services/communityService';
+import { useAuth } from '../hooks/useAuth';
+import { toast } from 'react-toastify';
 
 // Sample data for questions and answers
 const sampleQuestions = [
@@ -144,8 +149,9 @@ const RegularAnswerCard = styled(Card)(({ theme }) => ({
 }));
 
 function Community() {
-  const [questions, setQuestions] = useState(sampleQuestions);
-  const [filteredQuestions, setFilteredQuestions] = useState(sampleQuestions);
+  const { currentUser } = useAuth();
+  const [questions, setQuestions] = useState([]);
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [openNewQuestion, setOpenNewQuestion] = useState(false);
@@ -161,6 +167,27 @@ function Community() {
   
   // Categories
   const categories = ['All', 'First Trimester', 'Second Trimester', 'Third Trimester', 'Postpartum', 'General'];
+  
+  // Fetch questions from API
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true);
+      const response = await communityService.getQuestions();
+      if (response.success) {
+        setQuestions(response.data);
+        setFilteredQuestions(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch questions:', error);
+      toast.error('Failed to load questions. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
   
   // Filter questions based on search term and category
   useEffect(() => {
@@ -194,29 +221,29 @@ function Community() {
   };
   
   // Handle submitting a new question
-  const handleSubmitQuestion = () => {
+  const handleSubmitQuestion = async () => {
     if (!newQuestionTitle.trim() || !newQuestionContent.trim()) return;
     
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      const newQuestion = {
-        id: questions.length + 1,
-        title: newQuestionTitle,
-        content: newQuestionContent,
-        author: "You",
-        authorAvatar: "/avatars/default.jpg",
-        date: new Date().toISOString().split('T')[0],
-        likes: 0,
+    try {
+      setLoading(true);
+      const questionData = {
+        title: newQuestionTitle.trim(),
+        content: newQuestionContent.trim(),
         category: newQuestionCategory,
-        answers: []
       };
       
-      setQuestions([newQuestion, ...questions]);
-      handleCloseNewQuestion();
+      const response = await communityService.createQuestion(questionData);
+      if (response.success) {
+        setQuestions(prev => [response.data, ...prev]);
+        handleCloseNewQuestion();
+        toast.success('Question posted successfully!');
+      }
+    } catch (error) {
+      console.error('Failed to post question:', error);
+      toast.error('Failed to post question. Please try again.');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
   
   // Handle opening the new answer dialog
@@ -233,77 +260,121 @@ function Community() {
   };
   
   // Handle submitting a new answer
-  const handleSubmitAnswer = () => {
+  const handleSubmitAnswer = async () => {
     if (!newAnswerContent.trim() || !currentQuestion) return;
     
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      const newAnswer = {
-        id: Math.floor(Math.random() * 1000),
-        content: newAnswerContent,
-        author: "You",
-        authorAvatar: "/avatars/default.jpg",
-        date: new Date().toISOString().split('T')[0],
-        likes: 0,
-        isAccepted: false
+    try {
+      setLoading(true);
+      const answerData = {
+        content: newAnswerContent.trim(),
       };
       
-      const updatedQuestions = questions.map(q => {
-        if (q.id === currentQuestion.id) {
-          return {
-            ...q,
-            answers: [...q.answers, newAnswer]
-          };
-        }
-        return q;
-      });
-      
-      setQuestions(updatedQuestions);
-      handleCloseNewAnswer();
+      const response = await communityService.addAnswer(currentQuestion._id, answerData);
+      if (response.success) {
+        const updatedQuestions = questions.map(q => {
+          if (q._id === currentQuestion._id) {
+            return {
+              ...q,
+              answers: [...q.answers, response.data]
+            };
+          }
+          return q;
+        });
+        
+        setQuestions(updatedQuestions);
+        handleCloseNewAnswer();
+        toast.success('Answer posted successfully!');
+      }
+    } catch (error) {
+      console.error('Failed to post answer:', error);
+      toast.error('Failed to post answer. Please try again.');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
   
   // Handle liking a question
-  const handleLikeQuestion = (questionId) => {
-    const updatedQuestions = questions.map(q => {
-      if (q.id === questionId) {
-        return {
-          ...q,
-          likes: q.likes + 1
-        };
+  const handleLikeQuestion = async (questionId) => {
+    try {
+      const response = await communityService.likeQuestion(questionId);
+      if (response.success) {
+        const updatedQuestions = questions.map(q => {
+          if (q._id === questionId) {
+            return {
+              ...q,
+              likes: response.data.likes
+            };
+          }
+          return q;
+        });
+        setQuestions(updatedQuestions);
       }
-      return q;
-    });
-    
-    setQuestions(updatedQuestions);
+    } catch (error) {
+      console.error('Failed to like question:', error);
+      toast.error('Failed to like question. Please try again.');
+    }
   };
   
   // Handle liking an answer
-  const handleLikeAnswer = (questionId, answerId) => {
-    const updatedQuestions = questions.map(q => {
-      if (q.id === questionId) {
-        const updatedAnswers = q.answers.map(a => {
-          if (a.id === answerId) {
+  const handleLikeAnswer = async (questionId, answerId) => {
+    try {
+      const response = await communityService.likeAnswer(questionId, answerId);
+      if (response.success) {
+        const updatedQuestions = questions.map(q => {
+          if (q._id === questionId) {
+            const updatedAnswers = q.answers.map(a => {
+              if (a._id === answerId) {
+                return {
+                  ...a,
+                  likes: response.data.likes
+                };
+              }
+              return a;
+            });
+            
             return {
-              ...a,
-              likes: a.likes + 1
+              ...q,
+              answers: updatedAnswers
             };
           }
-          return a;
+          return q;
         });
         
-        return {
-          ...q,
-          answers: updatedAnswers
-        };
+        setQuestions(updatedQuestions);
       }
-      return q;
-    });
-    
-    setQuestions(updatedQuestions);
+    } catch (error) {
+      console.error('Failed to like answer:', error);
+      toast.error('Failed to like answer. Please try again.');
+    }
+  };
+
+  // Handle accepting an answer
+  const handleAcceptAnswer = async (questionId, answerId) => {
+    try {
+      const response = await communityService.acceptAnswer(questionId, answerId);
+      if (response.success) {
+        const updatedQuestions = questions.map(q => {
+          if (q._id === questionId) {
+            const updatedAnswers = q.answers.map(a => ({
+              ...a,
+              isAccepted: a._id === answerId
+            }));
+            
+            return {
+              ...q,
+              answers: updatedAnswers
+            };
+          }
+          return q;
+        });
+        
+        setQuestions(updatedQuestions);
+        toast.success('Answer marked as accepted!');
+      }
+    } catch (error) {
+      console.error('Failed to accept answer:', error);
+      toast.error('Failed to accept answer. Please try again.');
+    }
   };
   
   return (
@@ -416,21 +487,21 @@ function Community() {
               </Paper>
             ) : (
               filteredQuestions.map((question) => (
-                <StyledCard key={question.id}>
+                <StyledCard key={question._id}>
                   <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar 
-                          src={question.authorAvatar} 
-                          alt={question.author}
+                          src={question.author.avatar} 
+                          alt={question.author.name}
                           sx={{ width: 40, height: 40, mr: 1 }}
                         />
                         <Box>
                           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                            {question.author}
+                            {question.author.name}
                           </Typography>
                           <Typography variant="caption" color="textSecondary">
-                            {question.date}
+                            {new Date(question.date).toLocaleDateString()}
                           </Typography>
                         </Box>
                       </Box>
@@ -462,7 +533,7 @@ function Community() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <IconButton 
-                          onClick={() => handleLikeQuestion(question.id)}
+                          onClick={() => handleLikeQuestion(question._id)}
                           sx={{ color: '#FF5A8C' }}
                         >
                           <ThumbUpOutlinedIcon />
@@ -510,21 +581,21 @@ function Community() {
                       
                       {question.answers.map((answer) => (
                         answer.isAccepted ? (
-                          <AcceptedAnswerCard key={answer.id}>
+                          <AcceptedAnswerCard key={answer._id}>
                             <CardContent>
                               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                   <Avatar 
-                                    src={answer.authorAvatar} 
-                                    alt={answer.author}
+                                    src={answer.author.avatar} 
+                                    alt={answer.author.name}
                                     sx={{ width: 32, height: 32, mr: 1 }}
                                   />
                                   <Box>
                                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                      {answer.author}
+                                      {answer.author.name}
                                     </Typography>
                                     <Typography variant="caption" color="textSecondary">
-                                      {answer.date}
+                                      {new Date(answer.date).toLocaleDateString()}
                                     </Typography>
                                   </Box>
                                 </Box>
@@ -546,7 +617,7 @@ function Community() {
                             <CardActions sx={{ justifyContent: 'flex-end' }}>
                               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <IconButton 
-                                  onClick={() => handleLikeAnswer(question.id, answer.id)}
+                                  onClick={() => handleLikeAnswer(question._id, answer._id)}
                                   size="small"
                                   sx={{ color: '#FF5A8C' }}
                                 >
@@ -559,20 +630,20 @@ function Community() {
                             </CardActions>
                           </AcceptedAnswerCard>
                         ) : (
-                          <RegularAnswerCard key={answer.id}>
+                          <RegularAnswerCard key={answer._id}>
                             <CardContent>
                               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <Avatar 
-                                  src={answer.authorAvatar} 
-                                  alt={answer.author}
+                                  src={answer.author.avatar} 
+                                  alt={answer.author.name}
                                   sx={{ width: 32, height: 32, mr: 1 }}
                                 />
                                 <Box>
                                   <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                    {answer.author}
+                                    {answer.author.name}
                                   </Typography>
                                   <Typography variant="caption" color="textSecondary">
-                                    {answer.date}
+                                    {new Date(answer.date).toLocaleDateString()}
                                   </Typography>
                                 </Box>
                               </Box>
@@ -584,7 +655,7 @@ function Community() {
                             <CardActions sx={{ justifyContent: 'flex-end' }}>
                               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <IconButton 
-                                  onClick={() => handleLikeAnswer(question.id, answer.id)}
+                                  onClick={() => handleLikeAnswer(question._id, answer._id)}
                                   size="small"
                                   sx={{ color: '#FF5A8C' }}
                                 >

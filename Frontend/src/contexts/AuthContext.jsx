@@ -16,7 +16,11 @@ export const AuthProvider = ({ children }) => {
         if (token) {
           // Verify token and get current user data
           const response = await authAPI.getCurrentUser();
-          setCurrentUser(response.data);
+          if (response.data) {
+            setCurrentUser(response.data.data);
+            // Update stored user data with latest from server
+            localStorage.setItem('user', JSON.stringify(response.data.data));
+          }
         }
       } catch (error) {
         console.error('Authentication error:', error);
@@ -35,23 +39,20 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await authAPI.login(credentials);
-      const userData = response.data;
+      const { data, success } = response.data;
       
-      // Store token and user data
-      localStorage.setItem('token', userData.token);
-      localStorage.setItem('user', JSON.stringify({
-        _id: userData._id,
-        name: userData.name,
-        email: userData.email
-      }));
-      
-      setCurrentUser({
-        _id: userData._id,
-        name: userData.name,
-        email: userData.email
-      });
-      
-      return { success: true };
+      if (success && data) {
+        // Store token and complete user data
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data));
+        
+        // Set current user with complete data
+        setCurrentUser(data);
+        
+        return { success: true };
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
       console.error('Login error:', error);
       const errorMessage = error.response?.data?.message || 
@@ -67,23 +68,20 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await authAPI.register(userData);
-      const user = response.data;
+      const { data, success } = response.data;
       
-      // Store token and user data
-      localStorage.setItem('token', user.token);
-      localStorage.setItem('user', JSON.stringify({
-        _id: user._id,
-        name: user.name,
-        email: user.email
-      }));
-      
-      setCurrentUser({
-        _id: user._id,
-        name: user.name,
-        email: user.email
-      });
-      
-      return { success: true };
+      if (success && data) {
+        // Store token and complete user data
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data));
+        
+        // Set current user with complete data
+        setCurrentUser(data);
+        
+        return { success: true };
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
       console.error('Signup error:', error);
       const errorMessage = error.response?.data?.message || 
@@ -101,11 +99,24 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   };
 
+  // Update user function
+  const updateUser = (userData) => {
+    setCurrentUser(prev => ({
+      ...prev,
+      ...userData
+    }));
+    localStorage.setItem('user', JSON.stringify({
+      ...currentUser,
+      ...userData
+    }));
+  };
+
   const value = {
     currentUser,
     login,
     signup,
     logout,
+    updateUser,
     loading,
     error
   };

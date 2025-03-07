@@ -1,536 +1,328 @@
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
-  Box, 
-  Container, 
-  Typography, 
-  Grid, 
-  Card, 
-  CardContent, 
-  CardMedia, 
-  CardActionArea,
-  Button,
-  Divider,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText
+  Box, Typography, Container, IconButton, 
+  useTheme, useMediaQuery, Card
 } from '@mui/material';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { COLORS } from '../theme/colors';
 
-function Diet() {
-  const [activeSection, setActiveSection] = useState(null);
+const sections = [
+  {
+    id: 'mealLogging',
+    title: 'Meal Logging',
+    subtitle: 'Track Your Journey',
+    description: 'Log your meals effortlessly with our intuitive tracking system',
+    image: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg',
+    path: '/meal-logging',
+    icon: RestaurantMenuIcon,
+    color: COLORS.primary,
+    features: ['Smart Tracking', 'Visual Analytics', 'Nutritional Insights']
+  },
+  {
+    id: 'dietPlanning',
+    title: 'Diet Planning',
+    subtitle: 'Personalized For You',
+    description: 'Get customized diet plans that match your lifestyle',
+    image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',
+    path: '/diet-planning',
+    icon: LocalDiningIcon,
+    color: '#FF92B4',
+    features: ['AI-Powered Plans', 'Flexible Options', 'Expert Guidance']
+  },
+  {
+    id: 'healthyRecipes',
+    title: 'Healthy Recipes',
+    subtitle: 'Cook with Confidence',
+    description: 'Discover delicious recipes that nourish your body',
+    image: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg',
+    path: '/healthy-recipes',
+    icon: MenuBookIcon,
+    color: '#FF6B9C',
+    features: ['Easy to Follow', 'Nutritionist Approved', 'Diet Friendly']
+  }
+];
 
-  const dietTips = [
-    "Increase your caloric intake by about 300-500 calories per day during pregnancy",
-    "Focus on nutrient-dense foods rather than empty calories",
-    "Aim for 70-100 grams of protein daily to support your baby's growth",
-    "Include foods rich in folate, iron, calcium, and omega-3 fatty acids",
-    "Stay hydrated by drinking at least 8-10 glasses of water daily",
-    "Limit caffeine to less than 200mg per day (about one 12oz cup of coffee)"
-  ];
+const Diet = () => {
+  const [activeSection, setActiveSection] = useState(0);
+  const [isHovering, setIsHovering] = useState(null);
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const mealPlanSample = [
-    {
-      meal: "Breakfast",
-      options: [
-        "Greek yogurt with berries and granola",
-        "Whole grain toast with avocado and a boiled egg",
-        "Spinach and cheese omelet with whole grain toast"
-      ]
-    },
-    {
-      meal: "Lunch",
-      options: [
-        "Quinoa salad with chickpeas, vegetables, and feta cheese",
-        "Whole grain wrap with hummus, vegetables, and grilled chicken",
-        "Lentil soup with a side salad and whole grain bread"
-      ]
-    },
-    {
-      meal: "Dinner",
-      options: [
-        "Grilled salmon with sweet potato and steamed broccoli",
-        "Whole grain pasta with tomato sauce, vegetables, and lean ground turkey",
-        "Stir-fried tofu with brown rice and mixed vegetables"
-      ]
-    },
-    {
-      meal: "Snacks",
-      options: [
-        "Apple slices with almond butter",
-        "Carrot sticks with hummus",
-        "A handful of nuts and dried fruits",
-        "Whole grain crackers with cheese"
-      ]
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3
+      }
     }
-  ];
+  };
 
-  const popularRecipes = [
-    {
-      title: "Pregnancy Power Smoothie",
-      image: "/assets/blueberry-smoothie.webp",
-      description: "Packed with folate, protein, and calcium - perfect for morning sickness!",
-      ingredients: ["1 banana", "1 cup spinach", "1 cup milk or plant-based alternative", "1 tbsp nut butter", "1 tbsp chia seeds", "½ cup frozen berries"]
+  const cardVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20
+      }
     },
-    {
-      title: "Iron-Rich Lentil Soup",
-      image: "/assets/lentil-soup.jpg",
-      description: "A hearty soup to boost your iron levels during pregnancy.",
-      ingredients: ["1 cup red lentils", "1 onion, diced", "2 carrots, diced", "2 celery stalks, diced", "4 cups vegetable broth", "2 tbsp olive oil", "2 cloves garlic, minced", "1 tsp cumin"]
-    },
-    {
-      title: "Calcium-Boosting Chia Pudding",
-      image: "/assets/chia-pudding.jpg",
-      description: "Make ahead for a nutritious breakfast or snack.",
-      ingredients: ["¼ cup chia seeds", "1 cup milk or plant-based alternative", "1 tbsp honey or maple syrup", "½ tsp vanilla extract", "Fresh fruits for topping"]
+    hover: {
+      scale: 1.02,
+      y: -10,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
     }
-  ];
+  };
 
-  const renderDietPlanning = () => (
-    <Box>
-      <Typography variant="h5" component="h3" sx={{ mb: 3, color: '#2D3748', fontWeight: 600 }}>
-        Nutrition During Pregnancy
-      </Typography>
-      
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={2} sx={{ p: 3, height: '100%', borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2, color: '#FF5A8C', fontWeight: 600 }}>
-              Key Nutrition Tips
-            </Typography>
-            <List>
-              {dietTips.map((tip, index) => (
-                <ListItem key={index} sx={{ py: 1 }}>
-                  <ListItemIcon sx={{ minWidth: 36 }}>
-                    <CheckCircleOutlineIcon sx={{ color: '#FF5A8C' }} />
-                  </ListItemIcon>
-                  <ListItemText primary={tip} />
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        </Grid>
-        
-        <Grid item xs={12} md={6}>
-          <Paper elevation={2} sx={{ p: 3, height: '100%', borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2, color: '#FF5A8C', fontWeight: 600 }}>
-              Foods to Avoid
-            </Typography>
-            <List>
-              <ListItem sx={{ py: 1 }}>
-                <ListItemIcon sx={{ minWidth: 36 }}>
-                  <CheckCircleOutlineIcon sx={{ color: '#FF5A8C' }} />
-                </ListItemIcon>
-                <ListItemText primary="Raw or undercooked meat, poultry, fish, and eggs" />
-              </ListItem>
-              <ListItem sx={{ py: 1 }}>
-                <ListItemIcon sx={{ minWidth: 36 }}>
-                  <CheckCircleOutlineIcon sx={{ color: '#FF5A8C' }} />
-                </ListItemIcon>
-                <ListItemText primary="Unpasteurized dairy products and juices" />
-              </ListItem>
-              <ListItem sx={{ py: 1 }}>
-                <ListItemIcon sx={{ minWidth: 36 }}>
-                  <CheckCircleOutlineIcon sx={{ color: '#FF5A8C' }} />
-                </ListItemIcon>
-                <ListItemText primary="High-mercury fish (shark, swordfish, king mackerel, tilefish)" />
-              </ListItem>
-              <ListItem sx={{ py: 1 }}>
-                <ListItemIcon sx={{ minWidth: 36 }}>
-                  <CheckCircleOutlineIcon sx={{ color: '#FF5A8C' }} />
-                </ListItemIcon>
-                <ListItemText primary="Raw sprouts and unwashed produce" />
-              </ListItem>
-              <ListItem sx={{ py: 1 }}>
-                <ListItemIcon sx={{ minWidth: 36 }}>
-                  <CheckCircleOutlineIcon sx={{ color: '#FF5A8C' }} />
-                </ListItemIcon>
-                <ListItemText primary="Excessive caffeine (limit to 200mg per day)" />
-              </ListItem>
-              <ListItem sx={{ py: 1 }}>
-                <ListItemIcon sx={{ minWidth: 36 }}>
-                  <CheckCircleOutlineIcon sx={{ color: '#FF5A8C' }} />
-                </ListItemIcon>
-                <ListItemText primary="Alcohol (no safe amount during pregnancy)" />
-              </ListItem>
-            </List>
-          </Paper>
-        </Grid>
-      </Grid>
-      
-      <Typography variant="h5" component="h3" sx={{ mt: 5, mb: 3, color: '#2D3748', fontWeight: 600 }}>
-        Sample Meal Plan
-      </Typography>
-      
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-        <Grid container spacing={3}>
-          {mealPlanSample.map((mealTime, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Box sx={{ 
-                p: 2, 
-                bgcolor: index % 2 === 0 ? '#FFF0F3' : 'white', 
-                height: '100%',
-                borderRadius: 2,
-                border: '1px solid #FFD6E0'
-              }}>
-                <Typography variant="h6" sx={{ mb: 2, color: '#FF5A8C', fontWeight: 600 }}>
-                  {mealTime.meal}
-                </Typography>
-                <List dense>
-                  {mealTime.options.map((option, optIndex) => (
-                    <ListItem key={optIndex} sx={{ py: 0.5 }}>
-                      <ListItemIcon sx={{ minWidth: 28 }}>
-                        <RestaurantIcon fontSize="small" sx={{ color: '#FF5A8C' }} />
-                      </ListItemIcon>
-                      <ListItemText 
-                        primary={option} 
-                        primaryTypographyProps={{ 
-                          variant: 'body2',
-                          sx: { fontWeight: 500 }
-                        }} 
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Paper>
-      
-      <Box sx={{ mt: 4, textAlign: 'center' }}>
-        <Button 
-          variant="contained"
-          onClick={() => setActiveSection('recipes')}
-          endIcon={<ArrowForwardIcon />}
-          sx={{ 
-            backgroundColor: '#FF5A8C',
-            '&:hover': { backgroundColor: '#e64c7f' },
-            py: 1.5,
-            px: 4,
-            borderRadius: 2,
+  const featureVariants = {
+    hidden: { x: -20, opacity: 0 },
+    visible: { 
+      x: 0, 
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    }
+  };
+
+  const backgroundVariants = {
+    initial: { scale: 1.2, opacity: 0.3 },
+    animate: { 
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 20, repeat: Infinity, repeatType: "reverse" }
+    }
+  };
+
+  return (
+    <Container maxWidth={false} sx={{ 
+      minHeight: '100vh',
+      background: '#FFF5F8',
+      overflow: 'hidden',
+      position: 'relative'
+    }}>
+      {/* Animated background patterns */}
+      <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden', opacity: 0.4 }}>
+        <motion.div
+          variants={backgroundVariants}
+          initial="initial"
+          animate="animate"
+          style={{
+            position: 'absolute',
+            width: '200%',
+            height: '200%',
+            background: 'radial-gradient(circle at center, transparent 0%, transparent 50%, #FFE5EC 100%)',
+            top: '-50%',
+            left: '-50%',
           }}
-        >
-          Explore Healthy Recipes
-        </Button>
+        />
       </Box>
-    </Box>
-  );
 
-  const renderRecipes = () => (
-    <Box>
-      <Typography variant="h5" component="h3" sx={{ mb: 3, color: '#2D3748', fontWeight: 600 }}>
-        Pregnancy-Friendly Recipes
-      </Typography>
-      
-      <Grid container spacing={4}>
-        {popularRecipes.map((recipe, index) => (
-          <Grid item xs={12} md={4} key={index}>
-            <Card 
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Header Section */}
+        <Box sx={{ textAlign: 'center', py: 8, position: 'relative' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Typography 
+              variant="h3" 
               sx={{ 
-                height: '100%', 
-                display: 'flex', 
-                flexDirection: 'column',
-                borderRadius: 2,
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-5px)',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                fontWeight: 700,
+                background: `linear-gradient(135deg, ${COLORS.primary} 0%, #FF92B4 100%)`,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                mb: 2,
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -10,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 100,
+                  height: 4,
+                  background: `linear-gradient(90deg, ${COLORS.primary}, #FF92B4)`,
+                  borderRadius: 2
                 }
               }}
             >
-              <CardMedia
-                component="img"
-                height="200"
-                image={recipe.image}
-                alt={recipe.title}
-                onError={(e) => {
-                  e.target.src = '/assets/placeholder-food.jpg';
-                }}
-                sx={{ objectFit: 'cover' }}
-              />
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h6" component="h3" sx={{ mb: 1, color: '#FF5A8C', fontWeight: 600 }}>
-                  {recipe.title}
+              Pregnancy Nutrition Hub
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  {recipe.description}
-                </Typography>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Ingredients:
-                </Typography>
-                <List dense>
-                  {recipe.ingredients.map((ingredient, idx) => (
-                    <ListItem key={idx} sx={{ py: 0.3 }}>
-                      <ListItemIcon sx={{ minWidth: 28 }}>
-                        <CheckCircleOutlineIcon fontSize="small" sx={{ color: '#FF5A8C' }} />
-                      </ListItemIcon>
-                      <ListItemText 
-                        primary={ingredient} 
-                        primaryTypographyProps={{ 
-                          variant: 'body2'
-                        }} 
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-      
-      <Box sx={{ mt: 5 }}>
-        <Typography variant="h5" component="h3" sx={{ mb: 3, color: '#2D3748', fontWeight: 600 }}>
-          Trimester-Specific Nutrition
-        </Typography>
-        
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <Paper 
-              elevation={2} 
+            <Typography 
+              variant="h5" 
+              color="text.secondary" 
               sx={{ 
-                p: 3, 
-                height: '100%', 
-                borderRadius: 2,
-                borderTop: '4px solid #FF5A8C'
+                mb: 6,
+                fontWeight: 500
               }}
             >
-              <Typography variant="h6" sx={{ mb: 2, color: '#FF5A8C', fontWeight: 600 }}>
-                First Trimester
+              Nourish your body and your baby with our specialized tools
               </Typography>
-              <Typography variant="body2" paragraph>
-                Focus on folate-rich foods like leafy greens, citrus fruits, and fortified cereals to support neural tube development.
-              </Typography>
-              <Typography variant="body2" paragraph>
-                If experiencing morning sickness, try small, frequent meals and ginger-containing foods to ease nausea.
-              </Typography>
-              <Typography variant="body2">
-                Stay hydrated with water, herbal teas, and electrolyte drinks if vomiting is frequent.
-              </Typography>
-            </Paper>
-          </Grid>
-          
-          <Grid item xs={12} md={4}>
-            <Paper 
-              elevation={2} 
-              sx={{ 
-                p: 3, 
-                height: '100%', 
-                borderRadius: 2,
-                borderTop: '4px solid #FF5A8C'
-              }}
-            >
-              <Typography variant="h6" sx={{ mb: 2, color: '#FF5A8C', fontWeight: 600 }}>
-                Second Trimester
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Increase calcium intake with dairy products, fortified plant milks, and leafy greens for bone development.
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Add more iron-rich foods like lean meats, beans, and spinach to support increased blood volume.
-              </Typography>
-              <Typography variant="body2">
-                Include omega-3 fatty acids from fish, walnuts, and flaxseeds for brain development.
-              </Typography>
-            </Paper>
-          </Grid>
-          
-          <Grid item xs={12} md={4}>
-            <Paper 
-              elevation={2} 
-              sx={{ 
-                p: 3, 
-                height: '100%', 
-                borderRadius: 2,
-                borderTop: '4px solid #FF5A8C'
-              }}
-            >
-              <Typography variant="h6" sx={{ mb: 2, color: '#FF5A8C', fontWeight: 600 }}>
-                Third Trimester
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Focus on vitamin D and calcium for final bone development and preparation for breastfeeding.
-              </Typography>
-              <Typography variant="body2" paragraph>
-                Include more fiber-rich foods to combat constipation and maintain digestive health.
-              </Typography>
-              <Typography variant="body2">
-                Eat smaller, more frequent meals to accommodate reduced stomach capacity as baby grows.
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
-      
-      <Box sx={{ mt: 4, textAlign: 'center' }}>
-        <Button 
-          variant="contained"
-          onClick={() => setActiveSection('dietPlanning')}
-          endIcon={<ArrowForwardIcon />}
-          sx={{ 
-            backgroundColor: '#FF5A8C',
-            '&:hover': { backgroundColor: '#e64c7f' },
-            py: 1.5,
-            px: 4,
-            borderRadius: 2,
-          }}
-        >
-          Back to Diet Planning
-        </Button>
-      </Box>
-    </Box>
-  );
+          </motion.div>
+        </Box>
 
-  return (
-    <Box component="main" sx={{ minHeight: '100vh', py: 6 }}>
-      <Container maxWidth="lg">
+        {/* Cards Section */}
+        <Box sx={{ 
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+          gap: 4,
+          px: 4,
+          pb: 8
+        }}>
+          {sections.map((section, index) => (
+            <motion.div
+              key={section.id}
+              variants={cardVariants}
+              whileHover="hover"
+              onHoverStart={() => setIsHovering(index)}
+              onHoverEnd={() => setIsHovering(null)}
+            >
+              <Card sx={{
+                height: '100%', 
+                borderRadius: 3,
+                overflow: 'hidden',
+                position: 'relative',
+                cursor: 'pointer',
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: isHovering === index 
+                  ? `0 20px 40px rgba(0,0,0,0.12), 0 0 0 2px ${section.color}`
+                  : '0 8px 24px rgba(0,0,0,0.08)',
+                transition: 'all 0.3s ease'
+              }}
+              onClick={() => navigate(section.path)}
+              >
+                <Box sx={{
+                  height: 200,
+                  overflow: 'hidden',
+                  position: 'relative'
+                }}>
+                  <motion.img
+                    src={section.image}
+                    alt={section.title}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `linear-gradient(to bottom, transparent, ${section.color}88)`
+                  }} />
+      </Box>
+      
+                <Box sx={{ p: 3 }}>
+                  <Typography 
+                    variant="overline" 
+          sx={{ 
+                      color: section.color, 
+                      fontWeight: 600,
+                      letterSpacing: 1.2
+                    }}
+                  >
+                    {section.subtitle}
+                  </Typography>
         <Typography 
-          variant="h3" 
-          component="h1" 
-          align="center" 
+                    variant="h4" 
           sx={{ 
             mb: 2, 
-            fontWeight: 600, 
-            color: '#2D3748',
-            fontFamily: "'Poppins', sans-serif",
+                      fontWeight: 700,
+                      color: '#2D3748'
           }}
         >
-          Pregnancy Nutrition
+                    {section.title}
         </Typography>
-        
         <Typography 
-          variant="h6" 
-          component="p" 
-          align="center" 
+                    variant="body1" 
+                    color="text.secondary" 
           sx={{ 
-            mb: 6, 
-            fontWeight: 400, 
-            color: '#4A5568',
-            maxWidth: '800px',
-            mx: 'auto'
-          }}
-        >
-          Proper nutrition during pregnancy is crucial for both you and your baby's health. 
-          Explore our diet planning resources and pregnancy-friendly recipes.
+                      mb: 3,
+                      lineHeight: 1.6
+                    }}
+                  >
+                    {section.description}
         </Typography>
         
-        {/* Main Cards */}
-        {!activeSection && (
-          <Grid container spacing={4} sx={{ mb: 6 }}>
-            <Grid item xs={12} md={6}>
-              <Card 
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {section.features.map((feature, idx) => (
+                      <motion.div
+                        key={idx}
+                        variants={featureVariants}
+                        initial="hidden"
+                        animate="visible"
+                        custom={idx}
+                      >
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center',
+                          color: section.color
+                        }}>
+                          <section.icon sx={{ mr: 1, fontSize: 20 }} />
+                          <Typography 
+                            variant="body2"
+                            sx={{ fontWeight: 500 }}
+                          >
+                            {feature}
+                    </Typography>
+                        </Box>
+                      </motion.div>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box sx={{
+                  position: 'absolute',
+                  bottom: 16,
+                  right: 16,
+                  opacity: isHovering === index ? 1 : 0,
+                  transform: `translateX(${isHovering === index ? 0 : -20}px)`,
+                  transition: 'all 0.3s ease'
+                }}>
+                  <IconButton 
                 sx={{ 
-                  height: '100%',
-                  borderRadius: 3,
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                      bgcolor: section.color,
+                      color: 'white',
                   '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(0,0,0,0.15)',
-                  }
-                }}
-              >
-                <CardActionArea 
-                  onClick={() => setActiveSection('dietPlanning')}
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="240"
-                    image="/assets/diet-planning.jpg"
-                    alt="Diet Planning"
-                    onError={(e) => {
-                      e.target.src = '/assets/placeholder-diet.jpg';
+                        bgcolor: section.color,
+                        transform: 'scale(1.1)'
+                      }
                     }}
-                  />
-                  <CardContent sx={{ flexGrow: 1, textAlign: 'center', p: 4 }}>
-                    <CalendarMonthIcon sx={{ fontSize: 60, color: '#FF5A8C', mb: 2 }} />
-                    <Typography gutterBottom variant="h4" component="h2" sx={{ fontWeight: 600, color: '#2D3748' }}>
-                      Diet Planning
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      Get personalized nutrition guidance for each trimester, meal planning tips, 
-                      and learn about essential nutrients for a healthy pregnancy.
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
+                  >
+                    <ArrowForwardIcon />
+                  </IconButton>
+                </Box>
               </Card>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Card 
-                sx={{ 
-                  height: '100%',
-                  borderRadius: 3,
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: '0 12px 28px rgba(0,0,0,0.15)',
-                  }
-                }}
-              >
-                <CardActionArea 
-                  onClick={() => setActiveSection('recipes')}
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="240"
-                    image="/assets/recipes.jpg"
-                    alt="Healthy Recipes"
-                    onError={(e) => {
-                      e.target.src = '/assets/placeholder-recipes.jpg';
-                    }}
-                  />
-                  <CardContent sx={{ flexGrow: 1, textAlign: 'center', p: 4 }}>
-                    <RestaurantIcon sx={{ fontSize: 60, color: '#FF5A8C', mb: 2 }} />
-                    <Typography gutterBottom variant="h4" component="h2" sx={{ fontWeight: 600, color: '#2D3748' }}>
-                      Healthy Recipes
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      Discover delicious, nutrient-rich recipes designed specifically for pregnant women, 
-                      addressing common pregnancy symptoms and nutritional needs.
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          </Grid>
-        )}
-        
-        {/* Detailed Content */}
-        {activeSection === 'dietPlanning' && renderDietPlanning()}
-        {activeSection === 'recipes' && renderRecipes()}
-        
-        {/* Back Button (only when viewing detailed content) */}
-        {activeSection && (
-          <Box sx={{ mt: 6, textAlign: 'center' }}>
-            <Button 
-              variant="outlined"
-              onClick={() => setActiveSection(null)}
-              sx={{ 
-                color: '#FF5A8C',
-                borderColor: '#FF5A8C',
-                '&:hover': { 
-                  borderColor: '#e64c7f',
-                  backgroundColor: 'rgba(255, 90, 140, 0.1)'
-                },
-                py: 1,
-                px: 4
-              }}
-            >
-              Back to Main Options
-            </Button>
+            </motion.div>
+          ))}
           </Box>
-        )}
+      </motion.div>
       </Container>
-    </Box>
   );
-}
+};
 
 export default Diet; 

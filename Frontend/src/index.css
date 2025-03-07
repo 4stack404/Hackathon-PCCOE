@@ -22,6 +22,9 @@ html, body {
 }
 
 body {
+  margin: 0;
+  padding: 0;
+  background-color: #FFF5F8;
   min-height: 100vh;
   display: block;
 }
@@ -29,6 +32,16 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
 }
 
 button {
@@ -193,11 +206,38 @@ button:focus-visible {
   color: #5e35b1;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* Reset Password Styles */
+.auth-gradient {
+  background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
+  min-height: 100vh;
+  width: 100%;
 }
-a:hover {
-  color: #535bf2;
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button {
+  background: linear-gradient(90deg, #6e45e2 0%, #88d3ce 100%);
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.primary-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button:active {
+  transform: translateY(0);
 }
