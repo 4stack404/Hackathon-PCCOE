@@ -8,7 +8,7 @@ const slides = [
     id: 1,
     title: 'Personalized Pregnancy Journey',
     description: 'Track your pregnancy milestones with customized guidance and support.',
-    image: '/src/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Get Started',
     buttonLink: '/signup'
   },
@@ -16,7 +16,7 @@ const slides = [
     id: 2,
     title: 'Expert Nutrition Advice',
     description: 'Receive tailored nutrition plans and meal suggestions for a healthy pregnancy.',
-    image: '/src/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Learn More',
     buttonLink: '/signup'
   },
@@ -24,7 +24,7 @@ const slides = [
     id: 3,
     title: 'Prenatal & Postnatal Care',
     description: 'Comprehensive care guides for before and after your baby arrives.',
-    image: '/src/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Explore',
     buttonLink: '/signup'
   },
@@ -32,7 +32,7 @@ const slides = [
     id: 4,
     title: 'Community Support',
     description: 'Connect with other expecting mothers and share your journey together.',
-    image: '/src/assets/backdrop3.jpg',
+    image: '/assets/backdrop3.jpg',
     buttonText: 'Join Now',
     buttonLink: '/signup'
   }
@@ -103,7 +103,7 @@ function Carousel() {
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'linear-gradient(rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 100%)',
+              background: 'linear-gradient(rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%)',
               zIndex: 1
             }}
           />
@@ -116,20 +116,22 @@ function Carousel() {
               justifyContent: 'center',
               alignItems: 'center',
               height: '100%',
+              px: { xs: 2, md: 4 }
             }}
           >
             <Box
               sx={{
                 textAlign: 'center',
-                backgroundColor: 'transparent',
-                padding: 4,
-                borderRadius: 8,
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                padding: { xs: 3, md: 5 },
+                borderRadius: 4,
+                backdropFilter: 'blur(6px)',
                 transform: index === currentSlide ? 'translateY(0)' : 'translateY(20px)',
                 opacity: index === currentSlide ? 1 : 0,
                 transition: 'transform 0.5s ease-out, opacity 0.5s ease-out',
                 transitionDelay: '0.2s',
-                width: '100%',
-                maxWidth: '800px',
+                width: { xs: '100%', md: '80%' },
+                maxWidth: '800px'
               }}
             >
               <Typography

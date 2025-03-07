@@ -1,12 +1,16 @@
-import { Box, Container, Typography, Grid, Paper, useTheme, Button } from '@mui/material';
+import { Box, Container, Typography, Grid, Paper, useTheme, Button, IconButton } from '@mui/material';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChildCareIcon from '@mui/icons-material/ChildCare';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Link as RouterLink } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
 
 import Carousel from '../components/common/Carousel';
 import FeatureCard from '../components/common/FeatureCard';
@@ -43,6 +47,26 @@ const FadeInSection = ({ children, delay = 0 }) => {
 
 function Home() {
   const theme = useTheme();
+  const weekScrollRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if we're on a mobile device for performance reasons
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const scrollWeeks = (direction) => {
+    if (weekScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -600 : 600;
+      weekScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const features = [
     {
@@ -72,6 +96,13 @@ function Home() {
       title: 'Dashboard',
       description: 'Monitor your progress, track important metrics, and get a complete overview of your journey.',
       link: '/dashboard'
+    },
+    {
+      id: 5,
+      icon: <FitnessCenterIcon fontSize="inherit" />,
+      title: 'Pregnancy Exercises',
+      description: 'Safe and effective exercises for each trimester to keep you healthy and prepare for delivery.',
+      link: '/exercises'
     }
   ];
 
@@ -119,13 +150,12 @@ function Home() {
   };
 
   return (
-    <Box component="main">
+    <Box sx={{ overflowX: 'hidden', overflowY: 'hidden' }}>
       {/* Hero Carousel Section */}
       <Box sx={{ 
-        backgroundImage: 'url(/assets/backdrop3.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        width: '100%',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
         <Carousel />
       </Box>
@@ -168,109 +198,281 @@ function Home() {
 
           <Box
             sx={{
-              display: 'flex',
-              gap: 2,
-              overflowX: 'auto',
-              pb: 2,
-              scrollbarWidth: 'none',  // Hide scrollbar for Firefox
-              msOverflowStyle: 'none', // Hide scrollbar for IE/Edge
-              '&::-webkit-scrollbar': {
-                display: 'none',       // Hide scrollbar for Chrome/Safari/Opera
-              },
-              scrollBehavior: 'smooth',
-              px: 2,
-              mx: -2,
-              width: 'calc(100% + 32px)',
+              position: 'relative',
+              width: '100%',
+              py: 2
             }}
           >
-            {[...Array(39)].map((_, index) => {
-              const week = index + 3; // Start from week 3
-              return (
-                <Box
-                  key={week}
-                  component={RouterLink}
-                  to={`/week/${week}`}
-                  sx={{
-                    minWidth: { xs: 130, sm: 140, md: 150 },
-                    height: 120,
-                    background: "#5e35b1",
-                    borderRadius: 2,
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    transition: 'transform 0.2s, box-shadow 0.2s, background 0.3s',
-                    textDecoration: 'none',
-                    color: 'white',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                    '&:hover': {
-                      transform: 'translateY(-5px)',
-                      boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
-                      background: 'linear-gradient(135deg, #5e35b1 0%, #7c4dff 100%)',
-                    },
-                    flexShrink: 0,
-                  }}
-                >
-                  {weekImages[week] && (
-                    <Box
+            <IconButton
+              onClick={() => scrollWeeks('left')}
+              sx={{
+                position: 'absolute',
+                left: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 1,
+                color: 'white',
+                bgcolor: 'rgba(0,0,0,0.5)',
+                '&:hover': {
+                  bgcolor: 'rgba(0,0,0,0.7)',
+                }
+              }}
+            >
+              <ArrowBackIosNewIcon />
+            </IconButton>
+            
+            <Box 
+              ref={weekScrollRef}
+              sx={{
+                display: 'flex',
+                gap: 2,
+                overflowX: 'auto',
+                pb: 2,
+                scrollbarWidth: 'none',  // Hide scrollbar for Firefox
+                msOverflowStyle: 'none', // Hide scrollbar for IE/Edge
+                '&::-webkit-scrollbar': {
+                  display: 'none',       // Hide scrollbar for Chrome/Safari/Opera
+                },
+                scrollBehavior: 'smooth',
+                px: 4,
+                mx: -2,
+                width: 'calc(100% - 16px)',
+              }}
+            >
+              {[...Array(39)].map((_, index) => {
+                const week = index + 3; // Start from week 3
+                return (
+                  <Box
+                    key={week}
+                    component={RouterLink}
+                    to={`/week/${week}`}
+                    sx={{
+                      minWidth: { xs: 130, sm: 140, md: 150 },
+                      height: 120,
+                      background: "#5e35b1",
+                      borderRadius: 2,
+                      p: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      transition: 'transform 0.2s, box-shadow 0.2s, background 0.3s',
+                      textDecoration: 'none',
+                      color: 'white',
+                      boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                      '&:hover': {
+                        transform: 'translateY(-5px)',
+                        boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+                        background: 'linear-gradient(135deg, #5e35b1 0%, #7c4dff 100%)',
+                      },
+                      flexShrink: 0,
+                    }}
+                  >
+                    {weekImages[week] && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          right: 12,
+                          transform: 'translateY(-50%)',
+                          width: 40,
+                          height: 40,
+                        }}
+                      >
+                        <img
+                          src={weekImages[week]}
+                          alt={`Week ${week}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                            opacity: 0.85,
+                          }}
+                        />
+                      </Box>
+                    )}
+
+                    <Typography
+                      variant="h3"
                       sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        right: 12,
-                        transform: 'translateY(-50%)',
-                        width: 40,
-                        height: 40,
+                        color: 'white',
+                        fontWeight: 700,
+                        fontSize: '1.8rem',
                       }}
                     >
-                      <img
-                        src={weekImages[week]}
-                        alt={`Week ${week}`}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'contain',
-                          opacity: 0.85,
-                        }}
-                      />
-                    </Box>
-                  )}
-
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      color: 'white',
-                      fontWeight: 700,
-                      fontSize: '1.8rem',
-                    }}
-                  >
-                    {week}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: 'white',
-                      fontSize: '1rem',
-                      fontWeight: 500,
-                    }}
-                  >
-                    weeks
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: 'white',
-                      fontSize: '1rem',
-                      fontWeight: 500,
-                    }}
-                  >
-                    pregnant
-                  </Typography>
-                </Box>
-              );
-            })}
+                      {week}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: 'white',
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                      }}
+                    >
+                      weeks
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: 'white',
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                      }}
+                    >
+                      pregnant
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+            <IconButton
+              onClick={() => scrollWeeks('right')}
+              sx={{
+                position: 'absolute',
+                right: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 1,
+                color: 'white',
+                bgcolor: 'rgba(0,0,0,0.5)',
+                '&:hover': {
+                  bgcolor: 'rgba(0,0,0,0.7)',
+                }
+              }}
+            >
+              <ArrowForwardIosIcon />
+            </IconButton>
           </Box>
         </Container>
       </Box>
+
+      {/* Main Features Section */}
+      <FadeInSection delay={0.2}>
+        <Box id="features" sx={{ py: 8, bgcolor: 'white' }}>
+          <Container maxWidth="lg">
+            <Typography 
+              variant="h2" 
+              component="h2" 
+              align="center" 
+              gutterBottom
+              sx={{ 
+                mb: 6,
+                color: '#2C3E50'
+              }}
+            >
+              Our Features
+            </Typography>
+            
+            <Grid container spacing={4}>
+              {features.map((feature, index) => (
+                <Grid item xs={12} sm={6} md={3} key={feature.id}>
+                  <FadeInSection delay={index * 0.2}>
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        p: 3,
+                        height: '100%',
+                        bgcolor: 'white',
+                        border: '2px solid #4A90E2',
+                        borderRadius: 4,
+                        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&:hover': {
+                          transform: 'translateY(-10px) scale(1.05)',
+                          boxShadow: '0 20px 40px rgba(74, 144, 226, 0.2)',
+                          border: '2px solid #2980B9',
+                          perspective: '1000px',
+                        },
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: 'linear-gradient(135deg, rgba(74,144,226,0.1) 0%, rgba(41,128,185,0.05) 100%)',
+                          opacity: 0,
+                          transition: 'opacity 0.3s ease-in-out',
+                        },
+                        '&:hover::before': {
+                          opacity: 1,
+                        },
+                      }}
+                    >
+                      <Box
+                        className="feature-icon"
+                        sx={{
+                          fontSize: '3rem',
+                          color: '#4A90E2',
+                          mb: 2,
+                          transition: 'all 0.3s ease-in-out',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {feature.icon}
+                      </Box>
+                      <Typography
+                        variant="h5"
+                        className="feature-title"
+                        sx={{
+                          mb: 2,
+                          fontWeight: 600,
+                          color: '#2C3E50',
+                          textAlign: 'center',
+                          transition: 'color 0.3s ease-in-out',
+                          fontFamily: "'Quicksand', sans-serif",
+                        }}
+                      >
+                        {feature.title}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: '#666',
+                          textAlign: 'center',
+                          fontSize: '0.95rem',
+                          lineHeight: 1.6,
+                          fontFamily: "'Quicksand', sans-serif",
+                        }}
+                      >
+                        {feature.description}
+                      </Typography>
+                      <Button
+                        component={RouterLink}
+                        to={feature.link}
+                        variant="text"
+                        sx={{
+                          mt: 2,
+                          color: '#4A90E2',
+                          display: 'block',
+                          margin: '20px auto 0',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            color: '#2980B9',
+                            transform: 'translateX(5px)',
+                          },
+                          '&::after': {
+                            content: '"→"',
+                            marginLeft: '5px',
+                            transition: 'transform 0.3s ease',
+                          },
+                          '&:hover::after': {
+                            transform: 'translateX(5px)',
+                          },
+                        }}
+                      >
+                        Learn More
+                      </Button>
+                    </Paper>
+                  </FadeInSection>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </Box>
+      </FadeInSection>
 
       {/* Quote Section */}
       <FadeInSection>
@@ -412,134 +614,6 @@ function Home() {
                 Pregnancy Wellness Expert
               </Typography>
             </Box>
-          </Container>
-        </Box>
-      </FadeInSection>
-
-      {/* Features Section */}
-      <FadeInSection>
-        <Box id="features" sx={{ py: 8, bgcolor: 'white' }}>
-          <Container maxWidth="lg">
-            <Typography 
-              variant="h2" 
-              component="h2" 
-              align="center" 
-              gutterBottom
-              sx={{ 
-                mb: 6,
-                color: '#2C3E50'
-              }}
-            >
-              Our Features
-            </Typography>
-            
-            <Grid container spacing={4}>
-              {features.map((feature, index) => (
-                <Grid item xs={12} sm={6} md={3} key={feature.id}>
-                  <FadeInSection delay={index * 0.2}>
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        p: 3,
-                        height: '100%',
-                        bgcolor: 'white',
-                        border: '2px solid #4A90E2',
-                        borderRadius: 4,
-                        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&:hover': {
-                          transform: 'translateY(-10px) scale(1.05)',
-                          boxShadow: '0 20px 40px rgba(74, 144, 226, 0.2)',
-                          border: '2px solid #2980B9',
-                          perspective: '1000px',
-                        },
-                        '&::before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          background: 'linear-gradient(135deg, rgba(74,144,226,0.1) 0%, rgba(41,128,185,0.05) 100%)',
-                          opacity: 0,
-                          transition: 'opacity 0.3s ease-in-out',
-                        },
-                        '&:hover::before': {
-                          opacity: 1,
-                        },
-                      }}
-                    >
-                      <Box
-                        className="feature-icon"
-                        sx={{
-                          fontSize: '3rem',
-                          color: '#4A90E2',
-                          mb: 2,
-                          transition: 'all 0.3s ease-in-out',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {feature.icon}
-                      </Box>
-                      <Typography
-                        variant="h5"
-                        className="feature-title"
-                        sx={{
-                          mb: 2,
-                          fontWeight: 600,
-                          color: '#2C3E50',
-                          textAlign: 'center',
-                          transition: 'color 0.3s ease-in-out',
-                          fontFamily: "'Quicksand', sans-serif",
-                        }}
-                      >
-                        {feature.title}
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: '#666',
-                          textAlign: 'center',
-                          fontSize: '0.95rem',
-                          lineHeight: 1.6,
-                          fontFamily: "'Quicksand', sans-serif",
-                        }}
-                      >
-                        {feature.description}
-                      </Typography>
-                      <Button
-                        component={RouterLink}
-                        to={feature.link}
-                        variant="text"
-                        sx={{
-                          mt: 2,
-                          color: '#4A90E2',
-                          display: 'block',
-                          margin: '20px auto 0',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            color: '#2980B9',
-                            transform: 'translateX(5px)',
-                          },
-                          '&::after': {
-                            content: '"→"',
-                            marginLeft: '5px',
-                            transition: 'transform 0.3s ease',
-                          },
-                          '&:hover::after': {
-                            transform: 'translateX(5px)',
-                          },
-                        }}
-                      >
-                        Learn More
-                      </Button>
-                    </Paper>
-                  </FadeInSection>
-                </Grid>
-              ))}
-            </Grid>
           </Container>
         </Box>
       </FadeInSection>

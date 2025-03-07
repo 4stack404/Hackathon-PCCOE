@@ -18,6 +18,10 @@ import CareDetails from './pages/CareDetails';
 import Community from './pages/Community';
 import Diet from './pages/Diet';
 import AuthPage from './pages/AuthPage';
+import Exercises from './pages/Exercises';
+import FirstTrimesterExercises from './pages/FirstTrimesterExercises';
+import SecondTrimesterExercises from './pages/SecondTrimesterExercises';
+import ThirdTrimesterExercises from './pages/ThirdTrimesterExercises';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 
@@ -69,33 +73,39 @@ const theme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <Router>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/appointments/new" element={<Appointments newAppointment={true} />} />
-            <Route path="/care" element={<Care />} />
-            <Route path="/care/:type" element={<CareDetails />} />
-            <Route path="/week/:weekNumber" element={<WeekPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/debug-login" element={<LoginDebug />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/diet" element={<Diet />} />
-          </Routes>
-          <Footer />
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+    <>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <Router>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/appointments/new" element={<Appointments newAppointment={true} />} />
+              <Route path="/care" element={<Care />} />
+              <Route path="/care/:type" element={<CareDetails />} />
+              <Route path="/week/:weekNumber" element={<WeekPage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/debug-login" element={<LoginDebug />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/diet" element={<Diet />} />
+              <Route path="/exercises" element={<Exercises />} />
+              <Route path="/exercises/first-trimester" element={<FirstTrimesterExercises />} />
+              <Route path="/exercises/second-trimester" element={<SecondTrimesterExercises />} />
+              <Route path="/exercises/third-trimester" element={<ThirdTrimesterExercises />} />
+            </Routes>
+            <Footer />
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </>
   );
 }
 
-export default App; 
+export default App;
