@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+static/
+start_chatbot.bat
+sample-pdf-usage.md
+
+# Exclude data directory with raw PDFs
+data/
+
+# DO NOT exclude vector_store - we need this for Vercel
+# vector_store/
