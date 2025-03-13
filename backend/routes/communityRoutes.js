@@ -47,15 +47,18 @@ router.route('/questions')
 router.route('/questions/:id')
   .get(getQuestion);
 
+// Answer routes
 router.route('/questions/:id/answers')
   .post(protect, addAnswer);
 
+// Like routes
 router.route('/questions/:id/like')
   .post(protect, likeQuestion);
 
 router.route('/questions/:questionId/answers/:answerId/like')
   .post(protect, likeAnswer);
 
+// Accept answer route
 router.route('/questions/:questionId/answers/:answerId/accept')
   .put(protect, acceptAnswer);
 

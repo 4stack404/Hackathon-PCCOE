@@ -19,40 +19,128 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const register = async (req, res) => {
-  const { name, email, password } = req.body;
-
   try {
+    console.log('Registration request body:', req.body); // Add debug log
+
+    const { 
+      name, 
+      email, 
+      password,
+      phone,
+      height,
+      weight,
+      pregnancyDetails,
+      dietType,
+      notificationPreference,
+      healthInfo,
+      notifications,
+      preferences,
+      age,
+      bmr,
+      calories
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !password || !height || !weight || !dietType || !notificationPreference || !pregnancyDetails?.dueDate) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide all required fields',
+        errors: {
+          name: !name ? 'Name is required' : null,
+          email: !email ? 'Email is required' : null,
+          password: !password ? 'Password is required' : null,
+          height: !height ? 'Height is required' : null,
+          weight: !weight ? 'Weight is required' : null,
+          dietType: !dietType ? 'Diet type is required' : null,
+          notificationPreference: !notificationPreference ? 'Notification preference is required' : null,
+          'pregnancyDetails.dueDate': !pregnancyDetails?.dueDate ? 'Due date is required' : null
+        }
+      });
+    }
+
     // Check if user exists
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'User already exists' 
+      });
     }
 
-    // Create user
-    const user = await User.create({
+    // Ensure age is set
+    const userAge = age || 25; // Default to 25 if not provided
+    
+    // Create user with all details
+    const userData = {
       name,
       email,
-      password
-    });
+      password,
+      phone: phone || '',
+      height: Number(height),
+      weight: Number(weight),
+      age: userAge,
+      bmr,
+      calories,
+      pregnancyDetails: {
+        ...pregnancyDetails,
+        dueDate: new Date(pregnancyDetails.dueDate),
+        firstPregnancy: pregnancyDetails.firstPregnancy === 'yes',
+        medicalConditions: pregnancyDetails.medicalConditions || []
+      },
+      dietType,
+      notificationPreference,
+      healthInfo: {
+        ...healthInfo,
+        age: userAge
+      },
+      notifications: notifications || {
+        email: true,
+        push: true,
+        sms: false
+      },
+      preferences: preferences || {
+        dietaryRestrictions: [],
+        notificationSettings: {
+          email: true,
+          push: true
+        },
+        language: 'English',
+        theme: 'Light',
+        units: 'Imperial'
+      },
+      weightHistory: [{
+        weight: Number(weight),
+        date: new Date()
+      }]
+    };
+
+    console.log('Creating user with data:', userData); // Add debug log
+
+    const user = await User.create(userData);
 
     if (user) {
       // Generate token
       const token = generateToken(user._id);
 
-      // Send welcome email
-      const mailOptions = {
-        from: process.env.SENDER_EMAIL,
-        to: email,
-        subject: "Welcome to Pregnancy App",
-        html: WELCOME_EMAIL_TEMPLATE
-          .replace("{{name}}", name)
-          .replace("{{welcome_link}}", process.env.FRONTEND_URL)
-          .replace("{{email}}", email)
-          .replace("{{password}}", password)
-      };
+      try {
+        // Send welcome email
+        const mailOptions = {
+          from: process.env.SENDER_EMAIL,
+          to: email,
+          subject: "Welcome to Pregnancy App",
+          html: WELCOME_EMAIL_TEMPLATE
+            .replace("{{name}}", name)
+            .replace("{{welcome_link}}", process.env.FRONTEND_URL)
+            .replace("{{email}}", email)
+            .replace("{{password}}", password)
+        };
 
-      await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions);
+      } catch (emailError) {
+        console.error('Welcome email error:', emailError);
+        // Continue with registration even if email fails
+      }
 
       res.status(201).json({
         success: true,
@@ -61,16 +149,39 @@ export const register = async (req, res) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          phone: user.phone,
+          height: user.height,
+          weight: user.weight,
+          pregnancyDetails: user.pregnancyDetails,
+          healthInfo: user.healthInfo,
+          notifications: user.notifications,
+          preferences: user.preferences,
+          dietType: user.dietType,
+          notificationPreference: user.notificationPreference,
           token
         },
-        message: 'Registration successful. Welcome email sent!'
+        message: 'Registration successful'
       });
     } else {
-      res.status(400).json({ success: false, message: 'Invalid user data' });
+      res.status(400).json({ 
+        success: false, 
+        message: 'Invalid user data' 
+      });
     }
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    // Send more detailed error information
+    res.status(500).json({ 
+      success: false, 
+      message: 'Registration failed',
+      error: {
+        message: error.message,
+        errors: error.errors ? Object.keys(error.errors).reduce((acc, key) => {
+          acc[key] = error.errors[key].message;
+          return acc;
+        }, {}) : undefined
+      }
+    });
   }
 };
 
@@ -81,6 +192,14 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide both email and password' 
+      });
+    }
+
     console.log(`Login attempt for email: ${email}`);
     
     // Find user by email
@@ -88,7 +207,10 @@ export const login = async (req, res) => {
     
     if (!user) {
       console.log(`User not found with email: ${email}`);
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
+      });
     }
     
     // Check password
@@ -107,16 +229,33 @@ export const login = async (req, res) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          phone: user.phone,
+          height: user.height,
+          weight: user.weight,
+          pregnancyDetails: user.pregnancyDetails,
+          healthInfo: user.healthInfo,
+          notifications: user.notifications,
+          preferences: user.preferences,
           token
         }
       });
     } else {
       console.log(`Password mismatch for user: ${email}`);
-      res.status(401).json({ success: false, message: 'Invalid email or password' });
+      res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
+      });
     }
   } catch (error) {
     console.error(`Login error: ${error.message}`);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error', 
+      error: {
+        message: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      }
+    });
   }
 };
 
@@ -136,11 +275,19 @@ export const getCurrentUser = async (req, res) => {
           email: user.email,
           role: user.role,
           phone: user.phone,
+          height: user.height,
+          weight: user.weight,
           dateOfBirth: user.dateOfBirth,
           gender: user.gender,
           address: user.address,
           profilePicture: user.profilePicture,
           pregnancyDetails: user.pregnancyDetails,
+          healthInfo: user.healthInfo,
+          notifications: user.notifications,
+          preferences: user.preferences,
+          dietType: user.dietType,
+          notificationPreference: user.notificationPreference,
+          weightHistory: user.weightHistory,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt
         }

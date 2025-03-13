@@ -14,7 +14,12 @@ import authRoutes from './routes/authRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import mealRoutes from './routes/mealRoutes.js';
 import communityRoutes from './routes/communityRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import dietPlanRoutes from './routes/dietPlanRoutes.js';
 
+// Import the diet plan controller functions directly
+import { getUserCalories, updateUserCalories } from './controllers/dietPlanController.js';
+import { protect } from './middleware/authMiddleware.js';
 
 // Load environment variables
 dotenv.config();
@@ -34,11 +39,17 @@ app.use(helmet.contentSecurityPolicy({
     styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
     fontSrc: ["'self'", "https://fonts.gstatic.com"],
     imgSrc: ["'self'", "https:", "data:"],
-    connectSrc: ["'self'", "https://*"]
+    connectSrc: ["'self'", "https://*", "http://*"]
   }
 }));
 
-app.use(cors({ origin: "*" }));
+// Configure CORS to allow all origins
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -83,7 +94,37 @@ app.use('/api/auth', authRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/meals', mealRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/diet-plans', dietPlanRoutes);
 
+// Direct routes for diet-plan
+app.options('/api/diet-plan', (req, res) => {
+  // Add CORS headers directly
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.status(200).end();
+});
+
+app.get('/api/diet-plan', protect, (req, res) => {
+  // Add CORS headers directly
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Call the controller function
+  getUserCalories(req, res);
+});
+
+app.post('/api/diet-plan', protect, (req, res) => {
+  // Add CORS headers directly
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Call the controller function
+  updateUserCalories(req, res);
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

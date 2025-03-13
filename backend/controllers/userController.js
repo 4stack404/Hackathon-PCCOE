@@ -1,4 +1,5 @@
 import User from '../models/userModel.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Get user profile
 // @route   GET /api/users/profile
@@ -8,13 +9,37 @@ const getUserProfile = async (req, res) => {
     const user = await User.findById(req.user._id).select('-password');
 
     if (user) {
-      res.json(user);
+      res.json({
+        success: true,
+        data: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          phone: user.phone,
+          height: user.height,
+          weight: user.weight,
+          dateOfBirth: user.dateOfBirth,
+          gender: user.gender,
+          address: user.address,
+          profilePicture: user.profilePicture,
+          pregnancyDetails: user.pregnancyDetails,
+          healthInfo: user.healthInfo,
+          notifications: user.notifications,
+          preferences: user.preferences,
+          dietType: user.dietType,
+          notificationPreference: user.notificationPreference,
+          weightHistory: user.weightHistory,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+        }
+      });
     } else {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ success: false, message: 'User not found' });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
 
@@ -104,4 +129,172 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { getUserProfile, updateUserProfile, deleteUser };
+// @desc    Log user weight
+// @route   POST /api/users/weight
+// @access  Private
+export const logWeight = async (req, res) => {
+  try {
+    const { weight } = req.body;
+
+    if (!weight || isNaN(weight)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid weight value'
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Add new weight entry
+    const weightEntry = {
+      weight: Number(weight),
+      date: new Date()
+    };
+
+    // Initialize weightHistory array if it doesn't exist
+    if (!user.weightHistory) {
+      user.weightHistory = [];
+    }
+
+    // Add new weight entry to history
+    user.weightHistory.push(weightEntry);
+
+    // Update current weight
+    user.weight = Number(weight);
+
+    await user.save();
+
+    res.json({
+      success: true,
+      data: {
+        currentWeight: user.weight,
+        weightHistory: user.weightHistory
+      }
+    });
+  } catch (error) {
+    console.error('Error in logWeight:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error logging weight',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get user weight history
+// @route   GET /api/users/weight
+// @access  Private
+export const getWeightHistory = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        currentWeight: user.weight,
+        weightHistory: user.weightHistory || []
+      }
+    });
+  } catch (error) {
+    console.error('Error in getWeightHistory:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching weight history',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @desc    Get user's nutrition data
+ * @route   GET /api/users/nutrition
+ * @access  Private
+ */
+const getNutritionData = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  // Construct nutrition data from user model
+  const nutritionData = {
+    calories: user.calories || null,
+    protein: user.protein || null,
+    carbohydrates: user.carbohydrates || null,
+    fats: user.fats || null
+  };
+
+  // Check if we have nutrition data in healthInfo
+  if (user.healthInfo && user.healthInfo.nutrition) {
+    const healthInfoNutrition = user.healthInfo.nutrition;
+    nutritionData.calories = healthInfoNutrition.calories || nutritionData.calories;
+    nutritionData.protein = healthInfoNutrition.protein || nutritionData.protein;
+    nutritionData.carbohydrates = healthInfoNutrition.carbohydrates || nutritionData.carbohydrates;
+    nutritionData.fats = healthInfoNutrition.fats || nutritionData.fats;
+  }
+
+  // Calculate BMR if not available
+  if (!nutritionData.calories) {
+    // BMR = 655.1 + (9.563 × weight in kg) + (1.850 × height in cm) - (4.676 × age in years)
+    const bmr = 655.1 + (9.563 * user.weight) + (1.850 * user.height) - (4.676 * user.age);
+    
+    // Assume light activity level (1.375) if not specified
+    const activityMultiplier = 1.375;
+    
+    // Calculate maintenance calories
+    let maintenanceCalories = bmr * activityMultiplier;
+    
+    // Adjust based on trimester if pregnancy details are available
+    let additionalCalories = 0;
+    if (user.pregnancyDetails && user.pregnancyDetails.trimester) {
+      switch(user.pregnancyDetails.trimester) {
+        case 1:
+          // No additional calories needed in first trimester
+          additionalCalories = 0;
+          break;
+        case 2:
+          // Add 340 calories in second trimester
+          additionalCalories = 340;
+          break;
+        case 3:
+          // Add 450 calories in third trimester
+          additionalCalories = 450;
+          break;
+        default:
+          additionalCalories = 0;
+      }
+    }
+    
+    // Calculate total calories
+    nutritionData.calories = Math.round(maintenanceCalories + additionalCalories);
+    
+    // Calculate macros if not available
+    if (!nutritionData.protein) {
+      nutritionData.protein = Math.round((nutritionData.calories * 0.15) / 4); // 15% of calories from protein
+    }
+    if (!nutritionData.fats) {
+      nutritionData.fats = Math.round((nutritionData.calories * 0.3) / 9); // 30% of calories from fat
+    }
+    if (!nutritionData.carbohydrates) {
+      nutritionData.carbohydrates = Math.round((nutritionData.calories * 0.55) / 4); // 55% of calories from carbs
+    }
+  }
+
+  res.json(nutritionData);
+});
+
+export { getUserProfile, updateUserProfile, deleteUser, getNutritionData };

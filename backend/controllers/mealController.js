@@ -66,7 +66,7 @@ export const createMeal = async (req, res) => {
     }
 
     // Validate meal type
-    if (!['breakfast', 'lunch', 'dinner', 'snack'].includes(type)) {
+    if (!['breakfast', 'lunch', 'dinner', 'snacks'].includes(type)) {
       return res.status(400).json(wrapResponse(false, null, 'Invalid meal type'));
     }
 
@@ -103,7 +103,7 @@ export const updateMeal = async (req, res) => {
     }
 
     // Validate meal type
-    if (!['breakfast', 'lunch', 'dinner', 'snack'].includes(type)) {
+    if (!['breakfast', 'lunch', 'dinner', 'snacks'].includes(type)) {
       return res.status(400).json(wrapResponse(false, null, 'Invalid meal type'));
     }
 
@@ -146,22 +146,47 @@ export const updateMeal = async (req, res) => {
 // @access  Private
 export const deleteMeal = async (req, res) => {
   try {
-    const meal = await Meal.findById(req.params.id);
+    console.log('Delete meal request received for ID:', req.params.id);
+    
+    if (!req.params.id) {
+      return res.status(400).json(wrapResponse(false, null, 'Meal ID is required'));
+    }
+    
+    // Check if the ID is a valid MongoDB ObjectId
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(req.params.id);
+    if (!isValidObjectId) {
+      console.error('Invalid meal ID format:', req.params.id);
+      return res.status(400).json(wrapResponse(false, null, `Invalid meal ID format: ${req.params.id} is not a valid MongoDB ObjectId`));
+    }
+    
+    let meal;
+    try {
+      meal = await Meal.findById(req.params.id);
+    } catch (findError) {
+      console.error('Error finding meal:', findError);
+      return res.status(400).json(wrapResponse(false, null, `Error finding meal: ${findError.message}`));
+    }
 
     if (!meal) {
-      return res.status(404).json(wrapResponse(false, null, 'Meal not found'));
+      return res.status(404).json(wrapResponse(false, null, `Meal not found with ID: ${req.params.id}`));
     }
 
     // Make sure user owns meal
     if (meal.user.toString() !== req.user.id.toString()) {
-      return res.status(401).json(wrapResponse(false, null, 'Not authorized'));
+      return res.status(401).json(wrapResponse(false, null, 'Not authorized to delete this meal'));
     }
 
-    await meal.deleteOne();
+    try {
+      await meal.deleteOne();
+      console.log('Meal successfully deleted:', req.params.id);
+    } catch (deleteError) {
+      console.error('Error deleting meal document:', deleteError);
+      return res.status(500).json(wrapResponse(false, null, `Error deleting meal: ${deleteError.message}`));
+    }
 
-    res.json(wrapResponse(true, null, 'Meal removed'));
+    res.json(wrapResponse(true, null, 'Meal removed successfully'));
   } catch (error) {
-    console.error('Error deleting meal:', error);
-    res.status(500).json(wrapResponse(false, null, 'Server error'));
+    console.error('Error in deleteMeal controller:', error);
+    res.status(500).json(wrapResponse(false, null, `Server error: ${error.message}`));
   }
 };
