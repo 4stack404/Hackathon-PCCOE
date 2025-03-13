@@ -19,7 +19,9 @@ import {
   Tooltip,
   Fade,
   Chip,
-  CircularProgress
+  CircularProgress,
+  Dialog,
+  DialogContent
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
@@ -41,6 +43,10 @@ import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeMuteIcon from '@mui/icons-material/VolumeMute';
 
 import { chatService } from '../../services/chatbotService';
 import ReactMarkdown from 'react-markdown';
@@ -107,6 +113,33 @@ const float = keyframes`
   100% { transform: translateY(0px); }
 `;
 
+const pulseRing = keyframes`
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+`;
+
+const breathe = keyframes`
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+`;
+
+const blink = keyframes`
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+`;
+
 const CHAT_COLORS = {
   primary: '#ff8fb1',        // Lighter pink
   secondary: '#fcadc7',      // Your existing pink
@@ -122,14 +155,145 @@ const CHAT_COLORS = {
   }
 };
 
+// First, define the MessageBubble component outside of ChatBot
+const MessageBubble = ({ 
+  message, 
+  isExpanded, 
+  isTyping: isMsgTyping, 
+  displayText,
+  expandTransition,
+  isInitialMessage
+}) => {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: message.sender === 'user' ? 'row-reverse' : 'row',
+        alignItems: 'flex-start',
+        mb: isExpanded ? 2 : 1.5,
+        px: isExpanded ? 3 : 2,
+        ...expandTransition,
+      }}
+    >
+      {message.sender === 'bot' && (
+        <Avatar
+          src="/assets/bot-avatar.png"
+          alt="Bot"
+          sx={{ 
+            width: isExpanded ? 48 : 32,
+            height: isExpanded ? 48 : 32,
+            mr: isExpanded ? 2 : 1,
+            bgcolor: CHAT_COLORS.primary,
+            ...expandTransition,
+          }}
+        >
+          <ChatIcon sx={{ fontSize: isExpanded ? '1.5rem' : '1rem' }} />
+        </Avatar>
+      )}
+      
+      <Box
+        sx={{
+          maxWidth: isExpanded ? '70%' : '80%',
+          p: isExpanded ? 2.5 : 1.5,
+          borderRadius: 2,
+          bgcolor: message.sender === 'user' ? CHAT_COLORS.userMessage : CHAT_COLORS.botMessage,
+          color: message.sender === 'user' ? 'white' : CHAT_COLORS.text.primary,
+          position: 'relative',
+          boxShadow: isExpanded ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+          ...(message.sender === 'user' ? {
+            borderTopRightRadius: 0,
+          } : {
+            borderTopLeftRadius: 0,
+          }),
+          ...expandTransition,
+        }}
+      >
+        {message.sender === 'user' ? (
+          <Typography 
+            variant="body1"
+            sx={{ 
+              fontSize: isExpanded ? {
+                xs: '1rem',
+                sm: '1.1rem',
+                md: '1.2rem'
+              } : '1rem',
+              lineHeight: isExpanded ? 1.6 : 1.5,
+              color: 'inherit',
+              ...expandTransition,
+            }}
+          >
+            {displayText}
+          </Typography>
+        ) : (
+          <Box sx={{ 
+            '& .wmde-markdown': {
+              backgroundColor: 'transparent',
+              fontSize: isExpanded ? {
+                xs: '1rem',
+                sm: '1.1rem',
+                md: '1.2rem'
+              } : '1rem',
+              lineHeight: isExpanded ? 1.6 : 1.5,
+            },
+            '& .wmde-markdown pre': {
+              backgroundColor: alpha(CHAT_COLORS.primary, 0.1),
+            },
+            '& .wmde-markdown code': {
+              backgroundColor: alpha(CHAT_COLORS.primary, 0.1),
+              color: CHAT_COLORS.text.primary,
+              padding: '2px 4px',
+              borderRadius: 1,
+            },
+            '& .wmde-markdown ul, & .wmde-markdown ol': {
+              paddingLeft: '20px',
+              margin: '8px 0',
+            },
+            '& .wmde-markdown li': {
+              margin: '4px 0',
+            },
+            '& .wmde-markdown p': {
+              margin: '8px 0',
+            },
+          }}>
+            <MarkdownPreview 
+              source={isInitialMessage ? message.text : displayText} 
+              remarkPlugins={[remarkGfm]}
+              wrapperElement={{
+                "data-color-mode": "light"
+              }}
+            />
+            {isMsgTyping && !isInitialMessage && (
+              <Box
+                component="span"
+                sx={{
+                  display: 'inline-block',
+                  ml: 0.5,
+                  animation: `${blink} 1s step-end infinite`
+                }}
+              >
+                ▋
+              </Box>
+            )}
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { 
-      id: 1, 
-      text: "Hello! I'm your pregnancy wellness assistant. How can I help you today?", 
+    {
+      id: Date.now(),
+      text: "Hello! I'm your pregnancy wellness assistant. How can I help you today? You can:\n\n" +
+            "- Ask questions about pregnancy and wellness\n" +
+            "- Get diet and nutrition advice\n" +
+            "- Learn about exercise during pregnancy\n" +
+            "- Get information about prenatal care\n\n" +
+            "Feel free to type your question or use the microphone to speak!",
       sender: 'bot',
-      timestamp: new Date()
+      timestamp: new Date().toISOString()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -140,8 +304,21 @@ const ChatBot = () => {
   const theme = useTheme();
   const [expandedMessages, setExpandedMessages] = useState(new Set());
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
-  const [typedMessages, setTypedMessages] = useState(new Map());
+  const [typingText, setTypingText] = useState(new Map());
+  const [completedMessages, setCompletedMessages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState(null);
+  const [isSpeechEnabled, setIsSpeechEnabled] = useState(true);
+  const [isVoiceMode, setIsVoiceMode] = useState(true);
+  const [voiceTranscript, setVoiceTranscript] = useState('');
+  const [conversations, setConversations] = useState([]);
+  const [voiceHistory, setVoiceHistory] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isBotSpeaking, setIsBotSpeaking] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const speechSynthesisRef = useRef(null);
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
@@ -161,6 +338,14 @@ const ChatBot = () => {
     }
   }, [isOpen]);
 
+  // Add this useEffect to mark the initial message as completed
+  useEffect(() => {
+    // Mark the initial message as completed so it shows immediately
+    if (messages.length === 1) {
+      setCompletedMessages(new Set([messages[0].id]));
+    }
+  }, []);
+
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
@@ -177,69 +362,522 @@ const ChatBot = () => {
   };
 
   const typeMessage = (messageId, text) => {
-    let currentText = '';
+    setTypingText(new Map().set(messageId, '')); // Initialize empty text
     const words = text.split(' ');
     let currentIndex = 0;
-
+    const wordsPerFrame = 3;
+    
     const typeInterval = setInterval(() => {
       if (currentIndex < words.length) {
-        // Type 2-3 words at a time for faster typing
-        const wordsToAdd = Math.min(3, words.length - currentIndex);
-        currentText += words.slice(currentIndex, currentIndex + wordsToAdd).join(' ') + ' ';
-        setTypedMessages(prev => new Map(prev).set(messageId, currentText));
-        currentIndex += wordsToAdd;
+        const endIndex = Math.min(currentIndex + wordsPerFrame, words.length);
+        const currentText = words.slice(0, endIndex).join(' ');
+        setTypingText(prev => new Map(prev).set(messageId, currentText));
+        currentIndex = endIndex;
       } else {
         clearInterval(typeInterval);
-        setTypedMessages(prev => {
+        setCompletedMessages(prev => new Set(prev).add(messageId));
+        setTypingText(prev => {
           const newMap = new Map(prev);
-          newMap.set(`${messageId}-complete`, true);
+          newMap.delete(messageId);
           return newMap;
         });
       }
-    }, 30); // Reduced interval time
+    }, 30);
+
+    return () => clearInterval(typeInterval);
   };
 
+  // Add this effect to initialize speech synthesis
+  useEffect(() => {
+    // Load voices when component mounts
+    const loadVoices = () => {
+      window.speechSynthesis.getVoices();
+    };
+
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+
+    // Cleanup
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  // Update the toggleSpeech function
+  const toggleSpeech = () => {
+    const newSpeechState = !isSpeechEnabled;
+    setIsSpeechEnabled(newSpeechState);
+    
+    if (!newSpeechState) {
+      // If turning off, cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
+  // Add this function to safely check if speech synthesis is available
+  const isSpeechSynthesisAvailable = () => {
+    return typeof window !== 'undefined' && 
+           window.speechSynthesis && 
+           typeof window.speechSynthesis.speak === 'function';
+  };
+
+  // Update the speakText function with better error handling
+  const speakText = (text) => {
+    if (!isSpeechSynthesisAvailable()) {
+      console.warn('Speech synthesis is not available in this browser');
+      return;
+    }
+    
+    if (!isSpeechEnabled) {
+      console.log('Speech is disabled, not speaking');
+      return;
+    }
+
+    try {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      const cleanText = text.replace(/[*#\[\]`]/g, '')
+                           .replace(/\n/g, ' ')
+                           .replace(/\s+/g, ' ')
+                           .trim();
+
+      if (!cleanText) {
+        console.log('No text to speak');
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      
+      // Try to get a voice that works well
+      const voices = window.speechSynthesis.getVoices();
+      
+      // First try to find an Indian English voice
+      let selectedVoice = voices.find(voice => 
+        voice.name.includes('Indian') || 
+        voice.name.includes('Raveena') || 
+        voice.name.includes('Priya')
+      );
+      
+      // If no Indian voice, try to find any English voice
+      if (!selectedVoice) {
+        selectedVoice = voices.find(voice => 
+          voice.lang.includes('en') || 
+          voice.name.includes('English')
+        );
+      }
+      
+      // If still no voice, use the default
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        console.log('Using voice:', selectedVoice.name);
+      } else {
+        console.log('No suitable voice found, using default voice');
+      }
+
+      // Configure speech properties
+      utterance.rate = 0.85;  // Slower for clarity
+      utterance.pitch = 1.0;  // Normal pitch
+      utterance.volume = 1.0;
+
+      utterance.onstart = () => {
+        console.log('Speech started');
+        setIsSpeaking(true);
+      };
+
+      utterance.onend = () => {
+        console.log('Speech ended');
+        setIsSpeaking(false);
+      };
+
+      utterance.onerror = (event) => {
+        console.error('Speech error:', event);
+        setIsSpeaking(false);
+        
+        // Try again with simpler settings if there was an error
+        if (event.error !== 'canceled') {
+          try {
+            const simpleUtterance = new SpeechSynthesisUtterance(cleanText);
+            simpleUtterance.rate = 1.0;
+            simpleUtterance.pitch = 1.0;
+            simpleUtterance.onend = () => setIsSpeaking(false);
+            simpleUtterance.onerror = () => setIsSpeaking(false);
+            window.speechSynthesis.speak(simpleUtterance);
+          } catch (fallbackError) {
+            console.error('Fallback speech also failed:', fallbackError);
+          }
+        }
+      };
+
+      // Only speak if speech is enabled
+      window.speechSynthesis.speak(utterance);
+    } catch (error) {
+      console.error('Error in speech synthesis:', error);
+      setIsSpeaking(false);
+    }
+  };
+
+  // Update the handleVoiceInput function to respect the isSpeechEnabled state and ensure speech is properly toggled
+  const handleVoiceInput = async (transcript) => {
+    if (!transcript.trim()) return;
+
+    try {
+      // Stop any ongoing speech
+      window.speechSynthesis.cancel();
+
+      const userMessage = {
+        id: Date.now(),
+        text: transcript,
+        sender: 'user',
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => [...prev, userMessage]);
+      setIsTyping(true);
+      
+      const response = await chatService.askQuestion(transcript);
+      const botResponse = response.answer.replace('**Direct Answer:**', '');
+      
+      const botMessage = {
+        id: Date.now() + 1,
+        text: botResponse,
+        sender: 'bot',
+        timestamp: new Date().toISOString()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+      setCompletedMessages(prev => new Set(prev).add(botMessage.id));
+      
+      // Only speak if speech is enabled
+      if (isSpeechEnabled) {
+        speakText(botResponse);
+      }
+
+    } catch (error) {
+      console.error('Chat error:', error);
+      const errorMessage = {
+        id: Date.now(),
+        text: "I'm sorry, I'm having trouble processing your request right now. Please try again.",
+        sender: 'bot',
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      setCompletedMessages(prev => new Set(prev).add(errorMessage.id));
+      
+      // Only speak error message if speech is enabled
+      if (isSpeechEnabled) {
+        speakText(errorMessage.text);
+      }
+    } finally {
+      setIsTyping(false);
+      setVoiceTranscript('');
+    }
+  };
+
+  // Update the handleSend function with better error handling
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
     const userMessage = {
-      id: messages.length + 1,
-      text: inputValue.trim(),
+      id: Date.now(),
+      text: inputValue,
       sender: 'user',
       timestamp: new Date().toISOString()
     };
 
+    // Add user message to chat
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
     setIsLoading(true);
 
+    // Create a placeholder for the bot response
+    const botResponseId = Date.now() + 1;
+    const botPlaceholder = {
+      id: botResponseId,
+      text: '',
+      sender: 'bot',
+      timestamp: new Date().toISOString()
+    };
+
+    setMessages(prev => [...prev, botPlaceholder]);
+    setTypingText(prev => new Map(prev).set(botResponseId, ''));
+
     try {
-      const response = await chatService.askQuestion(inputValue.trim());
-      const botMessage = {
-        id: messages.length + 2,
-        text: response.answer.replace('**Direct Answer:**', ''),
+      // Check if the API is available
+      let apiAvailable = false;
+      try {
+        const healthCheck = await chatService.checkHealth();
+        apiAvailable = healthCheck.status === 'ok';
+      } catch (healthError) {
+        console.warn('API health check failed:', healthError);
+        apiAvailable = false;
+      }
+
+      let botResponse;
+      
+      if (apiAvailable) {
+        // Try to get a response from the API
+        try {
+          const response = await chatService.askQuestion(inputValue);
+          botResponse = response.answer || "I'm sorry, I couldn't find an answer to that question.";
+        } catch (apiError) {
+          console.error('API error:', apiError);
+          throw new Error('Failed to get response from the API');
+        }
+      } else {
+        // Fallback to a local response if API is not available
+        botResponse = getFallbackResponse(inputValue);
+      }
+
+      // Simulate typing effect
+      let displayedText = '';
+      const words = botResponse.split(' ');
+      
+      for (let i = 0; i < words.length; i++) {
+        displayedText += (i > 0 ? ' ' : '') + words[i];
+        setTypingText(prev => new Map(prev).set(botResponseId, displayedText));
+        
+        // Adjust typing speed based on word length
+        const delay = Math.min(100, 20 + words[i].length * 10);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+
+      // Update the message with the full response
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === botResponseId 
+            ? { ...msg, text: botResponse } 
+            : msg
+        )
+      );
+      
+      // Mark message as completed
+      setCompletedMessages(prev => new Set(prev).add(botResponseId));
+      
+      // Only speak if speech is enabled
+      if (isSpeechEnabled) {
+        speakText(botResponse);
+      }
+
+    } catch (error) {
+      console.error('Chat error:', error);
+      
+      // Create a friendly error message
+      const errorMessage = {
+        id: botResponseId,
+        text: "I'm having trouble connecting to my knowledge base right now. Please try again later or ask me something else.",
         sender: 'bot',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        isError: true
       };
       
-      setMessages(prev => [...prev, botMessage]);
-      // Start typing effect for new message
-      typeMessage(botMessage.id, botMessage.text);
-    } catch (error) {
-      // Handle error
-      setMessages(prev => [...prev, {
-        id: prev.length + 1,
-        text: "I'm sorry, I'm having trouble connecting right now. Please try again later.",
-        sender: 'bot',
-        timestamp: new Date().toISOString()
-      }]);
-      console.error('Chat error:', error);
+      // Update the placeholder with the error message
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === botResponseId 
+            ? errorMessage
+            : msg
+        )
+      );
+      
+      // Mark message as completed
+      setCompletedMessages(prev => new Set(prev).add(botResponseId));
+      
+      // Only speak error message if speech is enabled
+      if (isSpeechEnabled) {
+        speakText(errorMessage.text);
+      }
     } finally {
       setIsTyping(false);
       setIsLoading(false);
+      // Scroll to the bottom
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
+
+  // Add a fallback response function
+  const getFallbackResponse = (query) => {
+    const normalizedQuery = query.toLowerCase();
+    
+    // Common pregnancy-related queries
+    if (normalizedQuery.includes('morning sickness') || normalizedQuery.includes('nausea')) {
+      return "Morning sickness is common in early pregnancy. Try eating small, frequent meals, staying hydrated, and avoiding triggers. Ginger tea or crackers may help. If severe, consult your doctor.";
+    }
+    
+    if (normalizedQuery.includes('exercise') || normalizedQuery.includes('workout')) {
+      return "Moderate exercise is generally safe during pregnancy. Walking, swimming, and prenatal yoga are excellent options. Always consult your healthcare provider before starting any exercise routine.";
+    }
+    
+    if (normalizedQuery.includes('diet') || normalizedQuery.includes('food') || normalizedQuery.includes('eat')) {
+      return "A balanced diet is crucial during pregnancy. Focus on fruits, vegetables, whole grains, lean proteins, and dairy. Stay hydrated and take prenatal vitamins as recommended by your doctor.";
+    }
+    
+    if (normalizedQuery.includes('sleep') || normalizedQuery.includes('insomnia')) {
+      return "Sleep challenges are common during pregnancy. Try sleeping on your left side with pillows for support, establish a bedtime routine, and avoid caffeine and screens before bed.";
+    }
+    
+    // Default response
+    return "I'm currently having trouble connecting to my knowledge base. This is a basic response. For more detailed information, please try again later or consult your healthcare provider.";
+  };
+
+  // Add a function to stop speaking
+  const stopSpeaking = () => {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
+  // Update the initializeSpeechRecognition function
+  const initializeSpeechRecognition = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.error('Speech recognition not supported');
+      return null;
+    }
+
+    const recognitionInstance = new SpeechRecognition();
+    recognitionInstance.continuous = true;
+    recognitionInstance.interimResults = true;
+    recognitionInstance.lang = 'en-US';
+
+    recognitionInstance.onstart = () => {
+      setIsListening(true);
+      // Stop speaking when user starts talking
+      stopSpeaking();
+    };
+
+    recognitionInstance.onresult = (event) => {
+      const lastResult = event.results[event.results.length - 1];
+      const transcript = lastResult[0].transcript;
+
+      setVoiceTranscript(transcript);
+
+      if (lastResult.isFinal) {
+        handleVoiceInput(transcript);
+      }
+    };
+
+    recognitionInstance.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      if (event.error !== 'no-speech') {
+        setIsListening(false);
+      }
+    };
+
+    recognitionInstance.onend = () => {
+      if (isVoiceMode) {
+        try {
+          recognitionInstance.start();
+        } catch (error) {
+          console.error('Error restarting recognition:', error);
+          setIsListening(false);
+        }
+      } else {
+        setIsListening(false);
+      }
+    };
+
+    return recognitionInstance;
+  };
+
+  // Update the toggleVoiceMode function
+  const toggleVoiceMode = () => {
+    if (!isVoiceMode) {
+      setIsVoiceMode(true);
+      setVoiceTranscript('');
+      if (!recognition) {
+        const newRecognition = initializeSpeechRecognition();
+        if (newRecognition) {
+          setRecognition(newRecognition);
+          newRecognition.start();
+        }
+      } else {
+        try {
+          recognition.start();
+        } catch (error) {
+          console.error('Error starting recognition:', error);
+        }
+      }
+    } else {
+      setIsVoiceMode(false);
+      if (recognition) {
+        recognition.stop();
+      }
+      if (isBotSpeaking) {
+        window.speechSynthesis.cancel();
+        setIsBotSpeaking(false);
+      }
+      setVoiceTranscript('');
+    }
+  };
+
+  // Update the VoiceModeIndicator component to show speaking status
+  const VoiceModeIndicator = ({ isListening, isSpeaking, transcript }) => (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        p: 2,
+        bgcolor: CHAT_COLORS.botMessage,
+        borderBottom: `1px solid ${CHAT_COLORS.border}`,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        zIndex: 2,
+      }}
+    >
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <IconButton
+          onClick={() => !isSpeaking && toggleVoiceMode()}
+          color={isListening ? "error" : "primary"}
+          sx={{
+            bgcolor: isListening ? alpha(CHAT_COLORS.accent, 0.1) : 'transparent',
+            animation: isListening ? `${pulseRing} 1.5s infinite` : 'none',
+          }}
+        >
+          {isListening ? <MicOffIcon /> : <MicIcon />}
+        </IconButton>
+        {isSpeaking && (
+          <IconButton
+            onClick={stopSpeaking}
+            color="primary"
+            sx={{
+              animation: `${pulseRing} 1.5s infinite`,
+            }}
+          >
+            <VolumeUpIcon />
+          </IconButton>
+        )}
+      </Box>
+      <Typography
+        variant="body2"
+        sx={{
+          flex: 1,
+          color: CHAT_COLORS.text.primary,
+        }}
+      >
+        {isListening ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <span>Listening:</span>
+            <span style={{ fontStyle: 'italic', color: CHAT_COLORS.text.secondary }}>
+              {transcript || 'Speak now...'}
+            </span>
+          </Box>
+        ) : isSpeaking ? (
+          'Speaking...'
+        ) : (
+          'Tap mic to speak'
+        )}
+      </Typography>
+    </Box>
+  );
 
   // Helper function to detect navigation actions from response
   const getActionFromResponse = (text) => {
@@ -385,6 +1023,52 @@ const ChatBot = () => {
     }
   ];
 
+  // Add console logs for debugging
+  useEffect(() => {
+    console.log('Voice mode:', isVoiceMode);
+    console.log('Is listening:', isListening);
+    console.log('Is bot speaking:', isBotSpeaking);
+  }, [isVoiceMode, isListening, isBotSpeaking]);
+
+  // Add this debug button in development mode
+  {process.env.NODE_ENV === 'development' && (
+    <Button
+      variant="outlined"
+      size="small"
+      onClick={() => {
+        console.log('Current state:', {
+          isVoiceMode,
+          isListening,
+          isBotSpeaking,
+          recognition,
+          messages
+        });
+      }}
+      sx={{ position: 'absolute', top: 0, right: 0, m: 1 }}
+    >
+      Debug
+    </Button>
+  )}
+
+  // Add a button to manually test speech (for debugging)
+  {process.env.NODE_ENV === 'development' && (
+    <Button
+      variant="outlined"
+      size="small"
+      onClick={() => {
+        speakText("This is a test message to verify speech synthesis is working.");
+      }}
+      sx={{ position: 'absolute', top: 0, right: 0, m: 1 }}
+    >
+      Test Speech
+    </Button>
+  )}
+
+  // Update the expandTransition constant
+  const expandTransition = {
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  };
+
   return (
     <>
       {/* Floating chat button */}
@@ -442,563 +1126,231 @@ const ChatBot = () => {
               exit="exit"
             >
               <Paper
-                elevation={6}
+                elevation={3}
                 sx={{
-                  width: { 
-                    xs: isWindowExpanded ? '95vw' : '90vw',
-                    sm: isWindowExpanded ? '600px' : '360px',
-                    md: isWindowExpanded ? '800px' : '400px',
-                    lg: isWindowExpanded ? '1000px' : '420px'
+                  height: isExpanded ? {
+                    xs: '85vh',
+                    sm: '80vh',
+                    md: '75vh'
+                  } : {
+                    xs: '80vh',
+                    sm: '600px',
+                    md: '600px'
                   },
-                  height: {
-                    xs: isWindowExpanded ? '90vh' : '70vh',
-                    sm: isWindowExpanded ? '80vh' : '480px',
-                    md: isWindowExpanded ? '80vh' : '500px'
+                  width: isExpanded ? {
+                    xs: '95vw',
+                    sm: '600px',
+                    md: '800px',
+                    lg: '1000px'
+                  } : {
+                    xs: '95vw',
+                    sm: '400px',
+                    md: '450px'
                   },
-                  borderRadius: 3,
-                  overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
-                  bgcolor: CHAT_COLORS.background,
-                  boxShadow: `0 10px 40px ${alpha(CHAT_COLORS.primary, 0.2)}`,
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  fontFamily: "'Poppins', sans-serif",
-                  '&:hover': {
-                    boxShadow: `0 15px 50px ${alpha(CHAT_COLORS.primary, 0.3)}`
-                  }
+                  overflow: 'hidden',
+                  position: 'relative',
+                  ...expandTransition,
+                  boxShadow: isExpanded 
+                    ? '0 8px 32px rgba(0,0,0,0.1)' 
+                    : '0 2px 8px rgba(0,0,0,0.1)',
                 }}
               >
-                {/* Chat header */}
+                {/* Chat Header */}
                 <Box
                   sx={{
                     p: 2,
                     bgcolor: CHAT_COLORS.primary,
                     color: 'white',
+                    borderBottom: `1px solid ${CHAT_COLORS.border}`,
+                    zIndex: 3,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderBottom: `1px solid ${CHAT_COLORS.border}`
+                    gap: 2,
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar
-                      src="/assets/bot-avatar.png"
-                      alt="Pregnancy Assistant"
-                      sx={{ 
-                        width: 40, 
-                        height: 40, 
-                        mr: 1.5, 
-                        bgcolor: 'white',
-                        boxShadow: `0 2px 8px ${alpha(CHAT_COLORS.primary, 0.3)}`
-                      }}
-                    >
-                      <ChatIcon sx={{ color: CHAT_COLORS.primary }} />
-                    </Avatar>
-                    <Box>
-                      <Typography 
-                        variant="h6" 
-                        sx={{ 
-                          fontWeight: 600,
-                          fontFamily: "'Playfair Display', serif",
-                          fontSize: '1.1rem',
-                          letterSpacing: '0.5px'
-                        }}
-                      >
-                        Pregnancy Assistant
-                      </Typography>
-                      <Typography 
-                        variant="caption" 
-                        sx={{ 
-                          opacity: 0.9,
-                          fontFamily: "'Poppins', sans-serif",
-                          fontSize: '0.75rem'
-                        }}
-                      >
-                        {isTyping ? 'Typing...' : 'Online'}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton
-                      size="small"
-                      onClick={toggleWindowSize}
-                      sx={{ 
-                        color: 'white',
-                        '&:hover': {
-                          bgcolor: alpha('#fff', 0.1)
-                        }
-                      }}
-                    >
-                      {isWindowExpanded ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={toggleChat}
-                      sx={{ 
-                        color: 'white',
-                        '&:hover': {
-                          bgcolor: alpha('#fff', 0.1)
-                        }
-                      }}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  </Box>
+                  {/* Expand/Collapse Button */}
+                  <IconButton
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    sx={{
+                      color: 'white',
+                      '&:hover': {
+                        bgcolor: alpha('#fff', 0.1),
+                      },
+                      padding: '4px',
+                    }}
+                  >
+                    {isExpanded ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
+                  </IconButton>
+
+                  <Typography 
+                    variant="h6"
+                    sx={{ 
+                      flex: 1,
+                      fontSize: isExpanded ? {
+                        xs: '1.25rem',
+                        sm: '1.5rem'
+                      } : '1.25rem',
+                      ...expandTransition
+                    }}
+                  >
+                    Chat Assistant
+                  </Typography>
+
+                  <IconButton
+                    onClick={toggleSpeech}
+                    sx={{
+                      color: 'white',
+                      '&:hover': {
+                        bgcolor: alpha('#fff', 0.1),
+                      },
+                    }}
+                  >
+                    {isSpeechEnabled ? <VolumeUpIcon /> : <VolumeMuteIcon />}
+                  </IconButton>
+
+                  {/* Add Close Button */}
+                  <IconButton
+                    onClick={() => setIsOpen(false)}
+                    sx={{
+                      color: 'white',
+                      '&:hover': {
+                        bgcolor: alpha('#fff', 0.1),
+                      },
+                    }}
+                    aria-label="close chatbot"
+                  >
+                    <CloseIcon />
+                  </IconButton>
                 </Box>
 
-                {/* Chat messages */}
+                {/* Main Chat Container */}
                 <Box
                   sx={{
-                    p: 2,
-                    flexGrow: 1,
-                    overflowY: 'auto',
+                    position: 'relative',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 1.5,
+                    height: '100%',
+                    overflow: 'hidden',
                     bgcolor: CHAT_COLORS.background,
-                    '&::-webkit-scrollbar': {
-                      width: '8px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                      background: 'transparent',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: alpha(CHAT_COLORS.primary, 0.2),
-                      borderRadius: '4px',
-                      '&:hover': {
-                        background: alpha(CHAT_COLORS.primary, 0.3),
-                      }
-                    }
                   }}
                 >
-                  <AnimatePresence>
+                  {/* Voice Mode Indicator */}
+                  {isVoiceMode && (
+                    <VoiceModeIndicator
+                      isListening={isListening}
+                      isSpeaking={isSpeaking}
+                      transcript={voiceTranscript}
+                    />
+                  )}
+
+                  {/* Messages Container */}
+                  <Box
+                    ref={messagesEndRef}
+                    sx={{
+                      flex: 1,
+                      overflowY: 'auto',
+                      pt: isVoiceMode ? '64px' : 2,
+                      pb: 2,
+                      position: 'relative',
+                      bgcolor: 'inherit',
+                      ...expandTransition,
+                    }}
+                  >
                     {messages.map((message) => (
-                      <motion.div
+                      <MessageBubble 
                         key={message.id}
-                        variants={messageVariants}
-                        initial="initial"
-                        animate="animate"
-                      >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            flexDirection: message.sender === 'user' ? 'row-reverse' : 'row',
-                            alignItems: 'flex-start',
-                            mb: 1
-                          }}
-                        >
-                          {message.sender === 'bot' && (
-                            <Avatar
-                              src="/assets/bot-avatar.png"
-                              alt="Bot"
-                              sx={{ 
-                                width: 32, 
-                                height: 32, 
-                                mr: 1,
-                                ml: 0,
-                                bgcolor: CHAT_COLORS.primary,
-                                color: 'white',
-                                fontSize: '0.8rem'
-                              }}
-                            >
-                              <ChatIcon sx={{ fontSize: '1rem' }} />
-                            </Avatar>
-                          )}
-                          
-                          <Box
-                            sx={{
-                              maxWidth: '80%',
-                              p: 1.5,
-                              borderRadius: 2,
-                              bgcolor: message.sender === 'user' ? CHAT_COLORS.userMessage : CHAT_COLORS.botMessage,
-                              color: message.sender === 'user' ? 'white' : CHAT_COLORS.text.primary,
-                              boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-                              position: 'relative',
-                              ...(message.sender === 'user' ? {
-                                borderTopRightRadius: 0,
-                              } : {
-                                borderTopLeftRadius: 0,
-                              })
-                            }}
-                          >
-                            {message.sender === 'user' ? (
-                              <Typography variant="body2">
-                                {message.text}
-                              </Typography>
-                            ) : (
-                              <Box>
-                                <Box
-                                  sx={{
-                                    maxHeight: expandedMessages.has(message.id) ? 'none' : '150px',
-                                    overflow: 'hidden',
-                                    position: 'relative',
-                                    '&::after': !expandedMessages.has(message.id) && message.text.length > 300 ? {
-                                      content: '""',
-                                      position: 'absolute',
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      height: '50px',
-                                      background: 'linear-gradient(transparent, white)',
-                                      pointerEvents: 'none'
-                                    } : {}
-                                  }}
-                                >
-                                  <MarkdownPreview 
-                                    source={message.text}
-                                    style={{
-                                      backgroundColor: 'transparent',
-                                      color: message.sender === 'user' ? 'white' : 'inherit'
-                                    }}
-                                  />
-                                </Box>
-
-                                {/* Navigation Button - only show after typing is complete */}
-                                {typedMessages.get(`${message.id}-complete`) && 
-                                 getMostRelevantButton(message.text) && (
-                                  <Fade in={true}>
-                                    <Box sx={{ mt: 2 }}>
-                                      {(() => {
-                                        const button = getMostRelevantButton(message.text);
-                                        const ButtonIcon = button.icon;
-                                        
-                                        return (
-                                          <Button
-                                            variant="contained"
-                                            startIcon={<ButtonIcon />}
-                                            onClick={() => navigate(button.path)}
-                                            sx={{
-                                              bgcolor: button.color,
-                                              color: 'white',
-                                              textTransform: 'none',
-                                              borderRadius: 2,
-                                              px: 2.5,
-                                              py: 1,
-                                              fontWeight: 500,
-                                              fontSize: '0.9rem',
-                                              fontFamily: "'Poppins', sans-serif",
-                                              boxShadow: `0 4px 12px ${alpha(button.color, 0.3)}`,
-                                              '&:hover': {
-                                                bgcolor: button.color,
-                                                transform: 'translateY(-2px)',
-                                                boxShadow: `0 6px 16px ${alpha(button.color, 0.4)}`,
-                                              },
-                                              '&:active': {
-                                                transform: 'translateY(0)',
-                                              },
-                                              transition: 'all 0.2s ease'
-                                            }}
-                                          >
-                                            {button.text}
-                                          </Button>
-                                        );
-                                      })()}
-                                    </Box>
-                                  </Fade>
-                                )}
-
-                                {message.text.length > 300 && (
-                                  <Button
-                                    size="small"
-                                    onClick={() => toggleMessageExpansion(message.id)}
-                                    sx={{
-                                      mt: 2,
-                                      color: CHAT_COLORS.primary,
-                                      fontFamily: "'Poppins', sans-serif",
-                                      fontWeight: 500,
-                                      fontSize: '0.85rem',
-                                      textTransform: 'none',
-                                      borderRadius: 1.5,
-                                      px: 2,
-                                      py: 0.5,
-                                      bgcolor: alpha(CHAT_COLORS.primary, 0.05),
-                                      '&:hover': {
-                                        bgcolor: alpha(CHAT_COLORS.primary, 0.1),
-                                        transform: 'translateY(-2px)',
-                                        transition: 'all 0.2s ease'
-                                      }
-                                    }}
-                                  >
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                      {expandedMessages.has(message.id) ? (
-                                        <ExpandLessIcon fontSize="small" />
-                                      ) : (
-                                        <ExpandMoreIcon fontSize="small" />
-                                      )}
-                                      {expandedMessages.has(message.id) ? 'Show Less' : 'Read More'}
-                                    </Box>
-                                  </Button>
-                                )}
-                              </Box>
-                            )}
-                            
-                            {message.action && (
-                              <Box sx={{ mt: 1 }}>
-                                <Box
-                                  onClick={() => handleActionClick(message.action)}
-                                  sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    p: 0.5,
-                                    borderRadius: 1,
-                                    bgcolor: `${CHAT_COLORS.primary}15`,
-                                    color: CHAT_COLORS.primary,
-                                    cursor: 'pointer',
-                                    '&:hover': {
-                                      bgcolor: `${CHAT_COLORS.primary}25`,
-                                    }
-                                  }}
-                                >
-                                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                                    Go to page
-                                  </Typography>
-                                  <NavigateNextIcon fontSize="small" />
-                                </Box>
-                              </Box>
-                            )}
-                            
-                            <Typography 
-                              variant="caption" 
-                              sx={{ 
-                                display: 'block', 
-                                mt: 1,
-                                opacity: 0.7,
-                                fontFamily: "'Poppins', sans-serif",
-                                fontSize: '0.7rem',
-                                textAlign: message.sender === 'user' ? 'right' : 'left'
-                              }}
-                            >
-                              {formatTime(message.timestamp)}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </motion.div>
-                    ))}
-                    {isTyping && (
-                      <motion.div
-                        variants={messageVariants}
-                        initial="initial"
-                        animate="animate"
-                      >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            mb: 1
-                          }}
-                        >
-                          <Avatar
-                            src="/assets/bot-avatar.png"
-                            alt="Bot"
-                            sx={{ 
-                              width: 32, 
-                              height: 32, 
-                              mr: 1,
-                              bgcolor: CHAT_COLORS.primary,
-                              color: 'white',
-                              fontSize: '0.8rem'
-                            }}
-                          >
-                            <ChatIcon sx={{ fontSize: '1rem' }} />
-                          </Avatar>
-                          
-                          <Box
-                            sx={{
-                              p: 1.5,
-                              borderRadius: 2,
-                              bgcolor: 'white',
-                              boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-                              borderTopLeftRadius: 0,
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 0.5
-                            }}
-                          >
-                            <Box
-                              component="span"
-                              sx={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: '50%',
-                                bgcolor: CHAT_COLORS.primary,
-                                animation: 'pulse 1s infinite',
-                                '@keyframes pulse': {
-                                  '0%': {
-                                    opacity: 0.5,
-                                    transform: 'scale(0.8)',
-                                  },
-                                  '50%': {
-                                    opacity: 1,
-                                    transform: 'scale(1)',
-                                  },
-                                  '100%': {
-                                    opacity: 0.5,
-                                    transform: 'scale(0.8)',
-                                  },
-                                },
-                              }}
-                            />
-                            <Box
-                              component="span"
-                              sx={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: '50%',
-                                bgcolor: CHAT_COLORS.primary,
-                                animation: 'pulse 1s infinite 0.2s',
-                                '@keyframes pulse': {
-                                  '0%': {
-                                    opacity: 0.5,
-                                    transform: 'scale(0.8)',
-                                  },
-                                  '50%': {
-                                    opacity: 1,
-                                    transform: 'scale(1)',
-                                  },
-                                  '100%': {
-                                    opacity: 0.5,
-                                    transform: 'scale(0.8)',
-                                  },
-                                },
-                              }}
-                            />
-                            <Box
-                              component="span"
-                              sx={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: '50%',
-                                bgcolor: CHAT_COLORS.primary,
-                                animation: 'pulse 1s infinite 0.4s',
-                                '@keyframes pulse': {
-                                  '0%': {
-                                    opacity: 0.5,
-                                    transform: 'scale(0.8)',
-                                  },
-                                  '50%': {
-                                    opacity: 1,
-                                    transform: 'scale(1)',
-                                  },
-                                  '100%': {
-                                    opacity: 0.5,
-                                    transform: 'scale(0.8)',
-                                  },
-                                },
-                              }}
-                            />
-                          </Box>
-                        </Box>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <div ref={messagesEndRef} />
-                </Box>
-
-                {/* Suggestion buttons */}
-                <Box
-                  sx={{
-                    p: 1.5,
-                    borderTop: `1px solid ${CHAT_COLORS.border}`,
-                    display: 'flex',
-                    gap: 1,
-                    overflowX: 'auto',
-                    bgcolor: alpha(CHAT_COLORS.botMessage, 0.5),
-                    '&::-webkit-scrollbar': {
-                      height: '6px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                      background: 'transparent',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: alpha(CHAT_COLORS.primary, 0.2),
-                      borderRadius: '3px',
-                      '&:hover': {
-                        background: alpha(CHAT_COLORS.primary, 0.3),
-                      }
-                    }
-                  }}
-                >
-                  {suggestionButtons.map((button, index) => (
-                    <Button
-                      key={index}
-                      variant="outlined"
-                      startIcon={<button.icon />}
-                      onClick={() => {
-                        setInputValue(button.query);
-                        handleSend();
-                      }}
-                      sx={{
-                        borderColor: alpha(CHAT_COLORS.primary, 0.3),
-                        color: CHAT_COLORS.primary,
-                        bgcolor: alpha(CHAT_COLORS.botMessage, 0.8),
-                        whiteSpace: 'nowrap',
-                        minWidth: 'auto',
-                        px: 2,
-                        py: 1,
-                        borderRadius: 2,
-                        fontSize: '0.9rem',
-                        fontWeight: 500,
-                        textTransform: 'none',
-                        '&:hover': {
-                          borderColor: CHAT_COLORS.primary,
-                          bgcolor: alpha(CHAT_COLORS.primary, 0.05),
-                          transform: 'translateY(-2px)',
-                          transition: 'all 0.2s ease'
+                        message={message}
+                        isExpanded={isExpanded}
+                        isTyping={!completedMessages.has(message.id) && message.sender === 'bot'}
+                        displayText={
+                          !completedMessages.has(message.id) && message.sender === 'bot'
+                            ? typingText.get(message.id) || ''
+                            : message.text
                         }
+                        expandTransition={expandTransition}
+                        isInitialMessage={message.id === messages[0].id}
+                      />
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </Box>
+
+                  {/* Chat Input Section */}
+                  <Box
+                    sx={{
+                      p: isExpanded ? 3 : 2,
+                      borderTop: `1px solid ${CHAT_COLORS.border}`,
+                      bgcolor: CHAT_COLORS.botMessage,
+                      zIndex: 2,
+                      ...expandTransition,
+                    }}
+                  >
+                    <Box 
+                      sx={{ 
+                        display: 'flex', 
+                        gap: 1, 
+                        mb: 1,
+                        justifyContent: 'flex-start'
                       }}
                     >
-                      {button.text}
-                    </Button>
-                  ))}
-                </Box>
-
-                {/* Chat input */}
-                <Box
-                  sx={{
-                    p: 2,
-                    borderTop: `1px solid ${CHAT_COLORS.border}`,
-                    bgcolor: CHAT_COLORS.botMessage
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Type your message..."
-                    variant="outlined"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyPress={handleKeyPress}
-                    inputRef={inputRef}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            color="primary"
-                            onClick={handleSend}
-                            disabled={!inputValue.trim() || isLoading}
-                            sx={{
-                              color: inputValue.trim() ? CHAT_COLORS.primary : 'text.disabled',
-                              transition: 'all 0.2s',
-                              '&:hover': {
-                                bgcolor: inputValue.trim() ? `${CHAT_COLORS.primary}15` : 'transparent',
-                              }
-                            }}
-                          >
-                            {isLoading ? <CircularProgress size={24} color="inherit" /> : <SendIcon />}
+                      <IconButton
+                        onClick={toggleVoiceMode}
+                        color={isVoiceMode ? "error" : "primary"}
+                        sx={{
+                          width: isExpanded ? 48 : 40,
+                          height: isExpanded ? 48 : 40,
+                          bgcolor: alpha(isVoiceMode ? CHAT_COLORS.accent : CHAT_COLORS.primary, 0.1),
+                          '&:hover': {
+                            bgcolor: alpha(isVoiceMode ? CHAT_COLORS.accent : CHAT_COLORS.primary, 0.2),
+                          },
+                          ...expandTransition,
+                        }}
+                      >
+                        {isVoiceMode ? (
+                          <MicOffIcon sx={{ fontSize: isExpanded ? 28 : 24 }} />
+                        ) : (
+                          <MicIcon sx={{ fontSize: isExpanded ? 28 : 24 }} />
+                        )}
+                      </IconButton>
+                    </Box>
+                    
+                    {!isVoiceMode && (
+                      <TextField
+                        fullWidth
+                        placeholder="Type your message..."
+                        variant="outlined"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyPress={handleKeyPress}
+                        disabled={isListening}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            fontSize: isExpanded ? '1.1rem' : '1rem',
+                            ...expandTransition,
+                          },
+                        }}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={handleSend}
+                                disabled={!inputValue.trim()}
+                                color="primary"
+                                sx={{
+                                  width: isExpanded ? 48 : 40,
+                                  height: isExpanded ? 48 : 40,
+                                  ...expandTransition,
+                                }}
+                              >
+                                <SendIcon sx={{ fontSize: isExpanded ? 28 : 24 }} />
                           </IconButton>
                         </InputAdornment>
                       ),
-                      sx: {
-                        borderRadius: 2,
-                        '& fieldset': {
-                          borderColor: 'divider',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: `${CHAT_COLORS.primary}80`,
-                        },
-                      }
-                    }}
-                  />
+                        }}
+                      />
+                    )}
+                          </Box>
                 </Box>
               </Paper>
             </motion.div>

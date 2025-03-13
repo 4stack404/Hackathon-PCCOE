@@ -1,0 +1,350 @@
+{
+  "postnatal_exercises": [
+    {
+      "id": 1,
+      "name": "Pelvic Floor (Kegel) Exercises",
+      "image": "/assets/excercise_image/kegal.webp",
+      "video": "https://www.youtube.com/watch?v=oVKemhvgekk",
+      "description": "Strengthens the pelvic floor muscles to prevent incontinence and support recovery.",
+      "steps": [
+        "Sit or lie down comfortably.",
+        "Tighten your pelvic muscles (as if stopping urine flow).",
+        "Hold for 5-10 seconds, then relax.",
+        "Repeat 10-15 times per session, 3 times daily."
+      ],
+      "precautions": [
+        "Avoid holding your breath while doing Kegels.",
+        "Don't engage your thighs or glutes—focus only on pelvic muscles.",
+        "Do not overdo it, as it may lead to muscle fatigue."
+      ],
+      "benefits": [
+        "Improves bladder control and prevents leakage.",
+        "Strengthens vaginal muscles, aiding postpartum recovery.",
+        "Enhances pelvic support and reduces discomfort."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Diaphragmatic Breathing (Deep Breathing)",
+      "image": "/assets/excercise_image/breathing.jpg",
+      "video": "https://www.youtube.com/watch?v=3fHTSzY42rs",
+      "description": "Helps relax the body and strengthen core muscles post-delivery.",
+      "steps": [
+        "Sit or lie on your back in a comfortable position.",
+        "Place one hand on your chest and one on your belly.",
+        "Inhale deeply through your nose, expanding your belly.",
+        "Exhale slowly through pursed lips.",
+        "Repeat for 5-10 minutes daily."
+      ],
+      "precautions": [
+        "Keep the breathing slow and steady.",
+        "Do not engage in fast or shallow breathing.",
+        "Avoid if you feel dizzy or lightheaded."
+      ],
+      "benefits": [
+        "Increases oxygen flow, promoting relaxation.",
+        "Strengthens core and diaphragm muscles.",
+        "Reduces stress and anxiety postpartum."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Pelvic Tilts",
+      "image": "/assets/excercise_image/pelvictilts.webp",
+      "video": "https://www.youtube.com/watch?v=u0AJnVg0tcc",
+      "description": "Strengthens lower back and core muscles, reducing postnatal pain.",
+      "steps": [
+        "Lie on your back with knees bent and feet flat.",
+        "Tighten your abdomen and gently tilt your pelvis upward.",
+        "Hold for 5 seconds, then relax.",
+        "Repeat 10-12 times."
+      ],
+      "precautions": [
+        "Avoid straining the lower back.",
+        "Keep movements gentle and controlled."
+      ],
+      "benefits": [
+        "Improves posture and relieves back pain.",
+        "Strengthens core and pelvic muscles."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Seated Knee Lifts",
+      "image": "/assets/excercise_image/legextension.webp",
+      "video": "https://www.youtube.com/watch?v=EAymwps5x0s",
+      "description": "Helps strengthen the lower body and improves circulation.",
+      "steps": [
+        "Sit on a chair with back support.",
+        "Lift one knee toward your chest, hold for 5 seconds, then lower.",
+        "Repeat with the other leg.",
+        "Perform 10 reps per leg."
+      ],
+      "precautions": [
+        "Sit with good posture to avoid lower back pain.",
+        "Avoid jerky movements."
+      ],
+      "benefits": [
+        "Strengthens hip flexors and thighs.",
+        "Improves blood circulation."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Cat-Cow Stretch",
+      "image": "/assets/excercise_image/catcow.webp",
+      "video": "https://www.youtube.com/watch?v=LympZqVz14s",
+      "description": "Relieves back stiffness and promotes spinal flexibility.",
+      "steps": [
+        "Get into an all-fours position.",
+        "Inhale, arch your back, lifting your head (Cow Pose).",
+        "Exhale, round your spine, tucking your head (Cat Pose).",
+        "Repeat 10 times."
+      ],
+      "precautions": [
+        "Move slowly and gently to avoid strain.",
+        "Avoid if you have wrist pain—place hands on fists instead."
+      ],
+      "benefits": [
+        "Improves posture and relieves back pain.",
+        "Enhances core strength."
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Bridge Exercise",
+      "image": "/assets/excercise_image/bridge.webp",
+      "video": "https://www.youtube.com/watch?v=hg0thnL-TBQ",
+      "description": "Strengthens glutes, core, and lower back muscles.",
+      "steps": [
+        "Lie on your back, knees bent, feet flat.",
+        "Lift your hips slowly, forming a straight line from shoulders to knees.",
+        "Hold for 5 seconds, then lower.",
+        "Repeat 10 times."
+      ],
+      "precautions": [
+        "Avoid arching your lower back.",
+        "Keep your feet flat and stable."
+      ],
+      "benefits": [
+        "Strengthens glutes and core muscles.",
+        "Helps stabilize the pelvis."
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Side-Lying Leg Lifts",
+      "image": "/assets/excercise_image/sideleg.webp",
+      "video": "https://www.youtube.com/watch?v=USQ827zBMdA",
+      "description": "Strengthens the hip, thigh, and core muscles, improving lower body stability.",
+      "steps": [
+        "Lie on your side with your legs stacked on top of each other.",
+        "Keep your bottom leg slightly bent for balance.",
+        "Engage your core and lift the top leg straight up.",
+        "Hold for 3-5 seconds, then lower it slowly.",
+        "Repeat 10-15 times per side, 2-3 sets."
+      ],
+      "precautions": [
+        "Keep your hips stacked to prevent twisting.",
+        "Move slowly and with control—no jerky movements.",
+        "Don't overextend your leg too high, as it may strain the hip.",
+        "Avoid if you have pelvic pain—opt for a smaller range of motion."
+      ],
+      "benefits": [
+        "Strengthens inner and outer thighs.",
+        "Helps with hip stability and mobility.",
+        "Improves posture and core strength.",
+        "Supports recovery from pelvic instability post-childbirth."
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Seated Pelvic Floor Relaxation",
+      "image": "/assets/excercise_image/kegal.webp",
+      "video": "https://www.youtube.com/watch?v=oVKemhvgekk",
+      "description": "Encourages pelvic muscle relaxation, easing tension and improving circulation.",
+      "steps": [
+        "Sit on a firm chair or yoga ball with your feet flat on the ground.",
+        "Relax your pelvic muscles while taking deep breaths.",
+        "Inhale deeply, expanding your abdomen.",
+        "Exhale slowly, relaxing pelvic muscles completely.",
+        "Hold the relaxed state for 5 seconds, then repeat 10 times."
+      ],
+      "precautions": [
+        "Avoid forcing the relaxation—let it happen naturally.",
+        "Keep your back straight and maintain a neutral posture.",
+        "Stop if you feel discomfort or pain in your pelvic region."
+      ],
+      "benefits": [
+        "Enhances pelvic circulation, aiding in postpartum healing.",
+        "Relieves pelvic tension from childbirth.",
+        "Improves bladder control and reduces postpartum incontinence.",
+        "Helps prevent pelvic organ prolapse."
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Baby Lifts",
+      "image": "/assets/excercise_image/babylift.webp",
+      "video": "https://www.youtube.com/watch?v=s-szODdpg8A",
+      "description": "Strengthens arms, shoulders, and upper body while promoting bonding with your baby.",
+      "steps": [
+        "Stand with feet shoulder-width apart.",
+        "Hold your baby securely at chest level.",
+        "Lift your baby overhead, extending your arms fully.",
+        "Hold for 3-5 seconds, then lower back to chest level.",
+        "Repeat 10-12 times, 2-3 sets."
+      ],
+      "precautions": [
+        "Ensure your core is engaged to prevent back strain.",
+        "Do not lock your elbows while lifting.",
+        "Start with lighter repetitions and increase gradually.",
+        "Avoid if you experience shoulder pain."
+      ],
+      "benefits": [
+        "Builds arm, shoulder, and chest strength.",
+        "Improves core stability while holding the baby.",
+        "Enhances parent-child bonding.",
+        "Provides light cardiovascular movement."
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Shoulder Rolls",
+      "image": "/assets/excercise_image/roll.webp",
+      "video": "https://www.youtube.com/watch?v=X7NtgY9kCCM",
+      "description": "Relieves tension in the shoulders and upper back, especially helpful for new mothers experiencing stiffness from breastfeeding.",
+      "steps": [
+        "Sit or stand with back straight.",
+        "Roll both shoulders forward in a circular motion 10 times.",
+        "Reverse and roll shoulders backward for 10 more repetitions.",
+        "Breathe deeply and slowly while rolling."
+      ],
+      "precautions": [
+        "Keep movements gentle and smooth.",
+        "Avoid shrugging or hunching.",
+        "Do not rush—move at a steady pace."
+      ],
+      "benefits": [
+        "Reduces neck and shoulder tension from carrying the baby.",
+        "Enhances blood circulation in the upper body.",
+        "Prevents postural issues from prolonged sitting or breastfeeding.",
+        "Improves range of motion in the shoulders."
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Standing Side Stretches",
+      "image": "/assets/excercise_image/sidestrecth.webp",
+      "video": "https://www.youtube.com/watch?v=BpkYg2EclBA",
+      "description": "Enhances spinal flexibility and posture, reducing postpartum back pain.",
+      "steps": [
+        "Stand with feet hip-width apart.",
+        "Raise your right arm over your head and lean gently to the left.",
+        "Hold the stretch for 10 seconds, then return to center.",
+        "Repeat on the other side.",
+        "Perform 3-5 stretches per side."
+      ],
+      "precautions": [
+        "Move slowly to prevent strain.",
+        "Do not overstretch—listen to your body.",
+        "Avoid if you feel dizziness or instability."
+      ],
+      "benefits": [
+        "Reduces stiffness in the spine and obliques.",
+        "Improves posture and prevents back pain.",
+        "Enhances core stability."
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Wrist and Ankle Rotations",
+      "image": "/assets/excercise_image/wrist.webp",
+      "video": "https://www.youtube.com/watch?v=DYp_XvUqZJ0",
+      "description": "Helps reduce swelling, stiffness, and improve blood circulation in the extremities.",
+      "steps": [
+        "Sit comfortably in a chair or on the floor.",
+        "Rotate your wrists clockwise 10 times, then counterclockwise 10 times.",
+        "Do the same for your ankles.",
+        "Repeat for 2-3 sets."
+      ],
+      "precautions": [
+        "Avoid fast movements—rotate slowly.",
+        "Stop if you feel numbness or tingling.",
+        "Ensure you're seated comfortably for balance."
+      ],
+      "benefits": [
+        "Reduces fluid retention and swelling in hands and feet.",
+        "Improves joint mobility and flexibility.",
+        "Prevents stiffness caused by reduced postpartum movement."
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Walking",
+      "image": "/assets/excercise_image/walkin.jpg",
+      "video": "https://www.youtube.com/watch?v=43RhoD5YPv0",
+      "description": "The simplest postnatal exercise to boost cardio health and recovery.",
+      "steps": [
+        "Start with 5-10 minutes of slow walking.",
+        "Gradually increase to 20-30 minutes daily.",
+        "Maintain a steady pace and keep good posture."
+      ],
+      "precautions": [
+        "Start slowly and increase duration gradually.",
+        "Avoid uneven terrain to prevent falls.",
+        "Wear comfortable shoes to support your posture."
+      ],
+      "benefits": [
+        "Boosts energy levels and combats postpartum fatigue.",
+        "Enhances mood and reduces stress.",
+        "Aids in gradual weight loss.",
+        "Strengthens legs and cardiovascular health."
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Calf Stretches",
+      "image": "/assets/excercise_image/calf.webp",
+      "video": "https://www.youtube.com/watch?v=4uPCKQqUWTM",
+      "description": "Prevents leg cramps and stiffness, especially after long periods of inactivity.",
+      "steps": [
+        "Stand near a wall for support.",
+        "Step one foot forward, keeping the back leg straight.",
+        "Press your back heel into the ground while leaning forward.",
+        "Hold for 15 seconds, then switch sides.",
+        "Repeat 3-5 times per leg."
+      ],
+      "precautions": [
+        "Do not bounce—move slowly into the stretch.",
+        "Keep your back heel grounded."
+      ],
+      "benefits": [
+        "Prevents cramps and stiffness.",
+        "Improves circulation in the legs."
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Side-Lying Clamshells",
+      "image": "/assets/excercise_image/clamshell.webp",
+      "video": "https://www.youtube.com/watch?v=6mA03l768aY",
+      "description": "Strengthens pelvic and glute muscles, improving hip stability.",
+      "steps": [
+        "Lie on your side with knees bent at a 45-degree angle.",
+        "Keep feet together and lift top knee while keeping hips still.",
+        "Hold for 3 seconds, then lower.",
+        "Repeat 10 times per side."
+      ],
+      "precautions": [
+        "Keep movements slow and controlled.",
+        "Don't twist your hips or back."
+      ],
+      "benefits": [
+        "Strengthens hip and pelvic muscles.",
+        "Supports core stability.",
+        "Reduces lower back pain."
+      ]
+    }
+  ]
+}

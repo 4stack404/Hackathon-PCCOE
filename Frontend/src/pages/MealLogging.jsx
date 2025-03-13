@@ -59,7 +59,7 @@ import {
   TrendingUp as TrendingUpIcon,
   LocalFireDepartment as LocalFireDepartmentIcon
 } from '@mui/icons-material';
-import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend, Filler } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
@@ -70,150 +70,7 @@ import { mealService } from '../services/mealService';
 import { toast } from 'react-toastify';
 
 // Register the required Chart.js components
-ChartJS.register(ArcElement, ChartTooltip, Legend);
-
-// Expanded food database with more options
-const FOOD_DATABASE = {
-  // Breakfast Items
-  "Oatmeal with Berries": {
-    calories: 350,
-    protein: 12,
-    carbs: 58,
-    fat: 8,
-    fiber: 8,
-    iron: 2.5,
-    folicAcid: 120
-  },
-  "Greek Yogurt with Honey": {
-    calories: 150,
-    protein: 15,
-    carbs: 8,
-    fat: 4,
-    fiber: 0,
-    iron: 0.2,
-    folicAcid: 15
-  },
-  "Whole Grain Toast with Avocado": {
-    calories: 280,
-    protein: 8,
-    carbs: 32,
-    fat: 16,
-    fiber: 10,
-    iron: 2.0,
-    folicAcid: 80
-  },
-  "Spinach and Cheese Omelet": {
-    calories: 320,
-    protein: 21,
-    carbs: 4,
-    fat: 24,
-    fiber: 2,
-    iron: 3.2,
-    folicAcid: 160
-  },
-  // Lunch Items
-  "Quinoa Salad": {
-    calories: 420,
-    protein: 18,
-    carbs: 68,
-    fat: 12,
-    fiber: 10,
-    iron: 4.5,
-    folicAcid: 180
-  },
-  "Grilled Chicken Breast": {
-    calories: 165,
-    protein: 31,
-    carbs: 0,
-    fat: 3.6,
-    fiber: 0,
-    iron: 1.1,
-    folicAcid: 9
-  },
-  "Lentil Soup": {
-    calories: 230,
-    protein: 15,
-    carbs: 40,
-    fat: 2,
-    fiber: 15,
-    iron: 6.6,
-    folicAcid: 358
-  },
-  "Tuna Sandwich": {
-    calories: 350,
-    protein: 25,
-    carbs: 38,
-    fat: 12,
-    fiber: 4,
-    iron: 2.8,
-    folicAcid: 48
-  },
-  // Dinner Items
-  "Salmon with Sweet Potato": {
-    calories: 450,
-    protein: 46,
-    carbs: 26,
-    fat: 18,
-    fiber: 4,
-    iron: 2.5,
-    folicAcid: 220
-  },
-  "Stir-Fried Tofu with Vegetables": {
-    calories: 380,
-    protein: 24,
-    carbs: 32,
-    fat: 16,
-    fiber: 8,
-    iron: 6.2,
-    folicAcid: 263
-  },
-  "Brown Rice with Black Beans": {
-    calories: 340,
-    protein: 12,
-    carbs: 68,
-    fat: 3,
-    fiber: 12,
-    iron: 3.8,
-    folicAcid: 172
-  },
-  // Snacks
-  "Apple with Almond Butter": {
-    calories: 200,
-    protein: 7,
-    carbs: 28,
-    fat: 12,
-    fiber: 5,
-    iron: 0.8,
-    folicAcid: 40
-  },
-  "Trail Mix": {
-    calories: 180,
-    protein: 6,
-    carbs: 18,
-    fat: 12,
-    fiber: 3,
-    iron: 1.2,
-    folicAcid: 25
-  },
-  "Hummus with Carrots": {
-    calories: 160,
-    protein: 6,
-    carbs: 20,
-    fat: 8,
-    fiber: 6,
-    iron: 1.5,
-    folicAcid: 60
-  },
-  "Cottage Cheese with Peaches": {
-    calories: 170,
-    protein: 14,
-    carbs: 22,
-    fat: 4,
-    fiber: 2,
-    iron: 0.4,
-    folicAcid: 30
-  }
-};
+ChartJS.register(ArcElement, ChartTooltip, Legend, Filler);
 
 // Color constants
 const COLORS = {
@@ -340,16 +197,11 @@ function MealLogging() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [editingMeal, setEditingMeal] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  // Dummy logged meals state (in a real app, this would come from a backend)
+  const [recipes, setRecipes] = useState([]);
   const [loggedMeals, setLoggedMeals] = useState({
-    [dayjs().format('YYYY-MM-DD')]: {
-      breakfast: [
-        { id: 1, food: "Oatmeal with Berries", ...FOOD_DATABASE["Oatmeal with Berries"] }
-      ],
-      lunch: [
-        { id: 2, food: "Quinoa Salad", ...FOOD_DATABASE["Quinoa Salad"] }
-      ],
+    [selectedDate.format('YYYY-MM-DD')]: {
+      breakfast: [],
+      lunch: [],
       dinner: [],
       snacks: []
     }
@@ -364,40 +216,100 @@ function MealLogging() {
     fiber: 0
   });
 
-  // Update the useEffect that calculates daily totals
+  // Add this state to track form validation
+  const [formErrors, setFormErrors] = useState({
+    mealType: false,
+    food: false
+  });
+
+  // Add this function to load meals from the database
+  const fetchMeals = async (date) => {
+    try {
+      setLoading(true);
+      const formattedDate = date.format('YYYY-MM-DD');
+      const response = await mealService.getMeals(formattedDate);
+      
+      if (response.success) {
+        // Transform the meals into the format expected by the component
+        const mealsData = response.data;
+        console.log('Meals data from API:', mealsData);
+        
+        const formattedMeals = {
+          [formattedDate]: {
+            breakfast: [],
+            lunch: [],
+            dinner: [],
+            snacks: []
+          }
+        };
+        
+        // Group meals by type
+        mealsData.forEach(meal => {
+          // Ensure consistent meal type handling
+          let mealType = meal.type;
+          
+          // For backward compatibility, convert 'snack' to 'snacks' if needed
+          if (mealType === 'snack') {
+            mealType = 'snacks';
+          }
+          
+          if (formattedMeals[formattedDate][mealType]) {
+            // Ensure we have both id and _id for compatibility
+            const mealWithConsistentIds = {
+              id: meal._id,
+              _id: meal._id, // Store both formats for compatibility
+              name: meal.name,
+              calories: meal.calories,
+              protein: meal.protein,
+              carbs: meal.carbs,
+              fat: meal.fat,
+              fiber: meal.fiber || 0,
+              type: mealType, // Use the consistent meal type
+              date: formattedDate,
+              notes: meal.notes || ''
+            };
+            
+            console.log('Adding meal to state:', mealWithConsistentIds);
+            formattedMeals[formattedDate][mealType].push(mealWithConsistentIds);
+          } else {
+            console.warn(`Unknown meal type: ${meal.type}`);
+          }
+        });
+        
+        setLoggedMeals(formattedMeals);
+      }
+    } catch (error) {
+      console.error('Error fetching meals:', error);
+      toast.error('Failed to load meals');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Add this useEffect to load meals when the component mounts or the date changes
   useEffect(() => {
-    const dateKey = selectedDate.format('YYYY-MM-DD');
-    const meals = loggedMeals[dateKey] || {
-      breakfast: [],
-      lunch: [],
-      dinner: [],
-      snacks: []
-    };
+    fetchMeals(selectedDate);
+  }, [selectedDate]);
 
-    const totals = {
-      calories: 0,
-      protein: 0,
-      carbs: 0,
-      fat: 0,
-      fiber: 0
-    };
+  // Fetch recipes data when component mounts
+  useEffect(() => {
+    fetch('/recipes.json')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setRecipes(data);
+          console.log("Recipes loaded:", data.length);
+        } else if (data && Array.isArray(data.recipes)) {
+          setRecipes(data.recipes);
+          console.log("Recipes loaded from data.recipes:", data.recipes.length);
+        } else {
+          console.error("Unexpected recipes data format:", data);
+        }
+      })
+      .catch(error => console.error('Error loading recipes:', error));
+  }, []);
 
-    // Calculate totals from all meal types
-    Object.values(meals).forEach(mealTypeArray => {
-      mealTypeArray.forEach(meal => {
-        totals.calories += Number(meal.calories) || 0;
-        totals.protein += Number(meal.protein) || 0;
-        totals.carbs += Number(meal.carbs) || 0;
-        totals.fat += Number(meal.fat) || 0;
-        totals.fiber += Number(meal.fiber) || 0;
-      });
-    });
-
-    console.log('Updated totals:', totals); // Debug log
-    setDailyTotals(totals);
-  }, [loggedMeals, selectedDate]);
-
-  // Calculate daily totals whenever meals change
+  // Update the useEffect that calculates daily totals
   useEffect(() => {
     const dateKey = selectedDate.format('YYYY-MM-DD');
     const meals = loggedMeals[dateKey] || {
@@ -499,214 +411,227 @@ function MealLogging() {
   const handleEditMeal = (meal) => {
     setEditingMeal(meal);
     setSelectedFood({
-      label: meal.food,
-      ...FOOD_DATABASE[meal.food]
+      id: meal.id,
+      name: meal.name,
+      calories: meal.calories,
+      protein: meal.protein,
+      carbs: meal.carbs,
+      fat: meal.fat
     });
     setSelectedMealType(meal.type);
     setOpenDialog(true);
   };
 
-  const handleDeleteMeal = (mealId, mealType) => {
-    const dateKey = selectedDate.format('YYYY-MM-DD');
-    
-    setLoggedMeals(prevMeals => {
-      const newMeals = { ...prevMeals };
-      if (newMeals[dateKey] && newMeals[dateKey][mealType]) {
-        newMeals[dateKey][mealType] = newMeals[dateKey][mealType].filter(
-          meal => meal.id !== mealId
-        );
-      }
-      return newMeals;
+  const handleDeleteMeal = async (mealId, mealType) => {
+    if (!mealId) {
+      toast.error('Invalid meal ID');
+      return;
+    }
+
+    // Log the complete meal object for debugging
+    console.log('Meal being deleted:', {
+      id: mealId,
+      type: mealType,
+      idType: typeof mealId
     });
+
+    if (window.confirm('Are you sure you want to delete this meal?')) {
+      try {
+        setLoading(true);
+        console.log('Attempting to delete meal with ID:', mealId, 'and type:', mealType);
+        
+        // Check if this is a MongoDB ObjectId (24 hex characters)
+        const isMongoId = typeof mealId === 'string' && /^[0-9a-fA-F]{24}$/.test(mealId);
+        
+        if (isMongoId) {
+          // If it's a MongoDB ID, delete from the database
+          try {
+            console.log('Sending delete request to server for ID:', mealId);
+            const response = await mealService.deleteMeal(mealId);
+            console.log('Delete API response:', response);
+            
+            if (response.success) {
+              toast.success('Meal deleted successfully');
+            } else {
+              console.error('API returned error:', response.message);
+              // Continue with local state update even if API fails
+            }
+          } catch (error) {
+            console.error('Error calling delete API:', error);
+            // If we get an "Invalid meal ID" error, just update the local state
+            if (error.response && error.response.data) {
+              console.error('Error response data:', error.response.data);
+              if (error.response.data.message && error.response.data.message.includes('Invalid meal ID')) {
+                console.log('Continuing with local state update despite invalid ID format');
+              } else {
+                // For other errors, show the error message but still continue
+                toast.error(`Error: ${error.response.data.message || 'Failed to delete from database'}`);
+              }
+            } else {
+              toast.error('Error deleting from database, but removing from view');
+            }
+          }
+        } else {
+          console.log('Not a MongoDB ID, only updating local state');
+        }
+        
+        // Update local state regardless of API success
+        const dateKey = selectedDate.format('YYYY-MM-DD');
+        setLoggedMeals(prevMeals => {
+          const newMeals = { ...prevMeals };
+          if (newMeals[dateKey] && newMeals[dateKey][mealType]) {
+            console.log('Filtering out meal with ID:', mealId, 'from type:', mealType);
+            console.log('Before filter:', newMeals[dateKey][mealType]);
+            
+            newMeals[dateKey][mealType] = newMeals[dateKey][mealType].filter(
+              meal => {
+                // Check both id and _id to handle different formats
+                const mealIdMatches = 
+                  (meal.id && meal.id.toString() === mealId.toString()) || 
+                  (meal._id && meal._id.toString() === mealId.toString());
+                
+                // Log each meal being compared for debugging
+                console.log('Comparing meal:', {
+                  mealId: meal.id || meal._id,
+                  matches: mealIdMatches
+                });
+                
+                return !mealIdMatches;
+              }
+            );
+            
+            console.log('After filter:', newMeals[dateKey][mealType]);
+          }
+          return newMeals;
+        });
+        
+        // Refresh meals from the database to ensure UI is in sync
+        // Only if we're dealing with a MongoDB ID
+        if (isMongoId) {
+          await fetchMeals(selectedDate);
+        }
+        
+      } catch (error) {
+        console.error('Error in handleDeleteMeal:', error);
+        toast.error('Failed to delete meal');
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
-  const handleFoodSelection = (food) => {
-    console.log('Selected food:', food); // Debug log
-    setSelectedFood(food);
+  const handleFoodSelection = (recipe) => {
+    if (!recipe) return;
+    
+    // Extract protein, carbs, fat values and convert to numbers
+    let protein = 0, carbs = 0, fat = 0, fiber = 0;
+    
+    if (recipe.nutritionInfo) {
+      // Handle different formats of nutrition info
+      const proteinStr = recipe.nutritionInfo.protein || '0g';
+      const carbsStr = recipe.nutritionInfo.carbs || '0g';
+      const fatStr = recipe.nutritionInfo.fat || '0g';
+      const fiberStr = recipe.nutritionInfo.fiber || '0g';
+      
+      // Remove 'g' suffix if present and convert to number
+      protein = parseFloat(proteinStr.replace('g', ''));
+      carbs = parseFloat(carbsStr.replace('g', ''));
+      fat = parseFloat(fatStr.replace('g', ''));
+      fiber = parseFloat(fiberStr.replace('g', ''));
+    }
+    
+    setSelectedFood({
+      id: recipe.id,
+      name: recipe.title,
+      calories: recipe.calories,
+      protein: protein,
+      carbs: carbs,
+      fat: fat,
+      fiber: fiber,
+      servings: recipe.servings || 1
+    });
+    
+    console.log("Selected food:", recipe.title, "with calories:", recipe.calories);
   };
 
   const handleSubmit = async () => {
+    // Reset form errors
+    const errors = {
+      mealType: false,
+      food: false
+    };
+    
+    // Validate required fields
+    if (!selectedFood) {
+      errors.food = true;
+      toast.error('Please select a food');
+    }
+
+    // Validate meal type - ensure it's a non-empty string
+    if (!selectedMealType || selectedMealType.trim() === '') {
+      errors.mealType = true;
+      toast.error('Please select a meal type');
+    }
+    
+    // Update form errors state
+    setFormErrors(errors);
+    
+    // If there are any errors, don't proceed
+    if (errors.food || errors.mealType) {
+      return;
+    }
+
     try {
       setLoading(true);
-
-      // Validate required fields
-      if (!selectedFood && !mealData.name) {
-        toast.error('Please select a food or enter meal details');
-        return;
-      }
-
-      // Validate meal type
-      if (!selectedMealType || !['breakfast', 'lunch', 'dinner', 'snack'].includes(selectedMealType)) {
-        toast.error('Please select a valid meal type');
-        return;
-      }
-
-      const data = {
-        name: selectedFood ? selectedFood.name : mealData.name,
+      const dateKey = selectedDate.format('YYYY-MM-DD');
+      
+      // Prepare meal data for API
+      const mealData = {
+        name: selectedFood.name,
         type: selectedMealType,
-        calories: selectedFood ? Number(selectedFood.calories) : Number(mealData.calories || 0),
-        protein: selectedFood ? Number(selectedFood.protein) : Number(mealData.protein || 0),
-        carbs: selectedFood ? Number(selectedFood.carbs) : Number(mealData.carbs || 0),
-        fat: selectedFood ? Number(selectedFood.fat) : Number(mealData.fat || 0),
-        notes: mealData.notes || ''
+        calories: selectedFood.calories,
+        protein: selectedFood.protein || 0,
+        carbs: selectedFood.carbs || 0,
+        fat: selectedFood.fat || 0,
+        notes: '',
+        date: dateKey
       };
-
-      console.log('Submitting meal data:', data); // Debug log
-
+      
+      console.log("Saving meal with data:", mealData);
+      
       let response;
-      if (editingMeal && editingMeal._id) {
-        response = await mealService.updateMeal(editingMeal._id, data);
+      
+      if (editingMeal && typeof editingMeal.id === 'string' && editingMeal.id.length > 10) {
+        // Update existing meal in database
+        console.log("Updating existing meal with ID:", editingMeal.id);
+        response = await mealService.updateMeal(editingMeal.id, mealData);
       } else {
-        response = await mealService.createMeal(data);
+        // Create new meal in database
+        console.log("Creating new meal");
+        response = await mealService.createMeal(mealData);
       }
-
+      
+      console.log("API response:", response);
+      
       if (response.success) {
-        toast.success(editingMeal ? 'Meal updated successfully' : 'Meal logged successfully');
-        await fetchMeals();
+        // Refresh meals from the database
+        await fetchMeals(selectedDate);
+        toast.success(editingMeal ? 'Meal updated' : 'Meal added');
         handleCloseDialog();
+      } else {
+        console.error("Failed to save meal:", response.message);
+        toast.error(response.message || 'Failed to save meal');
       }
     } catch (error) {
       console.error('Error saving meal:', error);
-      toast.error(editingMeal ? 'Failed to update meal' : 'Failed to log meal');
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+      }
+      toast.error('Failed to save meal');
     } finally {
       setLoading(false);
     }
-  };
-
-  // Expanded food database
-  const foodDatabase = [
-    {
-      name: "Oatmeal with Banana",
-      calories: 289,
-      protein: 6,
-      carbs: 62,
-      fat: 4,
-      fiber: 8
-    },
-    {
-      name: "Grilled Chicken Breast",
-      calories: 165,
-      protein: 31,
-      carbs: 0,
-      fat: 3.6,
-      fiber: 0
-    },
-    {
-      name: "Greek Yogurt with Berries",
-      calories: 150,
-      protein: 15,
-      carbs: 20,
-      fat: 3,
-      fiber: 4
-    },
-    {
-      name: "Salmon Fillet",
-      calories: 280,
-      protein: 25,
-      carbs: 0,
-      fat: 18,
-      fiber: 0
-    },
-    {
-      name: "Quinoa Bowl",
-      calories: 220,
-      protein: 8,
-      carbs: 39,
-      fat: 6,
-      fiber: 5
-    },
-    {
-      name: "Avocado Toast",
-      calories: 320,
-      protein: 10,
-      carbs: 33,
-      fat: 21,
-      fiber: 9
-    },
-    {
-      name: "Protein Smoothie",
-      calories: 245,
-      protein: 20,
-      carbs: 30,
-      fat: 5,
-      fiber: 6
-    },
-    {
-      name: "Turkey Sandwich",
-      calories: 350,
-      protein: 25,
-      carbs: 35,
-      fat: 12,
-      fiber: 4
-    },
-    {
-      name: "Mixed Green Salad",
-      calories: 120,
-      protein: 4,
-      carbs: 12,
-      fat: 8,
-      fiber: 5
-    },
-    {
-      name: "Almonds (1oz)",
-      calories: 164,
-      protein: 6,
-      carbs: 6,
-      fat: 14,
-      fiber: 3.5
-    },
-    {
-      name: "Brown Rice (1 cup)",
-      calories: 216,
-      protein: 5,
-      carbs: 45,
-      fat: 1.8,
-      fiber: 3.5
-    },
-    {
-      name: "Sweet Potato",
-      calories: 103,
-      protein: 2,
-      carbs: 24,
-      fat: 0,
-      fiber: 4
-    },
-    {
-      name: "Eggs (2 large)",
-      calories: 156,
-      protein: 13,
-      carbs: 1,
-      fat: 11,
-      fiber: 0
-    },
-    {
-      name: "Protein Bar",
-      calories: 220,
-      protein: 20,
-      carbs: 25,
-      fat: 8,
-      fiber: 3
-    },
-    {
-      name: "Hummus with Carrots",
-      calories: 190,
-      protein: 6,
-      carbs: 22,
-      fat: 11,
-      fiber: 7
-    }
-  ];
-
-  // Update the filtered foods logic
-  const filteredFoods = useMemo(() => {
-    return foodDatabase.filter(food =>
-      food.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery]);
-
-  // Add this function to handle navigation
-  const handleDietPlanClick = () => {
-    navigate('/diet-planning');
   };
 
   // Calculate macro percentages for the chart
@@ -723,8 +648,6 @@ function MealLogging() {
     };
   }, [dailyTotals]);
 
-  const [meals, setMeals] = useState([]);
-
   // Form states
   const [mealData, setMealData] = useState({
     name: '',
@@ -736,46 +659,13 @@ function MealLogging() {
     notes: ''
   });
 
-  // Meal types
-  const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
-
-  useEffect(() => {
-    fetchMeals();
-  }, [selectedDate]);
-
-  const fetchMeals = async () => {
-    try {
-      setLoading(true);
-      const response = await mealService.getMeals(selectedDate.format('YYYY-MM-DD'));
-      if (response.success) {
-        // Initialize the structure for the selected date
-        const dateKey = selectedDate.format('YYYY-MM-DD');
-        const newMealsByDate = {
-          [dateKey]: {
-            breakfast: [],
-            lunch: [],
-            dinner: [],
-            snack: []
-          }
-        };
-
-        // Sort meals by type
-        response.data.forEach(meal => {
-          if (meal.type && newMealsByDate[dateKey][meal.type]) {
-            newMealsByDate[dateKey][meal.type].push(meal);
-          }
-        });
-
-        setLoggedMeals(newMealsByDate);
-        setMeals(response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching meals:', error);
-      toast.error('Failed to fetch meals');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Meal types with icons
+  const mealTypes = [
+    { value: 'breakfast', label: 'Breakfast', icon: <FreeBreakfast /> },
+    { value: 'lunch', label: 'Lunch', icon: <LocalDining /> },
+    { value: 'dinner', label: 'Dinner', icon: <DinnerDining /> },
+    { value: 'snacks', label: 'Snacks', icon: <Fastfood /> }
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -786,6 +676,12 @@ function MealLogging() {
   };
 
   const handleOpenDialog = (meal = null) => {
+    // Reset form errors
+    setFormErrors({
+      mealType: false,
+      food: false
+    });
+    
     if (meal) {
       setEditingMeal(meal);
       setSelectedMealType(meal.type || 'breakfast');
@@ -800,10 +696,18 @@ function MealLogging() {
       });
     } else {
       setEditingMeal(null);
-      setSelectedMealType('breakfast');
+      // Use the current tab to determine the default meal type
+      const mealTypeMap = {
+        0: 'breakfast',
+        1: 'lunch',
+        2: 'dinner',
+        3: 'snacks'
+      };
+      const defaultMealType = mealTypeMap[currentTab] || 'breakfast';
+      setSelectedMealType(defaultMealType);
       setMealData({
         name: '',
-        type: 'breakfast',
+        type: defaultMealType,
         calories: '',
         protein: '',
         carbs: '',
@@ -831,6 +735,120 @@ function MealLogging() {
     setSearchQuery('');
   };
 
+  // Update the getMealsForCurrentTab function to handle undefined values properly
+  const getMealsForCurrentTab = () => {
+    const dateKey = selectedDate.format('YYYY-MM-DD');
+    const mealTypeMap = {
+      0: 'breakfast',
+      1: 'lunch',
+      2: 'dinner',
+      3: 'snacks'
+    };
+    const mealType = mealTypeMap[currentTab];
+    
+    console.log("Getting meals for tab:", currentTab, "meal type:", mealType);
+    console.log("Current logged meals:", loggedMeals);
+    
+    // Make sure loggedMeals[dateKey] and loggedMeals[dateKey][mealType] exist
+    if (!loggedMeals[dateKey] || !loggedMeals[dateKey][mealType]) {
+      console.log("No meals found for this date/type");
+      return []; // Return empty array if no meals exist for this date/type
+    }
+    
+    console.log("Found meals:", loggedMeals[dateKey][mealType]);
+    return loggedMeals[dateKey][mealType].map(meal => ({
+      ...meal,
+      calories: Number(meal.calories) || 0,
+      protein: Number(meal.protein) || 0,
+      carbs: Number(meal.carbs) || 0,
+      fat: Number(meal.fat) || 0
+    }));
+  };
+
+  // Add this function to handle navigation
+  const handleDietPlanClick = () => {
+    navigate('/diet-planning');
+  };
+
+  // Fix the renderFoodList function to handle undefined recipes and show nutrient info
+  const renderFoodList = () => (
+    <List 
+      sx={{ 
+        maxHeight: 300, 
+        overflow: 'auto',
+        bgcolor: '#F8FAFC',
+        borderRadius: 1,
+        '& .MuiListItem-root': {
+          transition: 'all 0.2s ease'
+        }
+      }}
+    >
+      {recipes && recipes.length > 0 ? (
+        recipes
+          .filter(recipe => recipe.title.toLowerCase().includes(searchQuery.toLowerCase()))
+          .map((recipe) => (
+            <ListItem
+              key={recipe.id}
+              button
+              onClick={() => handleFoodSelection(recipe)}
+              selected={selectedFood?.id === recipe.id}
+              sx={{
+                borderRadius: 1,
+                mb: 0.5,
+                '&.Mui-selected': {
+                  bgcolor: `${COLORS.primary}15`,
+                  '&:hover': {
+                    bgcolor: `${COLORS.primary}20`,
+                  }
+                },
+                '&:hover': {
+                  bgcolor: `${COLORS.primary}10`,
+                }
+              }}
+            >
+              <ListItemText
+                primary={
+                  <Typography 
+                    sx={{ 
+                      fontWeight: selectedFood?.id === recipe.id ? 600 : 400,
+                      color: selectedFood?.id === recipe.id ? COLORS.primary : 'inherit'
+                    }}
+                  >
+                    {recipe.title}
+                  </Typography>
+                }
+                secondary={
+                  <Typography variant="body2" color="text.secondary">
+                    {recipe.calories} kcal | P: {recipe.nutritionInfo?.protein || '0g'} • 
+                    C: {recipe.nutritionInfo?.carbs || '0g'} • 
+                    F: {recipe.nutritionInfo?.fat || '0g'}
+                  </Typography>
+                }
+              />
+              {selectedFood?.id === recipe.id && (
+                <CheckCircleIcon sx={{ color: COLORS.primary, ml: 1 }} />
+              )}
+            </ListItem>
+          ))
+      ) : (
+        <Box sx={{ p: 3, textAlign: 'center' }}>
+          <Typography color="text.secondary">
+            Loading recipes...
+          </Typography>
+        </Box>
+      )}
+      {recipes && recipes.length > 0 && 
+       recipes.filter(recipe => recipe.title.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+        <Box sx={{ p: 3, textAlign: 'center' }}>
+          <Typography color="text.secondary">
+            No foods found matching your search
+          </Typography>
+        </Box>
+      )}
+    </List>
+  );
+
+  // Add this function to handle delete since it was removed but still referenced
   const handleDelete = async (id) => {
     if (!id) {
       toast.error('Invalid meal ID');
@@ -840,38 +858,77 @@ function MealLogging() {
     if (window.confirm('Are you sure you want to delete this meal?')) {
       try {
         setLoading(true);
-        const response = await mealService.deleteMeal(id);
-        if (response.success) {
-          toast.success('Meal deleted successfully');
-          // Fetch updated meals after successful deletion
-          await fetchMeals();
+        console.log('Attempting to delete meal with ID:', id);
+        
+        // Check if this is a MongoDB ObjectId (24 hex characters)
+        const isMongoId = typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
+        
+        if (isMongoId) {
+          // If it's a MongoDB ID, delete from the database
+          try {
+            const response = await mealService.deleteMeal(id);
+            console.log('Delete API response:', response);
+            
+            if (response.success) {
+              toast.success('Meal deleted successfully');
+            } else {
+              console.error('API returned error:', response.message);
+              // Continue with local state update even if API fails
+            }
+          } catch (error) {
+            console.error('Error calling delete API:', error);
+            // If we get an "Invalid meal ID" error, just update the local state
+            if (error.response && error.response.data && error.response.data.message === 'Invalid meal ID format') {
+              console.log('Continuing with local state update despite invalid ID format');
+            } else {
+              // For other errors, show the error message but still continue
+              toast.error('Error deleting from database, but removing from view');
+            }
+          }
+        } else {
+          console.log('Not a MongoDB ID, only updating local state');
         }
+        
+        // Update local state regardless of API success
+        const dateKey = selectedDate.format('YYYY-MM-DD');
+        
+        setLoggedMeals(prevMeals => {
+          const newMeals = { ...prevMeals };
+          
+          // Find and remove the meal from all meal types
+          Object.keys(newMeals[dateKey] || {}).forEach(mealType => {
+            if (newMeals[dateKey][mealType]) {
+              console.log('Filtering out meal with ID:', id, 'from type:', mealType);
+              
+              newMeals[dateKey][mealType] = newMeals[dateKey][mealType].filter(
+                meal => {
+                  // Check both id and _id to handle different formats
+                  const mealIdMatches = 
+                    (meal.id && meal.id.toString() === id.toString()) || 
+                    (meal._id && meal._id.toString() === id.toString());
+                  
+                  return !mealIdMatches;
+                }
+              );
+            }
+          });
+          
+          return newMeals;
+        });
+        
+        // Refresh meals from the database to ensure UI is in sync
+        // Only if we're dealing with a MongoDB ID
+        if (isMongoId) {
+          await fetchMeals(selectedDate);
+        }
+        
       } catch (error) {
-        console.error('Error deleting meal:', error);
+        console.error('Error in handleDelete:', error);
         toast.error('Failed to delete meal');
       } finally {
         setLoading(false);
       }
     }
-  };
-
-  // Update the getMealsForCurrentTab function to ensure proper meal type mapping
-  const getMealsForCurrentTab = () => {
-    const dateKey = selectedDate.format('YYYY-MM-DD');
-    const mealTypeMap = {
-      0: 'breakfast',
-      1: 'lunch',
-      2: 'dinner',
-      3: 'snack'
-    };
-    const mealType = mealTypeMap[currentTab];
-    return (loggedMeals[dateKey]?.[mealType] || []).map(meal => ({
-      ...meal,
-      calories: Number(meal.calories) || 0,
-      protein: Number(meal.protein) || 0,
-      carbs: Number(meal.carbs) || 0,
-      fat: Number(meal.fat) || 0
-    }));
   };
 
   return (
@@ -1395,7 +1452,16 @@ function MealLogging() {
                               </IconButton>
                               <IconButton
                                 size="small"
-                                onClick={() => handleDelete(meal._id)}
+                                onClick={() => {
+                                  // Use either _id or id, whichever is available
+                                  const mealId = meal._id || meal.id;
+                                  console.log('Delete button clicked for meal:', meal);
+                                  if (!mealId) {
+                                    toast.error('Cannot delete meal: Missing ID');
+                                    return;
+                                  }
+                                  handleDeleteMeal(mealId, meal.type);
+                                }}
                                 disabled={loading}
                                 sx={{
                                   color: '#EF5350',
@@ -1475,21 +1541,48 @@ function MealLogging() {
                 <DialogContent>
                   <Box sx={{ mb: 2 }}>
                     {/* Meal Type Selection First */}
-                    <FormControl fullWidth sx={{ mb: 3 }}>
-                      <InputLabel id="meal-type-label">Meal Type</InputLabel>
+                    <FormControl fullWidth required sx={{ mb: 3, zIndex: 1000 }}>
+                      <InputLabel id="meal-type-label" error={formErrors.mealType}>Meal Type *</InputLabel>
                       <Select
                         labelId="meal-type-label"
                         id="meal-type"
-                        value={selectedMealType || 'breakfast'}
-                        onChange={(e) => setSelectedMealType(e.target.value)}
-                        label="Meal Type"
+                        value={selectedMealType}
+                        onChange={(e) => {
+                          setSelectedMealType(e.target.value);
+                          setFormErrors(prev => ({...prev, mealType: false}));
+                        }}
+                        label="Meal Type *"
+                        required
+                        error={formErrors.mealType}
+                        sx={{
+                          '& .MuiSelect-select': {
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1
+                          }
+                        }}
                       >
                         {mealTypes.map((type) => (
-                          <MenuItem key={type} value={type} sx={{ textTransform: 'capitalize' }}>
-                            {type}
+                          <MenuItem 
+                            key={type.value} 
+                            value={type.value} 
+                            sx={{ 
+                              textTransform: 'capitalize',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1
+                            }}
+                          >
+                            {type.icon}
+                            {type.label}
                           </MenuItem>
                         ))}
                       </Select>
+                      {formErrors.mealType && (
+                        <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
+                          Please select a meal type
+                        </Typography>
+                      )}
                     </FormControl>
 
                     {/* Search Section with Selection Indicator */}
@@ -1552,65 +1645,7 @@ function MealLogging() {
                     </Box>
 
                     {/* Food List */}
-                    <List 
-                      sx={{ 
-                        maxHeight: 300, 
-                        overflow: 'auto',
-                        bgcolor: '#F8FAFC',
-                        borderRadius: 1,
-                        '& .MuiListItem-root': {
-                          transition: 'all 0.2s ease'
-                        }
-                      }}
-                    >
-                      {filteredFoods.map((food) => (
-                        <ListItem
-                          key={food.name}
-                          button
-                          onClick={() => handleFoodSelection(food)}
-                          selected={selectedFood?.name === food.name}
-                          sx={{
-                            borderRadius: 1,
-                            mb: 0.5,
-                            '&.Mui-selected': {
-                              bgcolor: `${COLORS.primary}15`,
-                              '&:hover': {
-                                bgcolor: `${COLORS.primary}20`,
-                              }
-                            },
-                            '&:hover': {
-                              bgcolor: `${COLORS.primary}10`,
-                            }
-                          }}
-                        >
-                          <ListItemText
-                            primary={
-                              <Typography sx={{ 
-                                fontWeight: selectedFood?.name === food.name ? 600 : 400,
-                                color: selectedFood?.name === food.name ? COLORS.primary : 'inherit'
-                              }}>
-                                {food.name}
-                              </Typography>
-                            }
-                            secondary={
-                              <Typography variant="body2" color="text.secondary">
-                                {food.calories} kcal | P: {food.protein}g • C: {food.carbs}g • F: {food.fat}g
-                              </Typography>
-                            }
-                          />
-                          {selectedFood?.name === food.name && (
-                            <CheckCircleIcon sx={{ color: COLORS.primary, ml: 1 }} />
-                          )}
-                        </ListItem>
-                      ))}
-                      {filteredFoods.length === 0 && (
-                        <Box sx={{ p: 3, textAlign: 'center' }}>
-                          <Typography color="text.secondary">
-                            No foods found matching your search
-                          </Typography>
-                        </Box>
-                      )}
-                    </List>
+                    {renderFoodList()}
                   </Box>
                 </DialogContent>
                 <DialogActions sx={{ px: 3, pb: 3 }}>
@@ -1628,7 +1663,7 @@ function MealLogging() {
                   <Button 
                     onClick={handleSubmit}
                     variant="contained"
-                    disabled={(!selectedFood && !mealData.name) || loading}
+                    disabled={!selectedFood || !selectedMealType || loading}
                     sx={{
                       bgcolor: COLORS.primary,
                       '&:hover': {

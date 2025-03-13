@@ -103,7 +103,7 @@ function Carousel() {
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'linear-gradient(rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%)',
+              background: 'linear-gradient(rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 100%)',
               zIndex: 1
             }}
           />
@@ -116,22 +116,20 @@ function Carousel() {
               justifyContent: 'center',
               alignItems: 'center',
               height: '100%',
-              px: { xs: 2, md: 4 }
             }}
           >
             <Box
               sx={{
                 textAlign: 'center',
-                backgroundColor: 'rgba(0,0,0,0.3)',
-                padding: { xs: 3, md: 5 },
-                borderRadius: 4,
-                backdropFilter: 'blur(6px)',
+                backgroundColor: 'transparent',
+                padding: 4,
+                borderRadius: 8,
                 transform: index === currentSlide ? 'translateY(0)' : 'translateY(20px)',
                 opacity: index === currentSlide ? 1 : 0,
                 transition: 'transform 0.5s ease-out, opacity 0.5s ease-out',
                 transitionDelay: '0.2s',
-                width: { xs: '100%', md: '80%' },
-                maxWidth: '800px'
+                width: '100%',
+                maxWidth: '800px',
               }}
             >
               <Typography

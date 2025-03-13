@@ -27,7 +27,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../hooks/useAuth';
 
 const navItems = [
-  { name: 'Appointments', path: '/appointments' },
+  /* { name: 'Appointments', path: '/appointments' }, */
   { name: 'About', path: '/about' },
   { name: 'Care', path: '/care' }
 ];

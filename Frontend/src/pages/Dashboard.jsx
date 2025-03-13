@@ -20,7 +20,6 @@ import {
   Tabs,
   Tab,
   LinearProgress,
-  useTheme,
   Stack,
   Chip,
   alpha,
@@ -28,7 +27,8 @@ import {
   Grow,
   Zoom,
   Slide,
-  CircularProgress
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import { 
   Notifications, 
@@ -51,18 +51,20 @@ import {
   Restaurant,
   AssessmentOutlined
 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import usePageLoading from '../hooks/usePageLoading';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { motion } from 'framer-motion';
 import { keyframes } from '@emotion/react';
 import { styled } from '@mui/material/styles';
 import { appointmentService } from '../services/appointmentService';
 import { toast } from 'react-toastify';
+import { mealService } from '../services/mealService';
+import { userAPI } from '../services/api';
+import { motion } from 'framer-motion';
 
 dayjs.extend(relativeTime);
 
@@ -156,11 +158,23 @@ const fruitSizeComparison = {
 
 function Dashboard() {
   const { currentUser } = useAuth();
-  const theme = useTheme();
   const [currentDate] = useState(new Date());
   const [loaded, setLoaded] = useState(false);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [nextAppointment, setNextAppointment] = useState(null);
+  const [dailyNutrition, setDailyNutrition] = useState({
+    calories: { current: 0, target: 2200 },
+    protein: { current: 0, target: 75, unit: 'g' },
+    carbs: { current: 0, target: 275, unit: 'g' },
+    fat: { current: 0, target: 65, unit: 'g' }
+  });
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [weightHistory, setWeightHistory] = useState([]);
+  const [currentWeight, setCurrentWeight] = useState(0);
+  const [weightGain, setWeightGain] = useState(0);
+  const [userHeight, setUserHeight] = useState(null);
   
   // Use our custom hook to show loading animation
   usePageLoading(!loaded);
@@ -176,34 +190,59 @@ function Dashboard() {
   
   // Calculate current week based on due date
   const calculateCurrentWeek = () => {
-    // For testing purposes, let's assume the due date is stored in the user's data
-    // In a real app, this should come from your backend
-    const dueDate = dayjs(currentUser?.dueDate || dayjs().add(16, 'weeks')); // fallback due date if none set
+    if (!currentUser?.pregnancyDetails?.dueDate) {
+      return 1; // Default to week 1 if no due date is set
+    }
+
+    const dueDate = dayjs(currentUser.pregnancyDetails.dueDate);
     const today = dayjs();
     const fullTerm = 40; // weeks
     
-    // Calculate the difference in weeks from today to due date
+    // Calculate weeks until due date
     const weeksUntilDue = dueDate.diff(today, 'week');
     
     // Current week is (40 - weeks remaining)
     const currentWeek = fullTerm - weeksUntilDue;
     
-    // Ensure the week is between 1 and 40
-    return Math.min(Math.max(1, currentWeek), 40);
+    // Ensure the week is between 1 and 41 (including overdue)
+    return Math.min(Math.max(1, currentWeek), 41);
+  };
+
+  // Get the appropriate fruit comparison for the current week
+  const getBabySizeComparison = (week) => {
+    // Round down to the nearest 4-week interval
+    const roundedWeek = Math.floor(week/4) * 4;
+    
+    // Get the comparison for the current interval, or default to the last one
+    const comparison = fruitSizeComparison[roundedWeek] || fruitSizeComparison[40];
+    
+    return {
+      fruit: comparison.fruit,
+      size: comparison.size,
+      imageUrl: `/assets/baby-size/fruit-week-${roundedWeek}-Photoroom.png`
+    };
   };
 
   const [currentWeek, setCurrentWeek] = useState(calculateCurrentWeek());
-  const dueDate = dayjs().add(40 - currentWeek, 'weeks');
-  const [nextAppointment, setNextAppointment] = useState(null);
+  const [babySizeComparison, setBabySizeComparison] = useState(getBabySizeComparison(currentWeek));
+  const dueDate = dayjs(currentUser?.pregnancyDetails?.dueDate || dayjs().add(40 - currentWeek, 'weeks'));
 
-  // Update current week periodically
+  // Update current week and baby size comparison periodically
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentWeek(calculateCurrentWeek());
-    }, 1000 * 60 * 60 * 24); // Update once per day
+    const updatePregnancyProgress = () => {
+      const newWeek = calculateCurrentWeek();
+      setCurrentWeek(newWeek);
+      setBabySizeComparison(getBabySizeComparison(newWeek));
+    };
+
+    // Initial update
+    updatePregnancyProgress();
+
+    // Set up daily updates
+    const timer = setInterval(updatePregnancyProgress, 1000 * 60 * 60 * 24); // Update once per day
 
     return () => clearInterval(timer);
-  }, []);
+  }, [currentUser?.pregnancyDetails?.dueDate]);
 
   // Simulate loading effect
   useEffect(() => {
@@ -213,20 +252,76 @@ function Dashboard() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Nutrition progress data
-  const dailyNutrients = [
-    { name: 'Protein', current: 45, target: 75, unit: 'g' },
-    { name: 'Calcium', current: 800, target: 1000, unit: 'mg' },
-    { name: 'Iron', current: 18, target: 27, unit: 'mg' },
-    { name: 'Folate', current: 450, target: 600, unit: 'mcg' },
-  ];
+  // Fetch daily meals and calculate nutrition totals
+  useEffect(() => {
+    const fetchDailyNutrition = async () => {
+      try {
+        setLoading(true);
+        const today = dayjs().format('YYYY-MM-DD');
+        const response = await mealService.getMeals(today);
+        
+        if (response.success) {
+          const meals = response.data;
+          const totals = meals.reduce((acc, meal) => ({
+            calories: acc.calories + (Number(meal.calories) || 0),
+            protein: acc.protein + (Number(meal.protein) || 0),
+            carbs: acc.carbs + (Number(meal.carbs) || 0),
+            fat: acc.fat + (Number(meal.fat) || 0)
+          }), {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0
+          });
 
-  // Weight tracking data
+          setDailyNutrition(prev => ({
+            calories: { ...prev.calories, current: totals.calories },
+            protein: { ...prev.protein, current: totals.protein },
+            carbs: { ...prev.carbs, current: totals.carbs },
+            fat: { ...prev.fat, current: totals.fat }
+          }));
+        }
+      } catch (err) {
+        console.error('Error fetching daily nutrition:', err);
+        setError('Failed to load nutrition data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDailyNutrition();
+  }, []);
+
+  // Load weight data
+  useEffect(() => {
+    const loadWeightData = async () => {
+      try {
+        const response = await userAPI.getWeightHistory();
+        const { currentWeight, weightHistory } = response.data.data;
+        setWeightHistory(weightHistory || []);
+        setCurrentWeight(currentWeight || 0);
+        
+        // Calculate weight gain from first recorded weight
+        if (weightHistory && weightHistory.length > 0) {
+          const firstWeight = weightHistory[0].weight;
+          const gain = currentWeight - firstWeight;
+          setWeightGain(gain);
+        }
+      } catch (error) {
+        console.error('Error loading weight data:', error);
+        toast.error('Failed to load weight data');
+      }
+    };
+
+    loadWeightData();
+  }, []);
+
+  // Format weight data for chart
   const weightData = {
-    labels: ['Week 20', 'Week 21', 'Week 22', 'Week 23', 'Week 24'],
+    labels: weightHistory.slice(-5).map(entry => dayjs(entry.date).format('MMM D')),
     datasets: [{
-      label: 'Weight (lbs)',
-      data: [145, 146, 147, 148, 149],
+      label: 'Weight (kg)',
+      data: weightHistory.slice(-5).map(entry => entry.weight),
       borderColor: customColors.accentPink,
       backgroundColor: alpha(customColors.accentPink, 0.2),
       tension: 0.3,
@@ -243,14 +338,50 @@ function Dashboard() {
     },
     scales: {
       y: {
-        min: 140,
-        max: 160,
-        ticks: { stepSize: 5 }
+        min: Math.min(...weightHistory.slice(-5).map(entry => entry.weight)) - 2,
+        max: Math.max(...weightHistory.slice(-5).map(entry => entry.weight)) + 2,
+        ticks: { stepSize: 1 }
       }
     },
     animation: {
       duration: 2000,
       easing: 'easeInOutQuart'
+    }
+  };
+
+  // Handle weight logging
+  const handleLogWeight = async () => {
+    try {
+      setLoading(true);
+      const weightInput = prompt('Enter your current weight (in kg):');
+      
+      if (weightInput === null) return; // User cancelled
+      
+      const weight = parseFloat(weightInput);
+      if (isNaN(weight) || weight <= 0) {
+        toast.error('Please enter a valid weight');
+        return;
+      }
+
+      const response = await userAPI.logWeight(weight);
+      const { currentWeight: newWeight, weightHistory: newHistory } = response.data.data;
+      
+      setCurrentWeight(newWeight);
+      setWeightHistory(newHistory);
+      
+      // Recalculate weight gain
+      if (newHistory && newHistory.length > 0) {
+        const firstWeight = newHistory[0].weight;
+        const gain = newWeight - firstWeight;
+        setWeightGain(gain);
+      }
+
+      toast.success('Weight logged successfully');
+    } catch (error) {
+      console.error('Error logging weight:', error);
+      toast.error('Failed to log weight');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -281,22 +412,6 @@ function Dashboard() {
   }, []);
 
   // Add handlers for updating and deleting appointments
-  const handleUpdateAppointment = async (appointmentId, updatedData) => {
-    try {
-      setLoading(true);
-      const response = await appointmentService.updateAppointment(appointmentId, updatedData);
-      if (response.success) {
-        toast.success('Appointment updated successfully');
-        fetchUpcomingAppointments(); // Refresh the appointments list
-      }
-    } catch (error) {
-      console.error('Failed to update appointment:', error);
-      toast.error('Failed to update appointment');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleDeleteAppointment = async (appointmentId) => {
     try {
       setLoading(true);
@@ -312,6 +427,73 @@ function Dashboard() {
       setLoading(false);
     }
   };
+
+  const handleLogMeal = () => {
+    navigate('/meal-logging');
+  };
+
+  // Convert dailyNutrition object to array format for mapping
+  const dailyNutrients = [
+    { name: 'Protein', ...dailyNutrition.protein },
+    { name: 'Carbs', ...dailyNutrition.carbs },
+    { name: 'Fat', ...dailyNutrition.fat }
+  ];
+
+  // Add this effect to load user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        // Try to get fresh user data using userAPI
+        const response = await userAPI.getProfile();
+        if (response.data?.success) {
+          const userData = response.data.data;
+          console.log('Fresh user data:', userData);
+          if (userData.height) {
+            setUserHeight(Number(userData.height));
+          }
+          if (userData.weight) {
+            setCurrentWeight(Number(userData.weight));
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        // Fallback to stored data
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser?.height) {
+          setUserHeight(Number(storedUser.height));
+        }
+        if (storedUser?.weight) {
+          setCurrentWeight(Number(storedUser.weight));
+        }
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+  // Update the BMI calculation to be more robust
+  const calculateBMI = (weight, height) => {
+    console.log('Calculating BMI with:', { weight, height });
+    const numWeight = Number(weight);
+    const numHeight = Number(height);
+    
+    if (!numWeight || !numHeight || isNaN(numWeight) || isNaN(numHeight) || numHeight === 0) {
+      console.log('Invalid weight or height:', { numWeight, numHeight });
+      return 'N/A';
+    }
+    
+    const heightInMeters = numHeight / 100;
+    const bmi = numWeight / (heightInMeters * heightInMeters);
+    console.log('Calculated BMI:', bmi.toFixed(1));
+    return bmi.toFixed(1);
+  };
+
+  // Add these console logs after the state declarations
+  useEffect(() => {
+    console.log('Current User:', currentUser);
+    console.log('User Height:', currentUser?.height);
+    console.log('Height State:', userHeight);
+  }, [currentUser, userHeight]);
 
   return (
     <Box sx={{ 
@@ -340,13 +522,14 @@ function Dashboard() {
           }}>
             <Box>
               <Typography variant="h4" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
-              Hi, {currentUser?.name?.split(' ')[0] || 'there'}! 👋
+                Hi, {currentUser?.name?.split(' ')[0] || 'there'}! 👋
               </Typography>
               <Typography variant="subtitle1" color="text.secondary">
                 {currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </Typography>
             </Box>
-            <motion.div
+            <Box
+              component={motion.div}
               initial={{ rotate: -10 }}
               animate={{ rotate: 10 }}
               transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
@@ -360,7 +543,7 @@ function Dashboard() {
               }}>
                 <BabyChangingStation sx={{ fontSize: 40 }} />
               </PulseAvatar>
-            </motion.div>
+            </Box>
           </Box>
         </Fade>
 
@@ -441,8 +624,8 @@ function Dashboard() {
                           boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                         }}>
                           <motion.img 
-                            src={`/assets/baby-size/fruit-week-${Math.floor(currentWeek/4)*4}-Photoroom.png`}
-                            alt={fruitSizeComparison[Math.floor(currentWeek/4)*4].fruit}
+                            src={babySizeComparison.imageUrl}
+                            alt={babySizeComparison.fruit}
                             style={{ width: 50, height: 50, objectFit: 'contain' }}
                             initial={{ rotate: 0 }}
                             animate={{ rotate: 360 }}
@@ -452,10 +635,10 @@ function Dashboard() {
                       </FloatingIcon>
                       <Box>
                         <Typography variant="h6" fontWeight="bold" color={customColors.darkBlue}>
-                          Baby is the size of a {fruitSizeComparison[Math.floor(currentWeek/4)*4].fruit}
+                          Baby is the size of a {babySizeComparison.fruit}
                         </Typography>
                         <Typography variant="body1" color="text.secondary">
-                          ({fruitSizeComparison[Math.floor(currentWeek/4)*4].size})
+                          ({babySizeComparison.size})
                         </Typography>
                       </Box>
                     </Box>
@@ -655,7 +838,7 @@ function Dashboard() {
             </Grow>
           </Grid>
 
-          {/* Daily Nutrition Panel - Redesigned */}
+          {/* Daily Nutrition Panel */}
           <Grid item xs={12} md={6}>
             <Card elevation={3} sx={{ 
               borderRadius: 4, 
@@ -672,151 +855,232 @@ function Dashboard() {
                     variant="outlined" 
                     size="small"
                     startIcon={<AddIcon />}
+                    onClick={handleLogMeal}
                     sx={{ borderColor: '#6B5B95', color: '#6B5B95' }}
                   >
                     Log Meal
                   </Button>
                 </Box>
                 
-                <Box sx={{ 
-                  p: 2, 
-                  borderRadius: 3, 
-                  bgcolor: customColors.lightPink,
-                  mb: 3
-                }}>
-                  <Typography variant="h6" gutterBottom color={customColors.darkBlue}>Calorie Intake</Typography>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography variant="body1" fontWeight="bold" color={customColors.darkBlue}>1800 kcal</Typography>
-                    <Typography variant="body2" color="text.secondary">Target: 2200 kcal</Typography>
+                {loading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                    <CircularProgress />
                   </Box>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={(1800/2200) * 100}
-                    sx={{ 
-                      height: 10, 
-                      borderRadius: 5,
-                      bgcolor: alpha(customColors.accentPink, 0.2),
-                      '& .MuiLinearProgress-bar': {
-                        bgcolor: customColors.accentPink
-                      }
-                    }}
-                  />
-                </Box>
-                
-                <Grid container spacing={2}>
-                  {dailyNutrients.map((nutrient) => (
-                    <Grid item xs={6} key={nutrient.name}>
-                      <Box sx={{ 
-                        p: 2, 
-                        borderRadius: 3, 
-                        bgcolor: customColors.lightPink,
-                        height: '100%'
-                      }}>
-                        <Typography variant="body1" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
-                          {nutrient.name}
+                ) : error ? (
+                  <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+                ) : (
+                  <>
+                    <Box sx={{ 
+                      p: 2, 
+                      borderRadius: 3, 
+                      bgcolor: customColors.lightPink,
+                      mb: 3
+                    }}>
+                      <Typography variant="h6" gutterBottom color={customColors.darkBlue}>Calorie Intake</Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body1" fontWeight="bold" color={customColors.darkBlue}>
+                          {Math.round(dailyNutrition.calories.current)} kcal
                         </Typography>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                          <Typography variant="body2" color="text.secondary">
-                            {nutrient.current}/{nutrient.target} {nutrient.unit}
-                          </Typography>
-                          <Typography variant="body2" fontWeight="bold" color={
-                            (nutrient.current/nutrient.target) >= 0.8 ? 'success.main' : 'warning.main'
-                          }>
-                            {Math.round((nutrient.current/nutrient.target) * 100)}%
-                          </Typography>
-                        </Box>
-                        <LinearProgress 
-                          variant="determinate" 
-                          value={(nutrient.current/nutrient.target) * 100}
-                          sx={{ 
-                            height: 6, 
-                            borderRadius: 3,
-                            bgcolor: alpha(customColors.accentPink, 0.2),
-                            '& .MuiLinearProgress-bar': {
-                              bgcolor: customColors.accentPink
-                            }
-                          }}
-                        />
+                        <Typography variant="body2" color="text.secondary">
+                          Target: {dailyNutrition.calories.target} kcal
+                        </Typography>
                       </Box>
+                      <LinearProgress 
+                        variant="determinate" 
+                        value={Math.min((dailyNutrition.calories.current / dailyNutrition.calories.target) * 100, 100)}
+                        sx={{ 
+                          height: 10, 
+                          borderRadius: 5,
+                          bgcolor: alpha(customColors.accentPink, 0.2),
+                          '& .MuiLinearProgress-bar': {
+                            bgcolor: customColors.accentPink
+                          }
+                        }}
+                      />
+                    </Box>
+                    
+                    <Grid container spacing={2}>
+                      {dailyNutrients.map((nutrient) => (
+                        <Grid item xs={12} md={4} key={nutrient.name}>
+                          <Box sx={{ 
+                            p: 2, 
+                            borderRadius: 3, 
+                            bgcolor: customColors.lightPink,
+                            height: '100%'
+                          }}>
+                            <Typography variant="body1" fontWeight="bold" gutterBottom color={customColors.darkBlue}>
+                              {nutrient.name}
+                            </Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                              <Typography variant="body2" color="text.secondary">
+                                {Math.round(nutrient.current)}/{nutrient.target} {nutrient.unit}
+                              </Typography>
+                              <Typography variant="body2" fontWeight="bold" color={
+                                (nutrient.current/nutrient.target) >= 0.8 ? 'success.main' : 'warning.main'
+                              }>
+                                {Math.round((nutrient.current/nutrient.target) * 100)}%
+                              </Typography>
+                            </Box>
+                            <LinearProgress 
+                              variant="determinate" 
+                              value={Math.min((nutrient.current/nutrient.target) * 100, 100)}
+                              sx={{ 
+                                height: 6, 
+                                borderRadius: 3,
+                                bgcolor: alpha(customColors.accentPink, 0.2),
+                                '& .MuiLinearProgress-bar': {
+                                  bgcolor: customColors.accentPink
+                                }
+                              }}
+                            />
+                          </Box>
+                        </Grid>
+                      ))}
                     </Grid>
-                  ))}
-                </Grid>
+                  </>
+                )}
               </CardContent>
             </Card>
           </Grid>
 
-          {/* Weight Tracking Panel - Redesigned */}
+          {/* Weight Tracking Panel */}
           <Grid item xs={12} md={6}>
-            <Card elevation={3} sx={{ 
-              borderRadius: 4, 
-              overflow: 'hidden',
-              background: 'white'
-            }}>
+            <Card elevation={3} sx={{ borderRadius: 4, overflow: 'hidden' }}>
               <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <TrendingUp sx={{ color: '#6B5B95' }} />
-                    <Typography variant="h5" fontWeight="bold" color={customColors.darkBlue}>Weight Tracking</Typography>
+                    <TrendingUp sx={{ color: customColors.accentPink }} />
+                    <Typography variant="h5" fontWeight="bold" color={customColors.darkBlue}>
+                      Weight Tracking
+                    </Typography>
                   </Box>
-                  <Chip 
-                    label="Target: 150-165 lbs" 
-                    size="small"
-                    sx={{ bgcolor: '#E8F4F8', color: '#4A90E2' }}
-                  />
+                  <Stack direction="column" spacing={1} alignItems="flex-end">
+                    <Chip 
+                      label={`Height: ${userHeight ? `${userHeight} cm` : 'N/A'}`}
+                      size="small"
+                      sx={{ 
+                        bgcolor: customColors.lightPink,
+                        color: customColors.darkBlue,
+                        fontWeight: 'medium'
+                      }}
+                    />
+                    <Chip 
+                      label={`BMI: ${calculateBMI(currentWeight, userHeight)}`}
+                      size="small"
+                      sx={{ 
+                        bgcolor: customColors.lightPink,
+                        color: customColors.darkBlue,
+                        fontWeight: 'medium'
+                      }}
+                    />
+                  </Stack>
                 </Box>
-                
+
+                {/* Weight Graph */}
                 <Box sx={{ 
                   height: 220, 
                   p: 2, 
                   borderRadius: 3, 
                   bgcolor: customColors.lightPink,
-                  mb: 2
+                  mb: 3,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    bgcolor: alpha(customColors.accentPink, 0.15)
+                  }
                 }}>
-                  <Line data={weightData} options={weightOptions} />
-                </Box>
-                
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  {weightHistory.length > 0 ? (
+                    <Line data={weightData} options={weightOptions} />
+                  ) : (
                     <Box sx={{ 
-                      p: 2, 
+                      height: '100%', 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      color: 'text.secondary',
+                      gap: 2
+                    }}>
+                      <TrendingUp sx={{ fontSize: 40, color: alpha(customColors.accentPink, 0.5) }} />
+                      <Typography align="center" color={alpha(customColors.darkBlue, 0.7)}>
+                        Start tracking your weight journey
+                        <br />
+                        Click below to log your first weight
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <Box sx={{ 
+                      p: 3, 
                       borderRadius: 3, 
                       bgcolor: customColors.lightPink,
-                      textAlign: 'center'
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        bgcolor: customColors.mediumPink,
+                        transform: 'scale(1.02)'
+                      }
                     }}>
-                      <Typography variant="body2" color="text.secondary">Current Weight</Typography>
-                      <Typography variant="h5" fontWeight="bold" color={customColors.accentPink}>
-                        149 lbs
+                      <Typography variant="body2" color="text.secondary" gutterBottom>Current Weight</Typography>
+                      <Typography variant="h4" fontWeight="bold" color={customColors.darkBlue}>
+                        {currentWeight}
+                        <Typography component="span" variant="body1" color="text.secondary" sx={{ ml: 1 }}>
+                          kg
+                        </Typography>
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                        Last updated: {weightHistory.length > 0 ? dayjs(weightHistory[0].date).format('MMM D, YYYY') : 'Never'}
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid item xs={6}>
+
+                  <Grid item xs={12} sm={6}>
                     <Box sx={{ 
-                      p: 2, 
+                      p: 3, 
                       borderRadius: 3, 
                       bgcolor: customColors.lightPink,
-                      textAlign: 'center'
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        bgcolor: customColors.mediumPink,
+                        transform: 'scale(1.02)'
+                      }
                     }}>
-                      <Typography variant="body2" color="text.secondary">Weight Gain</Typography>
-                      <Typography variant="h5" fontWeight="bold" color={customColors.accentPink}>
-                        +4 lbs
+                      <Typography variant="body2" color="text.secondary" gutterBottom>Weight Change</Typography>
+                      <Typography variant="h4" fontWeight="bold" color={
+                        weightGain > 0 ? '#4caf50' : weightGain < 0 ? '#f44336' : customColors.darkBlue
+                      }>
+                        {weightGain > 0 ? '+' : ''}{weightGain}
+                        <Typography component="span" variant="body1" color="text.secondary" sx={{ ml: 1 }}>
+                          kg
+                        </Typography>
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                        {weightHistory.length > 0 ? 
+                          `Since ${dayjs(weightHistory[weightHistory.length - 1].date).format('MMM D, YYYY')}` : 
+                          'No history available'}
                       </Typography>
                     </Box>
                   </Grid>
                 </Grid>
-                
+
                 <Button 
                   variant="contained" 
                   startIcon={<AddIcon />}
                   fullWidth
+                  onClick={handleLogWeight}
                   sx={{ 
-                    mt: 2, 
+                    mt: 3, 
                     bgcolor: customColors.accentPink,
                     color: 'white',
                     borderRadius: 2,
                     py: 1.5,
                     transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 15px rgba(255,90,140,0.2)',
                     '&:hover': {
-                      bgcolor: alpha(customColors.accentPink, 0.8)
+                      bgcolor: alpha(customColors.accentPink, 0.9),
+                      boxShadow: '0 6px 20px rgba(255,90,140,0.4)',
+                      transform: 'translateY(-2px)'
                     }
                   }}
                 >

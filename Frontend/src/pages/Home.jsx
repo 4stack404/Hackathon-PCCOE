@@ -1,16 +1,12 @@
-import { Box, Container, Typography, Grid, Paper, useTheme, Button, IconButton } from '@mui/material';
+import { Box, Container, Typography, Grid, Paper, useTheme, Button } from '@mui/material';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChildCareIcon from '@mui/icons-material/ChildCare';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Link as RouterLink } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
 
 import Carousel from '../components/common/Carousel';
 import FeatureCard from '../components/common/FeatureCard';
@@ -47,26 +43,6 @@ const FadeInSection = ({ children, delay = 0 }) => {
 
 function Home() {
   const theme = useTheme();
-  const weekScrollRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Check if we're on a mobile device for performance reasons
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const scrollWeeks = (direction) => {
-    if (weekScrollRef.current) {
-      const scrollAmount = direction === 'left' ? -600 : 600;
-      weekScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
 
   const features = [
     {
@@ -96,13 +72,6 @@ function Home() {
       title: 'Dashboard',
       description: 'Monitor your progress, track important metrics, and get a complete overview of your journey.',
       link: '/dashboard'
-    },
-    {
-      id: 5,
-      icon: <FitnessCenterIcon fontSize="inherit" />,
-      title: 'Pregnancy Exercises',
-      description: 'Safe and effective exercises for each trimester to keep you healthy and prepare for delivery.',
-      link: '/exercises'
     }
   ];
 
@@ -149,80 +118,100 @@ function Home() {
     41: '/assets/baby-size/fruit-week-41-Photoroom.png',
   };
 
+  // Helper functions for feature card styling
+  const getFeatureColor = (id) => {
+    const colors = {
+      1: '#f8a5c2', // Soft pink for Food & Diet
+      2: '#a1c4fd', // Gentle blue for Appointments
+      3: '#d4a5f8', // Lavender for Prenatal Care
+      4: '#a5f8c3', // Mint green for Dashboard
+    };
+    return colors[id] || '#4A90E2';
+  };
+
+  const getFeatureColorLight = (id, opacity = 0.2) => {
+    const colors = {
+      1: `rgba(248, 165, 194, ${opacity})`, // Soft pink
+      2: `rgba(161, 196, 253, ${opacity})`, // Gentle blue
+      3: `rgba(212, 165, 248, ${opacity})`, // Lavender
+      4: `rgba(165, 248, 195, ${opacity})`, // Mint green
+    };
+    return colors[id] || `rgba(74, 144, 226, ${opacity})`;
+  };
+
+  const getFeatureGradient = (id) => {
+    const gradients = {
+      1: 'linear-gradient(90deg, #f8a5c2 0%, #f9bfd0 100%)', // Soft pink
+      2: 'linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%)', // Gentle blue
+      3: 'linear-gradient(90deg, #d4a5f8 0%, #e2bfff 100%)', // Lavender
+      4: 'linear-gradient(90deg, #a5f8c3 0%, #bfffd0 100%)', // Mint green
+    };
+    return gradients[id] || 'linear-gradient(90deg, #4A90E2 0%, #63B3ED 100%)';
+  };
+
+  const getFeatureGradientBg = (id) => {
+    const gradients = {
+      1: 'linear-gradient(135deg, rgba(248, 165, 194, 0.05) 0%, rgba(249, 191, 208, 0.07) 100%)', // Soft pink
+      2: 'linear-gradient(135deg, rgba(161, 196, 253, 0.05) 0%, rgba(194, 233, 251, 0.07) 100%)', // Gentle blue
+      3: 'linear-gradient(135deg, rgba(212, 165, 248, 0.05) 0%, rgba(226, 191, 255, 0.07) 100%)', // Lavender
+      4: 'linear-gradient(135deg, rgba(165, 248, 195, 0.05) 0%, rgba(191, 255, 208, 0.07) 100%)', // Mint green
+    };
+    return gradients[id] || 'linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(99, 179, 237, 0.07) 100%)';
+  };
+
   return (
-    <Box sx={{ overflowX: 'hidden', overflowY: 'hidden' }}>
+    <Box component="main">
       {/* Hero Carousel Section */}
       <Box sx={{ 
-        width: '100%',
-        position: 'relative',
-        overflow: 'hidden'
+        backgroundImage: 'url(/assets/backdrop3.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        mb: 10  // Add margin bottom to increase the gap
       }}>
         <Carousel />
       </Box>
 
       {/* Pregnancy Week Tracker Section */}
-      <Box
-        sx={{
-          py: 6,
-          bgcolor: 'white',
-          position: 'relative'
-        }}
-      >
-        <Container maxWidth="xl">
-          <Typography
-            variant="h3"
-            component="h2"
-            align="center"
-            sx={{
-              mb: 4,
-              fontWeight: 600,
-              color: '#ff1493',
-              fontFamily: "'Playfair Display', serif",
-              fontSize: { xs: '1.8rem', md: '2.2rem' },
-              position: 'relative',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                bottom: -12,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 60,
-                height: 3,
-                bgcolor: '#ec407a',
-                borderRadius: 2
-              }
-            }}
-          >
-            My pregnancy week by week
-          </Typography>
-
-          <Box
-            sx={{
-              position: 'relative',
-              width: '100%',
-              py: 2
-            }}
-          >
-            <IconButton
-              onClick={() => scrollWeeks('left')}
+      <FadeInSection>
+        <Box 
+          sx={{ 
+            py: 8, 
+            bgcolor: '#f8f9fa',
+            position: 'relative',
+            overflow: 'hidden',
+            mt: 10  // Add margin top to increase the gap
+          }}
+        >
+          <Container maxWidth="xl">
+            <Typography
+              variant="h3"
+              component="h2"
+              align="center"
               sx={{
-                position: 'absolute',
-                left: 0,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                zIndex: 1,
-                color: 'white',
-                bgcolor: 'rgba(0,0,0,0.5)',
-                '&:hover': {
-                  bgcolor: 'rgba(0,0,0,0.7)',
+                mb: 4,
+                fontWeight: 600,
+                color: '#ff1493',
+                fontFamily: "'Playfair Display', serif",
+                fontSize: { xs: '1.8rem', md: '2.2rem' },
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -12,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 60,
+                  height: 3,
+                  bgcolor: '#ec407a',
+                  borderRadius: 2
                 }
               }}
             >
-              <ArrowBackIosNewIcon />
-            </IconButton>
-            
-            <Box 
-              ref={weekScrollRef}
+              My pregnancy week by week
+            </Typography>
+
+            <Box
               sx={{
                 display: 'flex',
                 gap: 2,
@@ -234,9 +223,9 @@ function Home() {
                   display: 'none',       // Hide scrollbar for Chrome/Safari/Opera
                 },
                 scrollBehavior: 'smooth',
-                px: 4,
+                px: 2,
                 mx: -2,
-                width: 'calc(100% - 16px)',
+                width: 'calc(100% + 32px)',
               }}
             >
               {[...Array(39)].map((_, index) => {
@@ -325,151 +314,6 @@ function Home() {
                 );
               })}
             </Box>
-            <IconButton
-              onClick={() => scrollWeeks('right')}
-              sx={{
-                position: 'absolute',
-                right: 0,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                zIndex: 1,
-                color: 'white',
-                bgcolor: 'rgba(0,0,0,0.5)',
-                '&:hover': {
-                  bgcolor: 'rgba(0,0,0,0.7)',
-                }
-              }}
-            >
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </Box>
-        </Container>
-      </Box>
-
-      {/* Main Features Section */}
-      <FadeInSection delay={0.2}>
-        <Box id="features" sx={{ py: 8, bgcolor: 'white' }}>
-          <Container maxWidth="lg">
-            <Typography 
-              variant="h2" 
-              component="h2" 
-              align="center" 
-              gutterBottom
-              sx={{ 
-                mb: 6,
-                color: '#2C3E50'
-              }}
-            >
-              Our Features
-            </Typography>
-            
-            <Grid container spacing={4}>
-              {features.map((feature, index) => (
-                <Grid item xs={12} sm={6} md={3} key={feature.id}>
-                  <FadeInSection delay={index * 0.2}>
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        p: 3,
-                        height: '100%',
-                        bgcolor: 'white',
-                        border: '2px solid #4A90E2',
-                        borderRadius: 4,
-                        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&:hover': {
-                          transform: 'translateY(-10px) scale(1.05)',
-                          boxShadow: '0 20px 40px rgba(74, 144, 226, 0.2)',
-                          border: '2px solid #2980B9',
-                          perspective: '1000px',
-                        },
-                        '&::before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          background: 'linear-gradient(135deg, rgba(74,144,226,0.1) 0%, rgba(41,128,185,0.05) 100%)',
-                          opacity: 0,
-                          transition: 'opacity 0.3s ease-in-out',
-                        },
-                        '&:hover::before': {
-                          opacity: 1,
-                        },
-                      }}
-                    >
-                      <Box
-                        className="feature-icon"
-                        sx={{
-                          fontSize: '3rem',
-                          color: '#4A90E2',
-                          mb: 2,
-                          transition: 'all 0.3s ease-in-out',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {feature.icon}
-                      </Box>
-                      <Typography
-                        variant="h5"
-                        className="feature-title"
-                        sx={{
-                          mb: 2,
-                          fontWeight: 600,
-                          color: '#2C3E50',
-                          textAlign: 'center',
-                          transition: 'color 0.3s ease-in-out',
-                          fontFamily: "'Quicksand', sans-serif",
-                        }}
-                      >
-                        {feature.title}
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: '#666',
-                          textAlign: 'center',
-                          fontSize: '0.95rem',
-                          lineHeight: 1.6,
-                          fontFamily: "'Quicksand', sans-serif",
-                        }}
-                      >
-                        {feature.description}
-                      </Typography>
-                      <Button
-                        component={RouterLink}
-                        to={feature.link}
-                        variant="text"
-                        sx={{
-                          mt: 2,
-                          color: '#4A90E2',
-                          display: 'block',
-                          margin: '20px auto 0',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            color: '#2980B9',
-                            transform: 'translateX(5px)',
-                          },
-                          '&::after': {
-                            content: '"→"',
-                            marginLeft: '5px',
-                            transition: 'transform 0.3s ease',
-                          },
-                          '&:hover::after': {
-                            transform: 'translateX(5px)',
-                          },
-                        }}
-                      >
-                        Learn More
-                      </Button>
-                    </Paper>
-                  </FadeInSection>
-                </Grid>
-              ))}
-            </Grid>
           </Container>
         </Box>
       </FadeInSection>
@@ -614,6 +458,213 @@ function Home() {
                 Pregnancy Wellness Expert
               </Typography>
             </Box>
+          </Container>
+        </Box>
+      </FadeInSection>
+
+      {/* Features Section */}
+      <FadeInSection>
+        <Box id="features" sx={{ py: 8, bgcolor: 'white' }}>
+          <Container maxWidth="lg">
+            <Typography 
+              variant="h2" 
+              component="h2" 
+              align="center" 
+              gutterBottom
+              sx={{ 
+                mb: 6,
+                color: '#2C3E50',
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600
+              }}
+            >
+              Our Features
+            </Typography>
+            
+            <Grid container spacing={4}>
+              {features.map((feature, index) => (
+                <Grid item xs={12} sm={6} md={3} key={feature.id}>
+                  <FadeInSection delay={index * 0.2}>
+                    <Paper
+                      component={RouterLink}
+                      to={feature.link}
+                      elevation={0}
+                      sx={{
+                        p: 3,
+                        height: '100%',
+                        bgcolor: 'white',
+                        border: '1px solid #f0f0f0',
+                        borderRadius: 4,
+                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        textDecoration: 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          transform: 'translateY(-10px) scale(1.02)',
+                          boxShadow: '0 15px 30px rgba(0, 0, 0, 0.1)',
+                          '& .feature-icon': {
+                            transform: 'scale(1.1) rotate(5deg)',
+                            color: getFeatureColor(feature.id),
+                          },
+                          '& .feature-title': {
+                            color: getFeatureColor(feature.id),
+                          },
+                          '& .feature-gradient': {
+                            opacity: 1,
+                          },
+                          '& .feature-arrow': {
+                            transform: 'translateX(5px)',
+                            opacity: 1,
+                          }
+                        },
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: '5px',
+                          background: getFeatureGradient(feature.id),
+                          opacity: 0.8,
+                        },
+                      }}
+                    >
+                      <Box
+                        className="feature-gradient"
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: getFeatureGradientBg(feature.id),
+                          opacity: 0,
+                          transition: 'opacity 0.4s ease',
+                          zIndex: 0,
+                        }}
+                      />
+                      
+                      <Box
+                        className="feature-icon"
+                        sx={{
+                          fontSize: '3rem',
+                          color: '#4A90E2',
+                          mb: 2,
+                          transition: 'all 0.3s ease-in-out',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'relative',
+                          zIndex: 1,
+                        }}
+                      >
+                        {feature.icon}
+                      </Box>
+                      
+                      <Typography
+                        variant="h5"
+                        className="feature-title"
+                        sx={{
+                          mb: 2,
+                          fontWeight: 600,
+                          color: '#2C3E50',
+                          textAlign: 'center',
+                          transition: 'color 0.3s ease-in-out',
+                          fontFamily: "'Quicksand', sans-serif",
+                          position: 'relative',
+                          zIndex: 1,
+                        }}
+                      >
+                        {feature.title}
+                      </Typography>
+                      
+                      <Typography
+                        sx={{
+                          color: '#666',
+                          textAlign: 'center',
+                          fontSize: '0.95rem',
+                          lineHeight: 1.6,
+                          fontFamily: "'Quicksand', sans-serif",
+                          mb: 3,
+                          position: 'relative',
+                          zIndex: 1,
+                        }}
+                      >
+                        {feature.description}
+                      </Typography>
+                      
+                      <Box 
+                        sx={{ 
+                          mt: 'auto', 
+                          display: 'flex', 
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'relative',
+                          zIndex: 1,
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            color: '#4A90E2',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            transition: 'color 0.3s ease',
+                            '&:hover': {
+                              color: getFeatureColor(feature.id),
+                            },
+                          }}
+                        >
+                          Learn More
+                          <Box 
+                            className="feature-arrow"
+                            component="span" 
+                            sx={{ 
+                              ml: 0.5, 
+                              transition: 'all 0.3s ease',
+                              opacity: 0.7,
+                              display: 'inline-flex'
+                            }}
+                          >
+                            →
+                          </Box>
+                        </Typography>
+                      </Box>
+                      
+                      {/* Decorative elements */}
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: -30,
+                          right: -30,
+                          width: '100px',
+                          height: '100px',
+                          borderRadius: '50%',
+                          background: `radial-gradient(circle, ${getFeatureColorLight(feature.id, 0.1)} 0%, rgba(255,255,255,0) 70%)`,
+                          zIndex: 0,
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 20,
+                          left: -20,
+                          width: '60px',
+                          height: '60px',
+                          borderRadius: '50%',
+                          background: `radial-gradient(circle, ${getFeatureColorLight(feature.id, 0.1)} 0%, rgba(255,255,255,0) 70%)`,
+                          zIndex: 0,
+                        }}
+                      />
+                    </Paper>
+                  </FadeInSection>
+                </Grid>
+              ))}
+            </Grid>
           </Container>
         </Box>
       </FadeInSection>

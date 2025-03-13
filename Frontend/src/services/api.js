@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://hackathon-pccoe.onrender.com/api',
+  // Use the production URL in production environment, otherwise use localhost
+  baseURL: import.meta.env.PROD 
+    ? 'https://hackathon-pccoe.onrender.com/api'
+    : 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -28,7 +31,8 @@ api.interceptors.response.use(
     console.error('API Error:', {
       status: error.response?.status,
       url: error.config?.url,
-      message: error.response?.data?.message || 'Server error'
+      message: error.response?.data?.message || error.response?.data?.error?.message || 'Server error',
+      errors: error.response?.data?.errors || error.response?.data?.error?.errors
     });
     return Promise.reject(error);
   }
@@ -47,7 +51,42 @@ export const authAPI = {
   },
   register: async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData);
+      // Ensure all required fields are present and properly formatted
+      const sanitizedData = {
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+        phone: userData.phone || '',
+        height: Number(userData.height),
+        weight: Number(userData.weight),
+        pregnancyDetails: {
+          dueDate: userData.pregnancyDetails.dueDate,
+          firstPregnancy: userData.pregnancyDetails.firstPregnancy,
+          medicalConditions: userData.pregnancyDetails.medicalConditions || []
+        },
+        dietType: userData.dietType,
+        notificationPreference: userData.notificationPreference,
+        healthInfo: {
+          medicalConditions: userData.healthInfo?.medicalConditions || []
+        },
+        notifications: {
+          email: userData.notifications?.email || false,
+          sms: userData.notifications?.sms || false,
+          push: true
+        },
+        preferences: {
+          dietaryRestrictions: [userData.dietType],
+          notificationSettings: {
+            email: userData.notifications?.email || false,
+            push: true
+          },
+          language: 'English',
+          theme: 'Light',
+          units: 'Imperial'
+        }
+      };
+
+      const response = await api.post('/auth/register', sanitizedData);
       return response;
     } catch (error) {
       console.error('Register API Error:', error);
@@ -87,6 +126,9 @@ export const authAPI = {
 export const userAPI = {
   getProfile: () => api.get('/users/profile'),
   updateProfile: (userData) => api.put('/users/profile', userData),
+  logWeight: (weight) => api.post('/users/weight', { weight }),
+  getWeightHistory: () => api.get('/users/weight'),
+  getNutritionData: () => api.get('/users/nutrition'),
 };
 
 // Appointment API calls

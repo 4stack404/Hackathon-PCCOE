@@ -1,0 +1,1595 @@
+{
+  "1": {
+    "trimester": "1",
+    "exercises": [
+  {
+    "id": 1,
+    "name": "Walking",
+    "image": "/assets/excercise_image/walkin.jpg",
+    "video": "https://www.youtube.com/watch?v=43RhoD5YPv0",
+    "trimester": "first",
+    "description": "A simple, low-impact cardio exercise that can be done anywhere.",
+    "steps": [
+      "Wear comfortable, supportive athletic shoes and loose-fitting clothing.",
+      "Start with a 5-minute warm-up of slow walking to prepare your muscles.",
+      "Gradually increase your pace to a moderate speed where you can still hold a conversation.",
+      "Maintain good posture: head up, shoulders back, and abdomen engaged.",
+      "Take even, measured strides, landing heel-to-toe with each step.",
+      "Swing arms naturally at your sides to enhance the workout.",
+      "Walk for 20-30 minutes, adjusting time based on your comfort level.",
+      "Finish with a 5-minute cool-down period of slower walking.",
+      "Stretch gently after your walk to prevent muscle tightness."
+    ],
+    "precautions": [
+      "Avoid walking on uneven terrain or slippery surfaces to prevent falls.",
+      "Stay well-hydrated before, during, and after your walk.",
+      "Stop if you experience dizziness, shortness of breath, or abdominal pain.",
+      "Avoid walking during extreme weather conditions (too hot, cold, or humid).",
+      "Listen to your body and adjust pace if you feel overly fatigued."
+    ],
+    "benefits": [
+      "Improves cardiovascular fitness without putting stress on joints.",
+      "Helps manage weight gain during pregnancy.",
+      "Reduces risk of gestational diabetes and preeclampsia.",
+      "Boosts mood and energy levels naturally.",
+      "Helps establish healthy sleep patterns."
+    ],
+    "difficulty": "easy",
+    "duration": "20-30 minutes",
+    "equipment": ["supportive shoes", "comfortable clothing"]
+  },
+  {
+    "id": 2,
+    "name": "Swimming",
+    "image": "/assets/excercise_image/swimming.webp",
+    "video": "https://www.youtube.com/watch?v=wIDjz9uqN4w",
+    "trimester": "first",
+    "description": "Full-body, weightless workout that's ideal for pregnancy.",
+    "steps": [
+      "Choose a properly fitted maternity swimsuit for comfort.",
+      "Enter the pool safely using steps or ladder, never diving.",
+      "Begin with a 5-minute warm-up of gentle water walking.",
+      "Start with slow, controlled strokes of your preferred swimming style.",
+      "Focus on proper breathing techniques, exhaling underwater and inhaling when your head turns.",
+      "Consider using a kickboard for leg-focused exercises if desired.",
+      "Aim for 20-30 minutes of swimming, taking breaks as needed.",
+      "Include gentle treading water periods if comfortable.",
+      "End with 5 minutes of slow swimming or water walking as a cool-down.",
+      "Exit the pool carefully using the steps or ladder."
+    ],
+    "precautions": [
+      "Avoid very hot pools, hot tubs, or saunas, as overheating can be harmful.",
+      "Be cautious of slippery pool decks and changing areas.",
+      "Don't hold your breath for extended periods while swimming.",
+      "Avoid crowded pools where collisions might occur.",
+      "Stay hydrated even though you're in water."
+    ],
+    "benefits": [
+      "Provides excellent cardiovascular workout with zero impact on joints.",
+      "The water's buoyancy relieves pressure on the spine and pelvis.",
+      "Helps reduce pregnancy-related swelling in ankles and feet.",
+      "Improves muscle tone throughout the entire body.",
+      "Keeps the body cool while exercising, reducing risk of overheating."
+    ],
+    "difficulty": "moderate",
+    "duration": "20-30 minutes",
+    "equipment": ["swimsuit", "swimming pool"]
+  },
+  {
+    "id": 3,
+    "name": "Prenatal Yoga",
+    "image": "/assets/excercise_image/yoga.jpg",
+    "video": "https://www.youtube.com/watch?v=-3bvlFKeLRE",
+    "trimester": "first",
+    "description": "Gentle stretching and mindfulness practice specifically modified for pregnancy.",
+    "steps": [
+      "Find a comfortable, quiet space with room to move freely.",
+      "Place a yoga mat on a flat, non-slip surface.",
+      "Wear comfortable, stretchy clothing that allows full range of motion.",
+      "Begin with 5 minutes of deep breathing to center yourself.",
+      "Start with simple poses like Cat-Cow to warm up the spine.",
+      "Move through pregnancy-safe poses such as modified Warrior I, II, and Triangle.",
+      "Use props (blocks, bolsters, blankets) when needed for support.",
+      "Hold each pose for 3-5 deep breaths, never straining.",
+      "Include pelvic floor exercises (Kegels) during practice.",
+      "End with 5-10 minutes of relaxation in a comfortable side-lying position.",
+      "Slowly return to seated position and take a few final deep breaths."
+    ],
+    "precautions": [
+      "Avoid poses that require lying flat on your back after the first trimester.",
+      "Skip deep twists, backbends, and inversions that compress the abdomen.",
+      "Never force a stretch or position that feels uncomfortable.",
+      "Modify poses as your center of gravity shifts throughout pregnancy.",
+      "Avoid hot yoga as overheating can be dangerous during pregnancy."
+    ],
+    "benefits": [
+      "Increases flexibility and maintains muscle tone safely.",
+      "Improves balance and posture as your body changes.",
+      "Teaches breathing techniques useful during labor and delivery.",
+      "Reduces stress and anxiety through mindfulness practices.",
+      "Helps alleviate common pregnancy discomforts like lower back pain."
+    ],
+    "difficulty": "easy to moderate",
+    "duration": "20-40 minutes",
+    "equipment": ["yoga mat", "props (optional: blocks, bolsters, blankets)"]
+  },
+  {
+    "id": 4,
+    "name": "Stationary Cycling",
+    "image": "/assets/excercise_image/cycling.jpg",
+    "video": "https://www.youtube.com/watch?v=ZgkpR8zu2NY",
+    "trimester": "first",
+    "description": "Low-impact cardio that's gentle on joints while building leg strength.",
+    "steps": [
+      "Adjust the bike seat to a comfortable height where knees are slightly bent at the bottom of pedal stroke.",
+      "Position handlebars higher than usual to accommodate your changing body.",
+      "Start with a 5-minute warm-up at low resistance.",
+      "Gradually increase resistance to a moderate level where you can still talk.",
+      "Maintain proper posture with shoulders relaxed and spine neutral.",
+      "Focus on smooth, controlled pedal strokes.",
+      "Aim for 15-30 minutes of cycling depending on your fitness level.",
+      "Include short intervals of slightly higher resistance if comfortable.",
+      "Finish with 5 minutes of low-resistance pedaling as a cool-down.",
+      "Carefully dismount the bike when finished."
+    ],
+    "precautions": [
+      "Use a recumbent bike if you experience balance issues or discomfort.",
+      "Ensure the room is well-ventilated to prevent overheating.",
+      "Avoid standing positions on the bike as your center of gravity changes.",
+      "Stay well-hydrated throughout your cycling session.",
+      "Stop immediately if you experience dizziness or shortness of breath."
+    ],
+    "benefits": [
+      "Provides excellent cardiovascular conditioning with minimal impact on joints.",
+      "Strengthens leg muscles that support your changing body.",
+      "Improves circulation in the lower body, potentially reducing swelling.",
+      "Can be easily adjusted as pregnancy progresses.",
+      "Helps control weight gain and boosts energy levels."
+    ],
+    "difficulty": "moderate",
+    "duration": "15-30 minutes",
+    "equipment": ["stationary bike"]
+  },
+  {
+    "id": 5,
+    "name": "Kegel Exercises",
+    "image": "/assets/excercise_image/kegal.webp",
+    "video": "https://www.youtube.com/watch?v=oVKemhvgekk",
+    "trimester": "first",
+    "description": "Invisible exercises that strengthen pelvic floor muscles for better bladder control and easier delivery.",
+    "steps": [
+      "Find a comfortable seated or lying position.",
+      "Identify your pelvic floor muscles (the muscles you use to stop urination mid-stream).",
+      "Tighten these muscles for 5 seconds, imagining you're lifting upward.",
+      "Release completely and relax for 5 seconds.",
+      "Ensure you're not holding your breath—breathe normally throughout.",
+      "Make sure you're not contracting your abdomen, thighs, or buttocks.",
+      "Repeat for 10 repetitions, 3 times daily.",
+      "Gradually increase hold time to 10 seconds with 10 seconds of rest between.",
+      "Add quick flicks (rapid contract/release) to work different muscle fibers.",
+      "Track your progress in a journal or app."
+    ],
+    "precautions": [
+      "Don't perform while urinating as this can lead to incomplete emptying of the bladder.",
+      "Avoid over-exercising these muscles, which can cause fatigue and discomfort.",
+      "If you feel pain during Kegels, stop and consult your healthcare provider.",
+      "Don't hold your breath while performing the exercises.",
+      "Don't expect immediate results—consistency is key."
+    ],
+    "benefits": [
+      "Strengthens pelvic floor muscles that support growing uterus during pregnancy.",
+      "Helps prevent urinary incontinence during and after pregnancy.",
+      "May make delivery easier and recovery faster.",
+      "Reduces risk of pelvic organ prolapse later in life.",
+      "Improves awareness of these important muscles for labor."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes (3 times daily)",
+    "equipment": ["none"]
+  },
+  {
+    "id": 6,
+    "name": "Modified Squats",
+    "image": "/assets/excercise_image/squat.webp",
+    "video": "https://www.youtube.com/watch?v=99eXXO9Z9z0",
+    "trimester": "first",
+    "description": "Lower body strengthening exercise that prepares legs for pregnancy and labor.",
+    "steps": [
+      "Stand with feet slightly wider than hip-width apart, toes pointed slightly outward.",
+      "Hold onto a sturdy chair, counter, or wall for balance if needed.",
+      "Keep your chest lifted and shoulders relaxed.",
+      "Engage your core muscles to support your back.",
+      "Inhale as you slowly bend knees, lowering as if sitting into a chair.",
+      "Keep weight in your heels and ensure knees track over (not past) toes.",
+      "Lower only as far as comfortable—even a quarter squat is beneficial.",
+      "Exhale as you press through heels to return to standing.",
+      "Keep movements slow and controlled throughout.",
+      "Start with 10-12 repetitions and build up to 2-3 sets."
+    ],
+    "precautions": [
+      "Never squat deeper than is comfortable or past the point where your thighs are parallel to the floor.",
+      "Use support (wall, chair) to prevent balance issues.",
+      "Stop if you feel any pain in knees, hips, or back.",
+      "Avoid holding your breath during exertion.",
+      "If you have symphysis pubis dysfunction or pelvic pain, consult your provider before performing squats."
+    ],
+    "benefits": [
+      "Strengthens quadriceps, hamstrings, and glutes needed to support additional pregnancy weight.",
+      "Improves hip mobility which can be helpful during labor.",
+      "Maintains leg strength needed for daily activities throughout pregnancy.",
+      "Can help with posture and balance as your center of gravity shifts.",
+      "Prepares body for the squatting position, which can be useful during labor."
+    ],
+    "difficulty": "moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["chair or wall for support (optional)"]
+  },
+  {
+    "id": 7,
+    "name": "Modified Planks",
+    "image": "/assets/excercise_image/plank.webp",
+    "video": "https://www.youtube.com/watch?v=tqK-2WZzI6w",
+    "trimester": "first",
+    "description": "Core stabilizing exercise adapted for pregnancy to maintain strength safely.",
+    "steps": [
+      "Begin on all fours with wrists under shoulders and knees under hips.",
+      "Lower to forearms if wrist pressure is uncomfortable.",
+      "Step feet back one at a time until legs are extended.",
+      "Keep body in a straight line from head to heels (or knees if modified).",
+      "Engage core by gently drawing your baby toward your spine.",
+      "Keep shoulders relaxed away from ears and breathe normally.",
+      "Hold for 10-20 seconds initially, gradually building up time.",
+      "To modify, keep knees on the ground or use an incline like a countertop.",
+      "Release to all fours position carefully when finished.",
+      "Rest completely between repetitions."
+    ],
+    "precautions": [
+      "Stop immediately if you feel abdominal pressure, coning, or bulging along midline.",
+      "Avoid traditional planks (on straight arms) if you have wrist pain or carpal tunnel symptoms.",
+      "Do not hold the position if you experience back pain or discomfort.",
+      "Keep sessions short—multiple short holds are better than one long one.",
+      "Switch to modified versions as pregnancy progresses."
+    ],
+    "benefits": [
+      "Safely maintains core strength without putting pressure on the rectus abdominis.",
+      "Strengthens deep stabilizing muscles that support posture during pregnancy.",
+      "Helps prevent or reduce lower back pain as pregnancy progresses.",
+      "Maintains shoulder stability and upper body strength.",
+      "Builds endurance in muscles that will help support you throughout pregnancy."
+    ],
+    "difficulty": "moderate",
+    "duration": "3-5 minutes total (with rests)",
+    "equipment": ["exercise mat", "countertop or bench (for modifications)"]
+  },
+  {
+    "id": 8,
+    "name": "Wall Push-Ups",
+    "image": "/assets/excercise_image/wallpush.webp",
+    "video": "http://youtube.com/watch?v=3dcDbbUDCtU&t=2s",
+    "trimester": "first",
+    "description": "Modified upper body strengthening that's safe and adjustable throughout pregnancy.",
+    "steps": [
+      "Stand facing a wall at arm's length distance.",
+      "Place palms flat against the wall at shoulder height and width.",
+      "Position feet hip-width apart, slightly back from the wall.",
+      "Maintain a straight line from head to heels with core engaged.",
+      "Bend elbows to slowly lower your chest toward the wall.",
+      "Keep elbows at about a 45-degree angle from body, not flared out.",
+      "Push back to starting position while exhaling.",
+      "Keep movements slow and controlled.",
+      "Start with 8-10 repetitions, building to 2-3 sets.",
+      "Adjust difficulty by changing foot position—closer for easier, farther for harder."
+    ],
+    "precautions": [
+      "Maintain proper form with back straight, avoiding arching or sagging.",
+      "Don't lock elbows at the top of the movement.",
+      "Stop if you feel wrist, shoulder, or back pain.",
+      "Ensure the wall is solid and secure.",
+      "Don't hold your breath during the exercise."
+    ],
+    "benefits": [
+      "Safely strengthens chest, shoulders, and arms without lying on your stomach.",
+      "Helps maintain upper body strength needed for carrying baby after birth.",
+      "Improves posture to counteract pregnancy-related posture changes.",
+      "Can be easily modified throughout all trimesters.",
+      "Requires no special equipment and can be done anywhere."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes",
+    "equipment": ["wall"]
+  },
+  {
+    "id": 9,
+    "name": "Pelvic Tilts",
+    "image": "/assets/excercise_image/pelvictilts.webp",
+    "video": "https://www.youtube.com/watch?v=u0AJnVg0tcc",
+    "trimester": "first",
+    "description": "Gentle movement that relieves back pressure while strengthening deep core muscles.",
+    "steps": [
+      "Start on all fours with wrists under shoulders and knees under hips.",
+      "Keep spine in neutral position, looking down at the floor.",
+      "Inhale to prepare, keeping shoulders relaxed.",
+      "Exhale while gently tucking your tailbone under, tilting pelvis forward.",
+      "Feel a slight flattening of your lower back.",
+      "Hold for 1-2 seconds.",
+      "Inhale as you return to neutral spine position.",
+      "Avoid excessively arching your back in the opposite direction.",
+      "Perform 10-15 repetitions, 1-2 times daily.",
+      "Can also be performed standing with back against wall or lying on side."
+    ],
+    "precautions": [
+      "Keep movements small and controlled—this is not a large range of motion exercise.",
+      "Avoid arching back in the opposite direction (anterior tilt) while pregnant.",
+      "Stop if you feel any pain or discomfort in back or pelvis.",
+      "Move at a slow, controlled pace—quality over quantity.",
+      "If you have existing back problems, check with your healthcare provider first."
+    ],
+    "benefits": [
+      "Provides immediate relief from lower back pressure and discomfort.",
+      "Strengthens deep core muscles that support the spine during pregnancy.",
+      "Improves awareness of neutral pelvis position for better posture.",
+      "Can help alleviate sciatic nerve pain.",
+      "Prepares pelvic muscles for labor and delivery."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes",
+    "equipment": ["exercise mat"]
+  },
+  {
+    "id": 10,
+    "name": "Light Resistance Band Exercises",
+    "image": "/assets/excercise_image/band.webp",
+    "video": "https://www.youtube.com/watch?v=99eXXO9Z9z0",
+    "trimester": "first",
+    "description": "Versatile strength training using elastic bands to maintain muscle tone safely.",
+    "steps": [
+      "Choose a light or medium resistance band appropriate for your fitness level.",
+      "Ensure the band has no tears or weak spots before using.",
+      "Begin with a 5-minute warm-up of marching in place or light walking.",
+      "For arm rows: Secure band to a doorknob, stand with feet hip-width apart, pull band toward torso keeping elbows close to body.",
+      "For lateral raises: Stand on middle of band, hold ends, and raise arms out to sides to shoulder height.",
+      "For leg press: Sit on stable chair, loop band around foot, press leg forward.",
+      "Perform 10-12 repetitions of each exercise.",
+      "Keep movements slow and controlled, focusing on form.",
+      "Breathe normally throughout—exhale on exertion, inhale on return.",
+      "Complete 1-2 sets of each exercise, resting between sets."
+    ],
+    "precautions": [
+      "Use appropriate resistance—you should be able to complete all repetitions with proper form.",
+      "Avoid jerking or snapping the band, which can cause injury.",
+      "Position the band securely to prevent it from slipping or hitting your face.",
+      "Reduce resistance if you feel strain or cannot maintain proper form.",
+      "Store bands away from direct sunlight, which can deteriorate the material."
+    ],
+    "benefits": [
+      "Provides adjustable resistance for different muscle groups and fitness levels.",
+      "Helps maintain muscle tone without heavy weights or bulky equipment.",
+      "Improves muscular endurance needed for labor and recovery.",
+      "Can target specific areas experiencing pregnancy-related weakness.",
+      "Easily portable for home or travel use."
+    ],
+    "difficulty": "easy to moderate",
+    "duration": "15-20 minutes",
+    "equipment": ["resistance bands", "chair"]
+  },
+  {
+    "id": 11,
+    "name": "Modified Side-Lying Leg Lifts",
+    "image": "/assets/excercise_image/sideleg.webp",
+    "video": "https://www.youtube.com/watch?v=NOV3hTyLZlg",
+    "trimester": "first",
+    "description": "Hip and outer thigh strengthener that maintains pelvic stability during pregnancy.",
+    "steps": [
+      "Lie on your side with head resting on arm or pillow for support.",
+      "Keep bottom leg slightly bent for stability.",
+      "Stack hips vertically, with top hip directly above bottom hip.",
+      "Place a small pillow under your belly for support if needed.",
+      "Ensure your spine remains neutral—no twisting forward or backward.",
+      "Engage core by gently drawing baby toward spine.",
+      "Slowly raise top leg 6-12 inches, keeping foot flexed.",
+      "Keep movement controlled, avoiding swinging or momentum.",
+      "Lower leg with control.",
+      "Complete 10-15 repetitions, then switch sides."
+    ],
+    "precautions": [
+      "Use proper support under head and belly to maintain alignment.",
+      "Avoid twisting the pelvis forward or backward during the movement.",
+      "If you feel hip pain or cramping, decrease the height of the leg lift.",
+      "Position yourself a comfortable distance from walls or furniture.",
+      "As pregnancy progresses, limit time spent lying on one side."
+    ],
+    "benefits": [
+      "Strengthens hip abductors and stabilizers that support the pelvis during pregnancy.",
+      "Helps maintain pelvic alignment as ligaments relax due to hormonal changes.",
+      "Can reduce hip and lower back pain common in pregnancy.",
+      "Improves stability needed for balance as your center of gravity shifts.",
+      "Helps maintain proper gait mechanics throughout pregnancy."
+    ],
+    "difficulty": "easy",
+    "duration": "10 minutes (5 minutes per side)",
+    "equipment": ["exercise mat", "pillow"]
+  },
+  {
+    "id": 12,
+    "name": "Modified Bird Dog",
+    "image": "/assets/excercise_image/bird.webp",
+    "video": "https://www.youtube.com/watch?v=H7SZ9Hgb21I",
+    "trimester": "first",
+    "description": "Core stabilizing exercise that improves balance and strengthens back and abdominals safely.",
+    "steps": [
+      "Begin on all fours with wrists under shoulders and knees under hips.",
+      "Keep back flat in neutral position, not arched or rounded.",
+      "Engage your core by gently drawing baby toward spine.",
+      "While maintaining a stable torso, extend right arm forward to shoulder height.",
+      "Hold for 2-3 seconds, focusing on keeping hips and shoulders level.",
+      "Return arm to starting position with control.",
+      "Repeat with left arm.",
+      "Once comfortable with arm movements, add leg extensions one at a time.",
+      "For added challenge (only if comfortable), extend opposite arm and leg simultaneously.",
+      "Perform 5-8 repetitions on each side."
+    ],
+    "precautions": [
+      "Keep movements slow and controlled, avoiding jerky motions.",
+      "Maintain a neutral spine throughout—no sagging or arching.",
+      "Start with separate arm and leg movements before attempting to combine them.",
+      "Stop if you feel strain in your lower back or loss of balance.",
+      "As pregnancy progresses, you may need to reduce range of motion."
+    ],
+    "benefits": [
+      "Safely strengthens deep core stabilizers without abdominal pressure.",
+      "Improves balance and coordination as your body changes.",
+      "Strengthens back muscles that support growing belly weight.",
+      "Helps maintain proper posture throughout pregnancy.",
+      "Engages multiple muscle groups simultaneously for efficient exercise."
+    ],
+    "difficulty": "moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["exercise mat"]
+  },
+  {
+    "id": 13,
+    "name": "Seated Arm Circles",
+    "image": "/assets/excercise_image/armcircle.webp",
+    "video": "https://www.youtube.com/watch?v=ZZIl3ZwcyRg",
+    "trimester": "first",
+    "description": "Upper body mobility exercise that improves circulation and reduces shoulder tension.",
+    "steps": [
+      "Sit on a stable chair with feet flat on floor, hip-width apart.",
+      "Maintain good posture with shoulders relaxed and spine tall.",
+      "Extend arms out to sides at shoulder height.",
+      "Begin making small, controlled circles forward with arms.",
+      "Keep shoulders down and away from ears.",
+      "After 10-15 circles, reverse direction.",
+      "For variety, try making circles with arms extended forward.",
+      "Gradually increase circle size if comfortable.",
+      "Perform 2-3 sets in each direction.",
+      "Finish with gentle shoulder rolls forward and backward."
+    ],
+    "precautions": [
+      "Keep movements small if you experience any shoulder discomfort.",
+      "Avoid hunching shoulders toward ears during the exercise.",
+      "Stop if you feel any sharp pain or clicking in shoulders.",
+      "Use lighter movements if you experience dizziness or nausea.",
+      "Ensure your chair is stable and has back support."
+    ],
+    "benefits": [
+      "Relieves pregnancy-related tension in neck and shoulders.",
+      "Maintains upper body mobility as breasts and posture change.",
+      "Improves circulation to arms and upper body.",
+      "Helps reduce swelling in hands and arms.",
+      "Can be done easily throughout the day to break up sedentary periods."
+    ],
+    "difficulty": "easy",
+    "duration": "5 minutes",
+    "equipment": ["chair with back support"]
+  },
+  {
+    "id": 14,
+    "name": "Standing Calf Raises",
+    "image": "/assets/excercise_image/calf.webp",
+    "video": "https://www.youtube.com/watch?v=4uPCKQqUWTM",
+    "trimester": "first",
+    "description": "Lower leg strengthener that improves circulation and prevents cramping.",
+    "steps": [
+      "Stand near a wall or sturdy piece of furniture for balance support.",
+      "Place feet hip-width apart with toes pointing forward.",
+      "Distribute weight evenly across both feet.",
+      "Gently engage core to maintain stability.",
+      "Slowly rise onto balls of feet, lifting heels as high as comfortable.",
+      "Hold the raised position for 1-2 seconds.",
+      "Lower heels back to floor with control.",
+      "Focus on full range of motion through ankles.",
+      "Perform 12-15 repetitions, 2-3 sets.",
+      "For increased difficulty, perform one leg at a time if balance allows."
+    ],
+    "precautions": [
+      "Always use support to prevent balance issues or falls.",
+      "If you experience calf cramping, reduce the height of raises.",
+      "Ensure proper footwear with good arch support.",
+      "Avoid bouncing or jerking movements.",
+      "Stop if you feel any sharp pain in feet, ankles, or calves."
+    ],
+    "benefits": [
+      "Strengthens calf muscles that support additional pregnancy weight.",
+      "Improves circulation in lower legs, reducing swelling and varicose veins.",
+      "Helps prevent common pregnancy calf cramps, especially at night.",
+      "Maintains ankle mobility throughout pregnancy.",
+      "Can help with balance as your center of gravity shifts."
+    ],
+    "difficulty": "easy",
+    "duration": "5 minutes",
+    "equipment": ["wall or sturdy furniture for support"]
+  },
+  {
+    "id": 15,
+    "name": "Gentle Barre Exercises",
+    "image": "/assets/excercise_image/barre.webp",
+    "video": "https://www.youtube.com/watch?v=-01nVuNTeZk",
+    "trimester": "first",
+    "description": "Ballet-inspired movements adapted for pregnancy that improve posture, balance, and strength.",
+    "steps": [
+      "Find a sturdy counter, chair, or actual ballet barre for support.",
+      "Stand with feet hip-width apart in first position (slightly turned out).",
+      "Maintain proper posture: spine tall, shoulders relaxed, pelvis neutral.",
+      "For plié: Bend knees outward while keeping heels on floor, then straighten.",
+      "For leg lifts: Hold barre with left hand, lift right leg to side 6-12 inches, lower with control.",
+      "For relevé: Rise onto balls of feet while holding barre, lower with control.",
+      "For arm work: Hold onto barre with one hand while performing gentle arm circles or lifts.",
+      "Keep movements small, precise, and controlled.",
+      "Focus on form rather than number of repetitions.",
+      "Perform 8-12 repetitions of each movement."
+    ],
+    "precautions": [
+      "Use stable support—test before putting weight on it.",
+      "Avoid deep pliés or positions that strain pelvic floor.",
+      "Keep turnout moderate—never force hip rotation.",
+      "Stay well-hydrated throughout the workout.",
+      "If you experience pubic pain or instability, reduce range of motion or discontinue."
+    ],
+    "benefits": [
+      "Improves posture and alignment as your body changes during pregnancy.",
+      "Strengthens stabilizing muscles that support joints as they become more lax.",
+      "Enhances balance and coordination in a safe, controlled environment.",
+      "Maintains lower body strength without high-impact movements.",
+      "Focuses on proper body mechanics that can help with pain prevention."
+    ],
+    "difficulty": "moderate",
+    "duration": "15-20 minutes",
+    "equipment": ["barre, counter, or sturdy chair for support"]
+  }
+  ]
+  },
+  "2": {
+    "trimester": "2",
+    "exercises": [
+  {
+    "id": 1,
+    "name": "Pregnancy Ball Exercises",
+    "image": "/assets/excercise_image/ball.webp",
+    "video": "https://www.youtube.com/watch?v=pxACsE_bH-Y",
+    "description": "Stability ball movements that provide core support while accommodating your growing belly.",
+    "steps": [
+      "Choose a properly inflated stability ball large enough to support your height (when seated, knees should be at 90-degree angle).",
+      "Begin by sitting on the ball with feet flat on floor, hip-width apart.",
+      "Find your balance by engaging core muscles and sitting tall.",
+      "For pelvic tilts: Sit centered on ball, place hands on hips, gently rock pelvis forward and backward.",
+      "For wall squats: Place ball between your lower back and wall, feet shoulder-width apart, slowly bend knees to lower into squat position.",
+      "For seated circles: Sit centered on ball, place hands on thighs, make small circular movements with hips.",
+      "For gentle bouncing: Sit centered on ball, gently bounce up and down while maintaining proper posture.",
+      "For side stretches: Sit tall on ball, extend one arm overhead and lean gently to opposite side.",
+      "Perform each movement for 30-60 seconds, focusing on controlled movements.",
+      "Always move off the ball carefully, using nearby furniture for support if needed."
+    ],
+    "precautions": [
+      "Use the ball on non-slip surfaces, away from sharp objects or furniture corners.",
+      "Start with ball against a wall until you feel confident with your balance.",
+      "Avoid rapid or jerky movements that could cause falls.",
+      "Skip any movements that cause pain in your pelvic area or back.",
+      "As your center of gravity shifts, reduce the range of motion for balance exercises."
+    ],
+    "benefits": [
+      "Provides gentle core engagement without putting pressure on your growing abdomen.",
+      "Helps relieve back pain by promoting proper posture and spinal alignment.",
+      "Prepares pelvic muscles for labor and delivery.",
+      "Improves balance as your center of gravity continues to shift.",
+      "Can be used for relaxation and stress relief during pregnancy."
+    ],
+    "difficulty": "beginner",
+    "duration": "15-20 minutes",
+    "equipment": ["stability ball"]
+  },
+  {
+    "id": 2,
+    "name": "Modified Side Planks",
+    "image": "/assets/excercise_image/sideplank.webp",
+    "video": "https://www.youtube.com/watch?v=tqK-2WZzI6w",
+    "description": "Core and hip strengthening exercise adapted for the second trimester.",
+    "steps": [
+      "Begin by lying on your side with knees bent at approximately 90 degrees.",
+      "Stack your hips vertically with shoulders aligned above hips.",
+      "Support your head with your bottom arm extended, or prop on your elbow.",
+      "Place top hand on hip or floor in front of you for additional support.",
+      "Engage your core by gently drawing baby toward spine.",
+      "Lift your hips off the floor, creating a straight line from knees to shoulders.",
+      "Hold for 5-10 seconds initially, gradually increasing to 20-30 seconds.",
+      "Lower with control back to starting position.",
+      "Complete 3-5 repetitions on each side.",
+      "For modification, perform with bottom knee bent and touching the floor for extra support."
+    ],
+    "precautions": [
+      "Stop if you feel any strain or pulling in your abdominal area.",
+      "Avoid twisting motions while in the side plank position.",
+      "If you experience diastasis recti (abdominal separation), consult your provider before attempting.",
+      "Keep movements slow and controlled to prevent falls or strain.",
+      "Use a yoga mat or soft surface to cushion your arm and knees."
+    ],
+    "benefits": [
+      "Strengthens lateral core muscles without putting pressure on the rectus abdominis.",
+      "Targets hip stabilizers which help support your changing posture.",
+      "Improves overall body awareness and balance during pregnancy.",
+      "Helps maintain functional strength for everyday movements.",
+      "Supports proper alignment of the pelvis as ligaments loosen."
+    ],
+    "difficulty": "moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["yoga mat"]
+  },
+  {
+    "id": 3,
+    "name": "Swimming Intervals",
+    "image": "/assets/excercise_image/swim.webp",
+    "video": "https://www.youtube.com/watch?v=wIDjz9uqN4w&t=10s",
+    "description": "Structured water workout that combines cardiovascular and strength benefits with buoyancy support.",
+    "steps": [
+      "Enter the pool safely using steps or ladder, wearing a comfortable maternity swimsuit.",
+      "Begin with 5 minutes of gentle water walking as a warm-up.",
+      "Perform 2-3 minutes of freestyle swimming at a moderate pace.",
+      "Rest for 1 minute by walking in place or holding the pool edge.",
+      "Follow with 2-3 minutes of breaststroke, focusing on proper form.",
+      "Rest for 1 minute with gentle movement.",
+      "Add 2-3 minutes of side stroke or backstroke for variety.",
+      "Incorporate 2-3 minutes of arm-only work using a kickboard to support legs.",
+      "Finish with 2-3 minutes of leg-only work using a pool noodle or kickboard for arm support.",
+      "Cool down with 5 minutes of gentle swimming or water walking."
+    ],
+    "precautions": [
+      "Avoid diving, jumping, or sudden entry into water which can strain pelvic ligaments.",
+      "Be cautious with backstroke if you experience lightheadedness when on your back.",
+      "Stay hydrated despite being in water – bring a water bottle poolside.",
+      "Keep intensity moderate – you should be able to talk while exercising.",
+      "Exit the pool immediately if you feel dizzy, short of breath, or uncomfortable."
+    ],
+    "benefits": [
+      "Provides excellent cardiovascular conditioning while supporting your growing belly.",
+      "Reduces swelling in ankles and feet through improved circulation and hydrostatic pressure.",
+      "Alleviates pressure on joints and ligaments which are becoming more relaxed due to pregnancy hormones.",
+      "Helps maintain healthy weight gain throughout pregnancy.",
+      "Offers cooling relief during the sometimes uncomfortable second trimester."
+    ],
+    "difficulty": "moderate",
+    "duration": "20-30 minutes",
+    "equipment": ["swimming pool", "maternity swimsuit", "kickboard", "pool noodle"]
+  },
+  {
+    "id": 4,
+    "name": "Prenatal Pilates (Modified)",
+    "image": "/assets/excercise_image/pilates.webp",
+    "video": "https://www.youtube.com/watch?v=0mCvtuG_4Og&t=1s",
+    "description": "Controlled movement practice that focuses on core stability, posture, and alignment for the changing pregnant body.",
+    "steps": [
+      "Set up a comfortable exercise mat in a quiet space.",
+      "Begin in a seated position with legs crossed or extended, depending on comfort.",
+      "Take 5 deep breaths, focusing on lateral (side) rib expansion.",
+      "For seated spinal rotation: Sit tall, place hands on knees, rotate torso gently to right and left.",
+      "For arm circles: Extend arms to sides, make small controlled circles forward and backward.",
+      "For leg slides: Sit or lie on side, slide one leg forward and back while maintaining core stability.",
+      "For modified roll-downs: Sit tall at edge of chair, roll spine halfway down and return to upright.",
+      "For standing leg lifts: Hold onto chair, lift one leg to side or back with control.",
+      "Move slowly through each exercise, focusing on breath coordination.",
+      "End with pelvic tilts in a comfortable side-lying position."
+    ],
+    "precautions": [
+      "Avoid exercises lying flat on your back, which can compress major blood vessels.",
+      "Skip any exercises that require deep forward flexion of the torso.",
+      "Modify movements if you notice coning or doming of your abdomen.",
+      "Use props (pillows, bolsters) for support whenever needed.",
+      "Keep movements small and controlled, especially with rotation exercises."
+    ],
+    "benefits": [
+      "Strengthens deep core muscles that support your growing belly and changing posture.",
+      "Improves body awareness as your center of gravity continues to shift.",
+      "Reduces back pain through proper alignment and muscle balance.",
+      "Maintains functional strength for daily activities that become more challenging.",
+      "Teaches breathing techniques that can be useful during labor."
+    ],
+    "difficulty": "moderate",
+    "duration": "15-20 minutes",
+    "equipment": ["yoga mat", "chair", "pillows"]
+  },
+  {
+    "id": 5,
+    "name": "Pregnancy-Safe Resistance Band Workout",
+    "image": "/assets/excercise_image/band.webp",
+    "video": "https://www.youtube.com/watch?v=0mCvtuG_4Og&t=1s",
+    "description": "Customizable strength training using bands to accommodate your second trimester body changes.",
+    "steps": [
+      "Select resistance bands with appropriate tension (usually light to medium).",
+      "Begin with 5 minutes of marching in place to warm up.",
+      "For seated rows: Secure band around sturdy object, sit tall on chair, pull band toward torso with elbows close to sides.",
+      "For lateral raises: Stand on band with feet hip-width apart, raise arms to shoulder height with soft elbows.",
+      "For squat with overhead press: Stand on band, hold handles at shoulders, squat as comfortable, press arms overhead while standing.",
+      "For seated leg extensions: Attach band to chair leg, loop other end around ankle, extend leg forward.",
+      "For standing hip abductions: Secure band around lower thighs, step sideways against resistance.",
+      "Perform 10-12 repetitions of each exercise, 1-2 sets.",
+      "Rest 30-60 seconds between exercises.",
+      "End with gentle stretching for worked muscle groups."
+    ],
+    "precautions": [
+      "Secure bands properly to prevent snapping or slipping.",
+      "Choose resistance that allows proper form throughout all repetitions.",
+      "Modify stance for stability as your center of gravity shifts.",
+      "Avoid holding breath during exertion.",
+      "Stay hydrated throughout the workout and have water nearby."
+    ],
+    "benefits": [
+      "Maintains muscle tone throughout the body without straining joints.",
+      "Allows for gradual adjustment of resistance as pregnancy progresses.",
+      "Strengthens muscles needed for proper posture as your belly grows.",
+      "Improves muscular endurance needed for labor and postpartum recovery.",
+      "Helps combat pregnancy-related fatigue through increased circulation and endorphin release."
+    ],
+    "difficulty": "beginner to moderate",
+    "duration": "15-20 minutes",
+    "equipment": ["resistance bands", "chair"]
+  },
+  {
+    "id": 6,
+    "name": "Prenatal Barre",
+    "image": "/assets/excercise_image/barre.webp",
+    "video": "https://www.youtube.com/watch?v=99eXXO9Z9z0",
+    "description": "Low-impact strength and flexibility workout adapted for second trimester that improves posture and balance.",
+    "steps": [
+      "Find a sturdy counter, chair back, or wall-mounted barre for support.",
+      "Start with warming up ankles and calves through gentle relevés (heel raises).",
+      "For second-position plié: Stand with feet wider than hip-width, toes turned out slightly, bend knees over toes.",
+      "For modified arabesque: Hold barre with both hands, extend one leg behind with slight lift, maintaining neutral spine.",
+      "For arm work: Hold barre with one hand, perform controlled arm movements with free arm.",
+      "For inner thigh work: Stand with one leg on low step/block, other leg extended to side, pulse gently.",
+      "For calf stretches: Face barre, place one foot back in lunge position, press heel toward floor.",
+      "Hold each position for 20-30 seconds or perform 10-15 small pulses.",
+      "Focus on maintaining proper alignment throughout all movements.",
+      "Finish with gentle upper body stretches holding the barre."
+    ],
+    "precautions": [
+      "Keep movements small and controlled, avoiding deep pliés or lunges.",
+      "Use support at all times to prevent balance issues.",
+      "Modify turnout to accommodate your changing pelvis – never force positions.",
+      "Take breaks as needed and drink water frequently.",
+      "Avoid rapid transitions between positions."
+    ],
+    "benefits": [
+      "Improves postural awareness as your center of gravity continues to shift.",
+      "Strengthens stabilizing muscles around major joints as ligaments loosen.",
+      "Maintains ankle and calf strength to help prevent common pregnancy swelling.",
+      "Enhances body awareness and balance in a safe, controlled environment.",
+      "Provides effective strength work without high-impact movements."
+    ],
+    "difficulty": "moderate",
+    "duration": "20-30 minutes",
+    "equipment": ["barre or sturdy chair", "small step or block"]
+  },
+  {
+    "id": 7,
+    "name": "Walking Intervals",
+    "image": "/assets/excercise_image/walkin.jpg",
+    "video": "https://www.youtube.com/watch?v=43RhoD5YPv0",
+    "description": "Structured walking routine that alternates pace to improve cardiovascular fitness safely.",
+    "steps": [
+      "Wear supportive athletic shoes and comfortable clothing.",
+      "Begin with 5 minutes of slow walking to warm up muscles.",
+      "Increase to moderate pace for 3 minutes where conversation is still possible.",
+      "Return to slower pace for 2 minutes as recovery.",
+      "Repeat the 3-minute moderate/2-minute recovery pattern 3-5 times.",
+      "Add gentle arm movements (like bicep curls or punches) during moderate intervals if desired.",
+      "Find flat, even surfaces to walk on, avoiding steep hills or uneven terrain.",
+      "Pay attention to posture: shoulders back, chest lifted, core engaged.",
+      "Focus on heel-to-toe walking pattern for proper biomechanics.",
+      "Cool down with 5 minutes of slow walking and gentle stretching."
+    ],
+    "precautions": [
+      "Wear a supportive maternity belt if you experience round ligament pain.",
+      "Carry water and stay well-hydrated throughout your walk.",
+      "Avoid overheating – dress in layers and walk during cooler parts of the day.",
+      "Listen to your body's signals – reduce intensity if you feel exhausted.",
+      "Skip outdoor walking in extreme weather conditions or poor air quality."
+    ],
+    "benefits": [
+      "Improves cardiovascular fitness without excessive impact on loosening joints.",
+      "Helps maintain healthy weight gain during second trimester.",
+      "Reduces risk of gestational diabetes and preeclampsia.",
+      "Alleviates common pregnancy discomforts like constipation and bloating.",
+      "Prepares your body for the endurance needed during labor."
+    ],
+    "difficulty": "beginner",
+    "duration": "20-30 minutes",
+    "equipment": ["supportive athletic shoes", "maternity belt (optional)"]
+  },
+  {
+    "id": 8,
+    "name": "Modified Lunges with Support",
+    "image": "/assets/excercise_image/lunges.jpg",
+    "video": "https://www.youtube.com/watch?v=7r4VC2pBc7I",
+    "description": "Lower body strengthening exercise adapted for second trimester balance changes.",
+    "steps": [
+      "Stand next to a wall, sturdy chair, or counter for support.",
+      "Place feet hip-width apart with good posture.",
+      "Hold support with one hand for balance.",
+      "Take a comfortable step forward with right foot (shorter than a traditional lunge).",
+      "Bend both knees to lower your body, keeping weight in heels.",
+      "Descend only as far as comfortable and stable.",
+      "Push through front heel to return to starting position.",
+      "Complete 8-10 repetitions on right leg.",
+      "Switch sides and repeat with left leg forward.",
+      "Perform 1-2 sets on each leg."
+    ],
+    "precautions": [
+      "Always use proper support for balance as your center of gravity has shifted.",
+      "Take shorter steps than pre-pregnancy to maintain stability.",
+      "Avoid lunging too deeply, which can strain loosening ligaments.",
+      "If you experience pubic or hip pain, reduce depth or discontinue.",
+      "Keep movements slow and controlled, never jerky or bouncy."
+    ],
+    "benefits": [
+      "Strengthens quadriceps, hamstrings, and glutes needed to support additional pregnancy weight.",
+      "Maintains hip stability as relaxin hormone loosens ligaments.",
+      "Improves balance and coordination which become challenging in second trimester.",
+      "Increases lower body endurance needed for labor.",
+      "Helps maintain proper walking mechanics as your body changes."
+    ],
+    "difficulty": "moderate",
+    "duration": "10-15 minutes",
+    "equipment": ["wall, counter, or sturdy chair"]
+  },
+  {
+    "id": 9,
+    "name": "Seated Resistance Exercises",
+    "image": "/assets/excercise_image/seated.jpg",
+    "video": "https://www.youtube.com/watch?v=H1F-UfC8Mb8",
+    "description": "Chair-based strength routine that safely targets major muscle groups during second trimester.",
+    "steps": [
+      "Choose a sturdy chair without wheels, preferably with armrests.",
+      "Sit tall with feet flat on floor, hip-width apart.",
+      "For bicep curls: Hold light dumbbells (1-3 lbs), curl toward shoulders.",
+      "For shoulder press: Start with weights at shoulder height, press overhead.",
+      "For seated marching: Lift one knee at a time toward chest without rounding back.",
+      "For seated leg extensions: Straighten one leg at a time without locking knee.",
+      "For tricep extensions: Hold one weight with both hands behind head, extend arms.",
+      "For torso rotation: Hold weight at chest, rotate torso side to side without twisting abdomen.",
+      "Perform 10-12 repetitions of each exercise, 1-2 sets.",
+      "Rest 30-60 seconds between exercises."
+    ],
+    "precautions": [
+      "Use very light weights or no weights if you're new to strength training.",
+      "Avoid leaning back in the chair, which can strain your lower back.",
+      "Keep movements controlled and aligned with natural joint movements.",
+      "Stay hydrated throughout your workout.",
+      "Stop if you feel lightheaded, experience contractions, or unusual discomfort."
+    ],
+    "benefits": [
+      "Maintains upper and lower body strength in a stable, controlled position.",
+      "Reduces strain on back and pelvis while still targeting major muscle groups.",
+      "Improves circulation without the need for standing for long periods.",
+      "Helps combat second trimester fatigue by building muscular endurance.",
+      "Easily modifiable as pregnancy progresses."
+    ],
+    "difficulty": "beginner",
+    "duration": "15-20 minutes",
+    "equipment": ["sturdy chair", "light dumbbells (1-3 lbs)"]
+  },
+  {
+    "id": 10,
+    "name": "Water Aerobics",
+    "image": "/assets/excercise_image/water.webp",
+    "video": "https://www.youtube.com/watch?v=wIDjz9uqN4w&t=10s",
+    "description": "Buoyancy-supported exercise class specifically designed for pregnant women in their second trimester.",
+    "steps": [
+      "Enter pool safely using steps or ladder, immersing to chest or shoulder depth.",
+      "Begin with 5 minutes of water walking forward, backward, and sideways.",
+      "For jumping jacks: Jump feet apart and together while moving arms out and in.",
+      "For knee lifts: Lift alternate knees toward chest while stabilizing with arms.",
+      "For cross-country skiing: Alternate legs forward and back while opposing arms move forward and back.",
+      "For water jogging: Jog in place maintaining good posture, using arm movements.",
+      "For side leg lifts: Hold pool edge, extend leg to side and return.",
+      "For water push-ups: Face pool wall, place hands on edge, bend and straighten arms.",
+      "Perform each movement for 1-2 minutes before switching.",
+      "Finish with 5 minutes of gentle stretching in the water."
+    ],
+    "precautions": [
+      "Choose pools with appropriate water temperature (83-86°F/28-30°C) – not too hot or cold.",
+      "Wear water shoes to prevent slipping on pool surfaces.",
+      "Hydrate well before, during, and after class despite being in water.",
+      "Avoid jumping or bouncing if you experience pelvic pain.",
+      "Take breaks to rest as needed, even if others continue."
+    ],
+    "benefits": [
+      "Provides significant cardiovascular benefits with virtually no impact on joints.",
+      "The hydrostatic pressure helps reduce swelling in extremities.",
+      "Water resistance strengthens muscles without need for equipment.",
+      "Buoyancy reduces pressure on bladder and supports growing belly.",
+      "Helps manage healthy weight gain through second trimester."
+    ],
+    "difficulty": "beginner to moderate",
+    "duration": "30-45 minutes",
+    "equipment": ["swimming pool", "water shoes", "maternity swimsuit"]
+  },
+  {
+    "id": 11,
+    "name": "Prenatal Modified Push-Ups",
+    "image": "/assets/excercise_image/pushups.jpg",
+    "video": "https://www.youtube.com/watch?v=n65fckZGqE8",
+    "description": "Upper body strengthener adapted to accommodate second trimester belly growth.",
+    "steps": [
+      "Begin in an inclined position with hands on a stable surface (wall, counter, or bench).",
+      "Place hands slightly wider than shoulder-width apart.",
+      "Step feet back to create a straight line from head to heels.",
+      "The higher the incline, the easier the exercise – adjust as needed.",
+      "Keep core engaged by gently drawing baby toward spine.",
+      "With elbows pointing slightly backward, bend arms to lower chest toward surface.",
+      "Press back to starting position without locking elbows.",
+      "Maintain a neutral spine throughout the movement.",
+      "Start with 8-10 repetitions, building to 12-15.",
+      "Rest 30-60 seconds between sets."
+    ],
+    "precautions": [
+      "Choose an incline that allows comfortable space for your growing belly.",
+      "Avoid traditional floor push-ups which put pressure on abdomen.",
+      "Ensure the surface you're using is stable and secured.",
+      "Keep neck aligned with spine – don't drop head forward.",
+      "If wrists hurt, try using dumbbells as handles to keep wrists straight."
+    ],
+    "benefits": [
+      "Maintains upper body strength needed for daily activities as pregnancy progresses.",
+      "Strengthens chest, shoulders, and arms for carrying baby after birth.",
+      "Engages core stabilizers in a pregnancy-safe position.",
+      "Improves posture to help counteract pregnancy-related changes.",
+      "Preserves functional pushing strength without compromising safety."
+    ],
+    "difficulty": "beginner to moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["wall, counter, or bench", "dumbbells (optional)"]
+  },
+  {
+    "id": 12,
+    "name": "Prenatal Deep Water Workout",
+    "image": "/assets/excercise_image/water.webp",
+    "video": "https://www.youtube.com/watch?v=wIDjz9uqN4w&t=10s",
+    "description": "Non-impact conditioning in deep water using flotation belt for second trimester support.",
+    "steps": [
+      "Put on an aquatic exercise belt or flotation vest properly.",
+      "Enter deep water safely using ladder, ensuring belt keeps you vertical.",
+      "Begin with gentle leg and arm movements to adjust to the suspended position.",
+      "For water jogging: Move legs in jogging motion while pumping arms.",
+      "For cross-country skiing: Alternate legs and arms in opposing forward/back movements.",
+      "For bicycle: Pedal legs as if riding bicycle while moving arms in circles.",
+      "For jumping jacks: Move legs apart and together while raising and lowering arms.",
+      "For leg curls: Bend one knee toward buttocks, then the other.",
+      "Perform each movement for 1-2 minutes before transitioning.",
+      "End with gentle stretching while supported by flotation device."
+    ],
+    "precautions": [
+      "Never remove flotation device while in deep water.",
+      "Exercise with a lifeguard present or use the buddy system.",
+      "Enter and exit pool carefully using proper supports.",
+      "Adjust intensity by reducing speed if you feel overly fatigued.",
+      "Be cautious with water temperature – avoid very cold water which can cause cramping."
+    ],
+    "benefits": [
+      "Provides complete weightlessness, eliminating all pressure on pelvic floor and joints.",
+      "Allows full range of motion without risk of falling or losing balance.",
+      "Increases cardiovascular fitness without impact or strain.",
+      "Reduces swelling through water pressure and improved circulation.",
+      "Offers relief from the increasing weight of second trimester pregnancy."
+    ],
+    "difficulty": "moderate",
+    "duration": "20-30 minutes",
+    "equipment": ["swimming pool", "aquatic exercise belt or flotation vest"]
+  },
+  {
+    "id": 13,
+    "name": "Prenatal Seated Stretching Routine",
+    "image": "/assets/excercise_image/stretch.jpg",
+    "video": "https://www.youtube.com/watch?v=ZZIl3ZwcyRg&t=2s",
+    "description": "Gentle stretching sequence performed seated to maintain flexibility safely during second trimester.",
+    "steps": [
+      "Sit on a stable chair or exercise ball with feet flat on floor.",
+      "Begin with neck stretches: gently tilt ear toward shoulder, hold 15-20 seconds each side.",
+      "For shoulder rolls: circle shoulders forward 5 times, then backward 5 times.",
+      "For chest stretch: clasp hands behind back, gently lift and squeeze shoulder blades together.",
+      "For seated side bend: raise one arm overhead, lean gently to opposite side.",
+      "For seated spinal twist: place right hand on left knee, left hand on chair back, gently rotate to look over left shoulder.",
+      "For seated hamstring stretch: extend one leg, place heel on floor, gently hinge forward maintaining flat back.",
+      "For ankle circles: extend one leg, circle ankle 5 times each direction.",
+      "Hold static stretches for 20-30 seconds, breathing deeply.",
+      "Move carefully and mindfully between positions."
+    ],
+    "precautions": [
+      "Never bounce or force stretches, especially as ligaments are more lax during pregnancy.",
+      "Keep twists gentle and open to accommodate your growing belly.",
+      "Maintain proper seated posture with back supported if needed.",
+      "Avoid stretches that compress your abdomen.",
+      "If you experience sharp pain or pulling sensations, reduce the range of movement."
+    ],
+    "benefits": [
+      "Relieves muscle tension associated with postural changes of second trimester.",
+      "Maintains flexibility as your body continues to change.",
+      "Improves circulation to reduce swelling in extremities.",
+      "Provides stress relief through mindful movement and deep breathing.",
+      "Helps prevent common pregnancy discomforts like back pain and cramping."
+    ],
+    "difficulty": "beginner",
+    "duration": "10-15 minutes",
+    "equipment": ["chair or exercise ball"]
+  },
+  {
+    "id": 14,
+    "name": "Belly Breathing with Pelvic Floor Awareness",
+    "image": "/assets/excercise_image/breathing.jpg",
+    "video": "https://www.youtube.com/watch?v=3fHTSzY42rs",
+    "description": "Breath-focused exercise that coordinates diaphragmatic breathing with pelvic floor muscles.",
+    "steps": [
+      "Find a comfortable seated position on chair, ball, or floor with support.",
+      "Place one hand on chest and one on lower belly.",
+      "Inhale slowly through nose, allowing belly to expand outward.",
+      "Feel the natural relaxation of pelvic floor muscles during inhalation.",
+      "Exhale slowly through mouth, feeling belly move inward.",
+      "Gently engage pelvic floor muscles during exhalation (like stopping urine flow).",
+      "Maintain relaxed shoulders and jaw throughout the exercise.",
+      "Continue breathing pattern for 2-3 minutes initially, building to 5-10 minutes.",
+      "Practice awareness of the connection between breath and pelvic floor without forcing.",
+      "End with a few normal breaths and notice how your body feels."
+    ],
+    "precautions": [
+      "Never strain or force pelvic floor contractions.",
+      "If you experience lightheadedness, return to normal breathing.",
+      "Avoid holding breath at any point during the exercise.",
+      "Keep the focus on awareness rather than intense muscle contraction.",
+      "If you have diagnosed pelvic floor issues, consult your provider before practicing."
+    ],
+    "benefits": [
+      "Develops awareness of pelvic floor muscles important for labor and delivery.",
+      "Improves breathing capacity as growing uterus puts pressure on diaphragm.",
+      "Reduces stress and anxiety through mindful breathing.",
+      "Helps maintain proper core function as abdomen expands.",
+      "Prepares for breathing techniques used during labor."
+    ],
+    "difficulty": "beginner",
+    "duration": "5-10 minutes",
+    "equipment": ["chair, ball, or floor cushion (optional)"]
+  },
+  {
+    "id": 15,
+    "name": "Prenatal Modified Squat and Arm Circuit",
+    "image": "/assets/excercise_image/squat.webp",
+    "video": "https://www.youtube.com/watch?v=99eXXO9Z9z0",
+    "description": "Combined lower and upper body workout that uses body weight and light resistance for second trimester conditioning.",
+    "steps": [
+      "Begin standing near a wall or chair for support if needed.",
+      "Start with feet slightly wider than hip-width apart, toes turned slightly outward.",
+      "Hold light dumbbells (1-3 lbs) or use body weight only.",
+      "For modified squats: Bend knees to lower only as far as comfortable, keeping weight in heels.",
+      "As you stand from squat, add bicep curl or overhead press with light weights.",
+      "For wall push-ups: Stand arms-length from wall, perform incline push-up between lower body movements.",
+      "For side leg raises: Hold support, extend leg to side while performing lateral arm raise.",
+      "Continue alternating lower body movements with upper body exercises.",
+      "Perform each combined movement 8-10 times.",
+      "Rest 30-60 seconds between different movement combinations."
+    ],
+    "precautions": [
+      "Use support whenever needed for balance.",
+      "Keep weights very light – focus on form over resistance.",
+      "Monitor your breathing throughout – never hold your breath.",
+      "Take additional rest if you feel overheated or excessively fatigued.",
+      "Stay well-hydrated throughout the circuit."
+    ],
+    "benefits": [
+      "Efficiently works multiple muscle groups in a time-effective workout.",
+      "Maintains functional movement patterns important for daily activities.",
+      "Improves circulation throughout the body.",
+      "Provides both strength and mild cardiovascular benefits.",
+      "Allows for easy modifications as your second trimester progresses."
+    ],
+    "difficulty": "moderate",
+    "duration": "15-20 minutes",
+    "equipment": ["wall or chair for support", "light dumbbells (1-3 lbs)"]
+  }
+]
+},
+  "3": {
+    "trimester": "3",
+    "exercises": [
+  {
+    "id": 1,
+    "name": "Prenatal Swimming",
+    "image": "/assets/excercise_image/swim.webp",
+    "video": "https://www.youtube.com/watch?v=wIDjz9uqN4w&t=10s",
+    "description": "A gentle, full-body workout that's extremely kind to joints while providing excellent cardiovascular benefits.",
+    "steps": [
+      "Enter the pool using steps or a ladder, holding onto railings for support.",
+      "Begin with a 5-minute warm-up of gentle swimming or walking in chest-deep water.",
+      "Swim using primarily the breaststroke or sidestroke, which naturally align with proper pregnancy posture.",
+      "Keep your pace moderate - you should be able to speak comfortably while swimming.",
+      "Try swimming 20-30 minutes, taking breaks as needed.",
+      "Conclude with gentle stretching in the water, focusing on your shoulders and back.",
+      "Exit the pool carefully using steps or ladder with support."
+    ],
+    "precautions": [
+      "Avoid diving, jumping into the pool, or any activity that could risk impact to your abdomen.",
+      "Stay hydrated despite being in water - bring a water bottle poolside.",
+      "Be careful on slippery surfaces around the pool area.",
+      "Exit the pool immediately if you feel dizzy, short of breath, or uncomfortable."
+    ],
+    "benefits": [
+      "Provides excellent cardiovascular exercise with minimal impact on joints and ligaments.",
+      "The natural buoyancy of water relieves pressure on your spine and pelvis.",
+      "Helps reduce pregnancy swelling in ankles and feet.",
+      "Can help alleviate back pain common in the third trimester."
+    ],
+    "difficulty": "moderate",
+    "duration": "20-30 minutes",
+    "equipment": ["swimming pool", "swimwear"]
+  },
+  {
+    "id": 2,
+    "name": "Gentle Walking", 
+    "image": "/assets/excercise_image/walkin.jpg",
+    "video": "https://www.youtube.com/watch?v=43RhoD5YPv0",
+    "description": "A simple, accessible exercise that requires no special equipment and can be adjusted to any fitness level.",
+    "steps": [
+      "Start with proper footwear - supportive, cushioned walking shoes with good arch support.",
+      "Begin each session with 3-5 minutes of slow walking to warm up your muscles.",
+      "Gradually increase to a comfortable pace where you can still carry on a conversation.",
+      "Focus on maintaining good posture: shoulders back, chest open, and eyes looking forward.",
+      "Take smaller, controlled steps to maintain balance as your center of gravity has shifted.",
+      "Walk for 15-30 minutes, depending on your comfort and energy levels.",
+      "Conclude with 3-5 minutes of slower walking to cool down.",
+      "Perform gentle stretches for your calves, hamstrings, and lower back after walking."
+    ],
+    "precautions": [
+      "Walk on even, flat surfaces to reduce the risk of falling.",
+      "Avoid walking during the hottest parts of the day to prevent overheating.",
+      "Carry water and stay hydrated throughout your walk.",
+      "Use a walking stick or pole for extra stability if needed.",
+      "Stop if you experience dizziness, shortness of breath, or any discomfort."
+    ],
+    "benefits": [
+      "Maintains cardiovascular fitness without putting excessive strain on your body.",
+      "Can help control pregnancy weight gain and reduce the risk of gestational diabetes.",
+      "May help reduce common pregnancy discomforts like constipation and swelling.",
+      "Prepares your body for labor and delivery by building stamina."
+    ],
+    "difficulty": "easy",
+    "duration": "15-30 minutes",
+    "equipment": ["supportive walking shoes", "water bottle"]
+  },
+  {
+    "id": 3,
+    "name": "Prenatal Yoga",
+    "image": "/assets/excercise_image/yoga.jpg",
+    "video": "https://www.youtube.com/watch?v=-3bvlFKeLRE",
+    "description": "A mind-body practice that combines gentle stretching, controlled breathing, and focused relaxation specifically modified for pregnancy.",
+    "steps": [
+      "Set up a comfortable space with a yoga mat, supportive pillows, and blocks.",
+      "Begin in a comfortable seated position, focusing on deep, rhythmic breathing for 2-3 minutes.",
+      "Perform gentle seated stretches, like neck rolls and shoulder circles.",
+      "Move through modified yoga poses appropriate for the third trimester, such as cat-cow pose, modified downward dog, wide-legged forward bend, and gentle side stretches.",
+      "Hold each pose for 3-5 deep breaths, never straining or pushing to discomfort.",
+      "Conclude with a 5-minute relaxation in a comfortable side-lying position with pillows for support."
+    ],
+    "precautions": [
+      "Avoid poses that require lying flat on your back for more than brief periods.",
+      "Skip poses that put pressure on your abdomen or require deep twisting.",
+      "Use props generously for support - blocks, bolsters, and blankets.",
+      "Modify all poses to accommodate your growing belly and shifting center of gravity.",
+      "Attend classes specifically designed for prenatal yoga or inform your instructor of your pregnancy."
+    ],
+    "benefits": [
+      "Improves flexibility and reduces muscle tension, particularly in the lower back, hips, and shoulders.",
+      "Teaches breathing techniques that can be valuable during labor.",
+      "Reduces stress and anxiety through mindfulness practices.",
+      "Builds strength in muscles that support the extra weight of pregnancy."
+    ],
+    "difficulty": "moderate",
+    "duration": "15-45 minutes",
+    "equipment": ["yoga mat", "supportive pillows", "yoga blocks"]
+  },
+  {
+    "id": 4,
+    "name": "Stationary Cycling",
+    "image": "/assets/excercise_image/cycling.jpg",
+    "video": "https://www.youtube.com/watch?v=ZgkpR8zu2NY",
+    "description": "A seated, low-impact cardiovascular exercise that's gentle on joints while providing an effective workout.",
+    "steps": [
+      "Adjust the bike seat to a higher position than usual to accommodate your baby bump.",
+      "Position the handlebars higher to maintain proper posture and avoid leaning forward.",
+      "Start with a 3-5 minute warm-up at very low resistance, pedaling slowly.",
+      "Gradually increase to a moderate pace where you can still hold a conversation.",
+      "Keep resistance low to moderate - this isn't the time for high-intensity hill climbs.",
+      "Cycle for 15-25 minutes, taking breaks as needed.",
+      "Finish with a 3-5 minute cool-down, gradually decreasing pace and resistance.",
+      "Carefully dismount the bike, holding onto handlebars for stability."
+    ],
+    "precautions": [
+      "Use a recumbent bike if available, as it provides better back support.",
+      "Stay well-hydrated and keep a water bottle within easy reach.",
+      "Avoid overheating - use a fan if needed and wear breathable clothing.",
+      "Stop immediately if you experience dizziness, shortness of breath, or abdominal discomfort.",
+      "Don't push for personal bests or high-intensity workouts."
+    ],
+    "benefits": [
+      "Provides cardiovascular benefits without impact on your joints.",
+      "Helps maintain leg strength and endurance for labor and delivery.",
+      "Can be easily adjusted to your changing energy levels and physical capabilities.",
+      "May help reduce pregnancy-related leg cramps and swelling."
+    ],
+    "difficulty": "moderate",
+    "duration": "15-25 minutes",
+    "equipment": ["stationary bike", "water bottle"]
+  },
+  {
+    "id": 5,
+    "name": "Pelvic Floor Exercises (Kegels)",
+    "image": "/assets/excercise_image/kegal.webp",
+    "video": "https://www.youtube.com/watch?v=oVKemhvgekk",
+    "description": "Invisible but crucial exercises that strengthen the muscles supporting your pelvic organs during pregnancy and prepare for postpartum recovery.",
+    "steps": [
+      "Find a comfortable seated or side-lying position with your back supported.",
+      "Identify your pelvic floor muscles by imagining you're stopping the flow of urine midstream.",
+      "Contract these muscles, drawing them up and in as if lifting something with your vagina.",
+      "Hold the contraction for 3-5 seconds while continuing to breathe normally.",
+      "Release the contraction completely and rest for 3-5 seconds.",
+      "Repeat this cycle 10 times to complete one set.",
+      "Perform 3 sets throughout the day.",
+      "As you build strength, gradually increase the hold time to 8-10 seconds."
+    ],
+    "precautions": [
+      "Ensure you're not simultaneously contracting your abdominal, buttock, or thigh muscles.",
+      "Don't hold your breath during contractions - continue breathing normally.",
+      "Avoid doing Kegels while urinating as this can potentially lead to incomplete bladder emptying.",
+      "Stop if you feel any pain or discomfort."
+    ],
+    "benefits": [
+      "Strengthens muscles that support increased weight during pregnancy.",
+      "May help prevent urinary incontinence during pregnancy and postpartum.",
+      "Prepares the pelvic floor for vaginal delivery and can speed postpartum recovery.",
+      "Improves awareness of these muscles for use during the pushing stage of labor."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes (multiple times daily)",
+    "equipment": ["none"]
+  },
+  {
+    "id": 6,
+    "name": "Wall Push-Ups",
+    "image": "/assets/excercise_image/wallpush.webp",
+    "video": "https://www.youtube.com/watch?v=99eXXO9Z9z0",
+    "description": "A modified strength exercise that safely works your upper body without straining your back or abdomen.",
+    "steps": [
+      "Stand facing a wall, about arm's length away.",
+      "Position your feet shoulder-width apart for stability.",
+      "Place your palms flat against the wall at shoulder height and width.",
+      "Slowly bend your elbows, leaning your upper body toward the wall while keeping your body straight from head to heels.",
+      "Allow your nose to come close to the wall without straining.",
+      "Push back to the starting position with controlled movement.",
+      "Begin with 8-10 repetitions and gradually build up to 2-3 sets as comfortable.",
+      "Keep breathing throughout - exhale as you push away from the wall."
+    ],
+    "precautions": [
+      "Keep your movements slow and controlled to maintain balance.",
+      "Ensure your feet are positioned far enough from the wall that your belly doesn't touch it.",
+      "Stop if you feel any strain in your lower back or abdominal area.",
+      "Avoid locking your elbows at full extension."
+    ],
+    "benefits": [
+      "Safely strengthens chest, shoulders, and arms without putting pressure on your abdomen.",
+      "Improves upper body strength needed for lifting and carrying your baby after birth.",
+      "Maintains muscle tone without risking balance issues or falls.",
+      "Can help improve posture, counteracting the forward pull of pregnancy weight."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes",
+    "equipment": ["wall"]
+  },
+  {
+    "id": 7,
+    "name": "Seated Leg Extensions",
+    "image": "/assets/excercise_image/legextension.webp",
+    "video": "https://www.youtube.com/watch?v=EAymwps5x0s",
+    "description": "A simple seated exercise that maintains leg strength and circulation during the third trimester.",
+    "steps": [
+      "Sit in a sturdy chair with your back supported and feet flat on the floor.",
+      "Sit tall with shoulders relaxed and hands resting comfortably on your thighs or chair arms.",
+      "Slowly extend your right leg until it's straight, with toes pointing upward.",
+      "Hold this position for 2-3 seconds, focusing on tightening your thigh muscle.",
+      "Slowly lower your foot back to the floor with control.",
+      "Repeat with the left leg to complete one repetition.",
+      "Complete 10-15 repetitions per leg.",
+      "For added challenge, hold the extended position for up to 5 seconds."
+    ],
+    "precautions": [
+      "Ensure the chair is stable and won't slide or tip during the exercise.",
+      "Don't lock your knee when extending your leg - keep a very slight bend.",
+      "Avoid jerky or rapid movements that could strain muscles or joints.",
+      "If you experience cramping, stop and gently massage the affected muscle."
+    ],
+    "benefits": [
+      "Maintains quadriceps strength needed for stability during the third trimester.",
+      "Improves circulation in the legs, potentially reducing swelling.",
+      "Helps prevent muscle atrophy from reduced activity levels.",
+      "Can be performed anywhere you have access to a chair, making it very convenient."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes",
+    "equipment": ["sturdy chair"]
+  },
+  {
+    "id": 8,
+    "name": "Standing Wall Slides",
+    "image": "/assets/excercise_image/wallslide.webp",
+    "video": "https://www.youtube.com/watch?v=PE7La0gr4Qo",
+    "description": "A supported exercise that improves posture and counteracts the rounded-shoulder tendency of pregnancy.",
+    "steps": [
+      "Stand with your back against a wall, feet about a foot away from the wall base.",
+      "Position your head, upper back, and buttocks touching the wall.",
+      "Bend your elbows to 90 degrees and place the backs of your arms against the wall at shoulder height.",
+      "Slowly slide your arms up the wall, maintaining contact between your arms, head, and back with the wall.",
+      "Raise your arms as high as comfortable without arching your back or lifting your rib cage.",
+      "Slowly slide your arms back down to the starting position.",
+      "Repeat 8-12 times, focusing on keeping proper alignment throughout."
+    ],
+    "precautions": [
+      "Don't force your arms higher than comfortable - range of motion may be limited during pregnancy.",
+      "Maintain constant back contact with the wall throughout the movement.",
+      "Stop if you feel any strain in your neck, shoulders, or back.",
+      "Keep breathing normally throughout the exercise - don't hold your breath."
+    ],
+    "benefits": [
+      "Improves upper back strength and posture, counteracting pregnancy's forward pull.",
+      "Stretches tight chest muscles that can become shortened during pregnancy.",
+      "Reduces upper back and neck pain common in the third trimester.",
+      "Prepares your body for the posture needed during breastfeeding."
+    ],
+    "difficulty": "moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["wall"]
+  },
+  {
+    "id": 9,
+    "name": "Modified Side Plank",
+    "image": "/assets/excercise_image/sideplank.webp",
+    "video": "https://www.youtube.com/watch?v=tqK-2WZzI6w",
+    "description": "A gentler version of the traditional side plank that safely strengthens your core while accommodating your pregnancy.",
+    "steps": [
+      "Begin by kneeling on an exercise mat with a pillow or bolster nearby.",
+      "Lower yourself onto your right forearm, ensuring your elbow is directly beneath your shoulder.",
+      "Stack your left knee on top of your right knee, keeping both knees bent at approximately 90 degrees.",
+      "Place your left hand on your hip or extend it toward the ceiling.",
+      "Engage your core by gently drawing your baby toward your spine (not tucking your pelvis).",
+      "Hold this position for 10-20 seconds while breathing normally.",
+      "Carefully lower back to the starting position and repeat on the opposite side.",
+      "Complete 2-3 holds on each side, gradually increasing hold time as comfortable."
+    ],
+    "precautions": [
+      "Never perform this exercise lying flat on your back.",
+      "If you feel any pulling in your abdomen, reduce the hold time or modify further.",
+      "Avoid lifting your hips too high, which can strain your lower back.",
+      "Use a pillow under your knees for extra comfort if needed.",
+      "Stop immediately if you feel dizzy or experience any discomfort."
+    ],
+    "benefits": [
+      "Safely strengthens the deep core and stabilizing muscles without risking diastasis recti.",
+      "Improves pelvic stability, potentially reducing hip and back pain.",
+      "Maintains core strength needed for labor and postpartum recovery.",
+      "Strengthens the oblique muscles, which assist in pushing during labor."
+    ],
+    "difficulty": "moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["exercise mat", "pillow or bolster"]
+  },
+  {
+    "id": 10,
+    "name": "Seated Arm Circles", 
+    "image": "/assets/excercise_image/armcircle.webp",
+    "video": "https://www.youtube.com/watch?v=ZZIl3ZwcyRg",
+    "description": "A gentle arm exercise that improves shoulder mobility and upper body circulation without risking balance issues.",
+    "steps": [
+      "Sit on a stable chair with your back supported, feet flat on the floor.",
+      "Sit tall with your shoulders relaxed and down, away from your ears.",
+      "Extend your arms out to the sides at shoulder height with palms facing down.",
+      "Begin making small, controlled forward circles with your arms (about 6 inches in diameter).",
+      "After 10-15 circles, reverse direction and perform backward circles.",
+      "Lower your arms for a brief rest if needed.",
+      "Perform 2-3 sets of 10-15 circles in each direction.",
+      "Focus on keeping your shoulders relaxed throughout the movement."
+    ],
+    "precautions": [
+      "Keep the circles small to avoid straining your shoulder joints.",
+      "If you experience any pinching or pain in your shoulders, make the circles even smaller.",
+      "Take breaks between sets if your arms become fatigued.",
+      "Maintain good posture throughout - don't let your back round."
+    ],
+    "benefits": [
+      "Improves circulation in the upper body, potentially reducing hand and wrist swelling.",
+      "Maintains shoulder mobility and flexibility during a time when movement may be limited.",
+      "Helps relieve upper back tension common during pregnancy.",
+      "Strengthens the muscles needed for holding and feeding your baby after birth."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes",
+    "equipment": ["chair"]
+  },
+  {
+    "id": 11,
+    "name": "Seated Butterfly Stretch",
+    "image": "/assets/excercise_image/butterfly.webp",
+    "video": "https://www.youtube.com/watch?v=jB1sCUaKQ5k",
+    "description": "A gentle hip opener that prepares the pelvis for labor while relieving common pregnancy-related hip discomfort.",
+    "steps": [
+      "Sit on the floor on a cushion or yoga mat with your back supported against a wall if needed.",
+      "Bring the soles of your feet together, allowing your knees to fall open to the sides.",
+      "Position your feet about 12-18 inches away from your body for comfort.",
+      "Place pillows or yoga blocks under your knees for support if needed.",
+      "Hold your ankles or feet with your hands, sitting tall with a straight spine.",
+      "Gently press your knees downward using your thigh muscles (not your hands).",
+      "Hold this stretch for 30-60 seconds while taking deep breaths.",
+      "Release and repeat 2-3 times."
+    ],
+    "precautions": [
+      "Never force your knees down with your hands - the stretch should be gentle.",
+      "Use adequate support under your knees to prevent strain on your inner thighs and groin.",
+      "If you experience any pubic bone pain, reduce the range of the stretch or skip it entirely.",
+      "Keep your back straight rather than rounding forward toward your feet."
+    ],
+    "benefits": [
+      "Gently stretches the inner thighs, groin, and hips to prepare for delivery.",
+      "Can relieve lower back tension by loosening the connected hip muscles.",
+      "Improves circulation to the pelvis, which may help reduce swelling.",
+      "Creates more space in the pelvis, potentially making labor more comfortable."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes",
+    "equipment": ["cushion or yoga mat", "pillows or yoga blocks"]
+  },
+  {
+    "id": 12,
+    "name": "Standing Modified Squats",
+    "image": "/assets/excercise_image/squat.webp",
+    "video": "https://www.youtube.com/watch?v=99eXXO9Z9z0",
+    "description": "A supported lower body exercise that builds leg strength for labor while improving hip mobility.",
+    "steps": [
+      "Stand facing a sturdy chair, countertop, or wall, holding on for support.",
+      "Position your feet slightly wider than hip-width apart, with toes pointing slightly outward.",
+      "Keep your chest lifted and back straight.",
+      "Bend your knees and lower your body as if sitting back into a chair, only going as far as comfortable.",
+      "Keep your knees tracking over your toes, not collapsing inward.",
+      "Hold the lowered position for 1-2 seconds.",
+      "Push through your heels to return to standing.",
+      "Complete 10-15 repetitions, taking breaks as needed."
+    ],
+    "precautions": [
+      "Keep a firm hold on your support throughout the movement.",
+      "Don't squat deeper than comfortable - a quarter or half squat is sufficient.",
+      "If you feel pressure in your pelvic floor or any discomfort, reduce the depth.",
+      "Avoid holding your breath - exhale as you rise from the squat.",
+      "Stop if you experience any dizziness or pain."
+    ],
+    "benefits": [
+      "Strengthens the quadriceps, hamstrings, and glutes needed for labor and delivery.",
+      "Improves hip mobility which can make labor positions more comfortable.",
+      "Maintains leg strength for better balance and stability during the third trimester.",
+      "Can help position the baby optimally for birth when performed regularly."
+    ],
+    "difficulty": "moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["sturdy chair, countertop, or wall"]
+  },
+  {
+    "id": 13,
+    "name": "Deep Breathing with Visualization",
+    "image": "/assets/excercise_image/breathing.jpg",
+    "video": "https://www.youtube.com/watch?v=3fHTSzY42rs",
+    "description": "A relaxation technique that improves oxygen flow to you and your baby while preparing you mentally for labor.",
+    "steps": [
+      "Find a comfortable seated position with your back supported or lie on your left side with pillows for support.",
+      "Place one hand on your chest and one hand on your belly.",
+      "Close your eyes or maintain a soft focus on one spot.",
+      "Inhale slowly through your nose for a count of 4, feeling your belly rise.",
+      "Hold the breath briefly for a count of 1-2.",
+      "Exhale slowly through your mouth for a count of 6-8, feeling your belly lower.",
+      "As you breathe, visualize oxygen flowing to your baby and tension leaving your body.",
+      "Continue for 5-10 minutes, gradually extending the length of each breath."
+    ],
+    "precautions": [
+      "If deep breathing causes lightheadedness, return to normal breathing patterns immediately.",
+      "Don't force the breath or hold it for too long.",
+      "If lying down becomes uncomfortable, switch to a seated position.",
+      "Avoid practicing when very hungry or immediately after eating."
+    ],
+    "benefits": [
+      "Increases oxygen supply to you and your baby.",
+      "Activates the parasympathetic nervous system, reducing stress hormones.",
+      "Teaches breathing techniques valuable for labor pain management.",
+      "Improves focus and creates a mind-body connection useful during delivery.",
+      "May help lower blood pressure temporarily."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes",
+    "equipment": ["pillows for support (optional)"]
+  },
+  {
+    "id": 14,
+    "name": "Gentle Ballet Plié",
+    "image": "/assets/excercise_image/ballet.webp",
+    "video": "https://www.youtube.com/watch?v=_pkqCoiHRrY",
+    "description": "An elegant, controlled movement that strengthens the legs and improves balance while opening the pelvis.",
+    "steps": [
+      "Stand with your feet wider than hip-width apart, toes turned out comfortably (about 45 degrees).",
+      "Hold onto a sturdy chair, counter, or ballet barre for support.",
+      "Maintain tall posture with your spine lengthened and shoulders relaxed.",
+      "Bend your knees over your toes, lowering your body only as far as comfortable.",
+      "Keep your heels on the floor throughout the movement.",
+      "Hold the lowered position for 2-3 seconds, focusing on proper alignment.",
+      "Press through your heels to return to standing, engaging your inner thighs.",
+      "Repeat 10-12 times, taking breaks as needed."
+    ],
+    "precautions": [
+      "Keep a firm hold on your support to prevent loss of balance.",
+      "Don't turn your feet out further than your knees can comfortably follow.",
+      "Avoid arching your lower back - keep your pelvis in a neutral position.",
+      "If you feel any groin or pubic bone pain, reduce the depth and width of your plié.",
+      "Keep breathing throughout - don't hold your breath."
+    ],
+    "benefits": [
+      "Gently opens the pelvis and creates hip mobility beneficial for delivery.",
+      "Strengthens the inner and outer thighs, improving stability.",
+      "Improves circulation in the legs, potentially reducing swelling.",
+      "Maintains graceful movement patterns that can boost confidence during a time of changing body image."
+    ],
+    "difficulty": "moderate",
+    "duration": "5-10 minutes",
+    "equipment": ["sturdy chair, counter, or ballet barre"]
+  },
+  {
+    "id": 15,
+    "name": "Seated Forward Lean",
+    "image": "/assets/excercise_image/lean.jpg",
+    "video": "https://www.youtube.com/watch?v=-01nVuNTeZk",
+    "description": "A simple position that relieves back pressure while creating optimal space for your baby to move into birthing position.",
+    "steps": [
+      "Sit on a sturdy chair, birth ball, or the edge of your bed with your feet flat on the floor.",
+      "Spread your knees wider than your hips to make room for your belly.",
+      "Lean forward slightly with a straight back, placing your hands on your knees or a table in front of you.",
+      "Allow your belly to hang freely between your thighs.",
+      "Gently rock your pelvis forward and backward in small movements.",
+      "Take deep breaths, relaxing your shoulders and pelvic floor.",
+      "Hold this position for 5-10 minutes, several times throughout the day."
+    ],
+    "precautions": [
+      "Ensure your seating surface is stable and won't slide.",
+      "Don't round your back - maintain a straight spine as you lean forward.",
+      "If you experience any discomfort, adjust your position or use pillows for support.",
+      "Take breaks if you feel any numbness in your legs from the seated position."
+    ],
+    "benefits": [
+      "Creates optimal space for the baby to rotate into an anterior position for birth.",
+      "Relieves pressure on the spine and lower back.",
+      "Can temporarily reduce heartburn by creating more space in the abdomen.",
+      "Utilizes gravity to encourage optimal fetal positioning for delivery.",
+      "Can be used during early labor as a comfortable resting position."
+    ],
+    "difficulty": "easy",
+    "duration": "5-10 minutes (multiple times daily)",
+    "equipment": ["chair, birth ball, or bed"]
+  }
+]
+}
+}

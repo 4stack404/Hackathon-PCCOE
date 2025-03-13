@@ -97,6 +97,61 @@ const PasswordStrength = ({ password }) => {
   );
 };
 
+// Update the calculateBMRAndCalories function to also calculate macronutrients
+const calculateBMRAndCalories = (weight, height, age, dueDate) => {
+  // Calculate BMR using the formula: BMR = (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) - 161
+  const bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+  
+  // Calculate trimester based on due date
+  let trimester = 1;
+  let extraCalories = 0;
+  
+  if (dueDate) {
+    const today = new Date();
+    const dueDateTime = new Date(dueDate);
+    
+    // Calculate weeks of pregnancy (assuming 40 weeks total)
+    const pregnancyDuration = 40 * 7 * 24 * 60 * 60 * 1000; // 40 weeks in milliseconds
+    const timeUntilDue = dueDateTime.getTime() - today.getTime();
+    const timePregnant = pregnancyDuration - timeUntilDue;
+    const weeksPregnant = Math.floor(timePregnant / (7 * 24 * 60 * 60 * 1000));
+    
+    // Determine trimester and extra calories
+    if (weeksPregnant >= 27) {
+      trimester = 3;
+      extraCalories = 450;
+    } else if (weeksPregnant >= 13) {
+      trimester = 2;
+      extraCalories = 300;
+    } else {
+      trimester = 1;
+      extraCalories = 0;
+    }
+  }
+  
+  // Calculate total calories
+  const calories = Math.round(bmr + extraCalories);
+  
+  // Calculate macronutrients
+  // Protein: 25% of calories (1g protein = 4 calories)
+  const protein = Math.round((calories * 0.25) / 4);
+  
+  // Carbohydrates: 45% of calories (1g carbs = 4 calories)
+  const carbohydrates = Math.round((calories * 0.45) / 4);
+  
+  // Fats: 30% of calories (1g fat = 9 calories)
+  const fats = Math.round((calories * 0.30) / 9);
+  
+  return { 
+    bmr: Math.round(bmr), 
+    calories, 
+    trimester,
+    protein,
+    carbohydrates,
+    fats
+  };
+};
+
 function Signup() {
   const [activeStep, setActiveStep] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
@@ -131,7 +186,7 @@ function Signup() {
         countField(values[field]);
       });
     } else if (step === 2) {
-      ['weightBeforePregnancy', 'currentWeight', 'medicalConditions', 'dietType'].forEach(field => {
+      ['age', 'currentWeight', 'height', 'medicalConditions', 'dietType', 'hasJointPain', 'jointPainType'].forEach(field => {
         countField(values[field]);
       });
     } else if (step === 3) {
@@ -174,23 +229,47 @@ function Signup() {
       .required('Please indicate if this is your first pregnancy'),
     doctorName: Yup.string(),
     doctorContact: Yup.string()
-      .matches(/^$|^\+?[0-9]{10,15}$/, 'Enter a valid phone number'),
+      .matches(/^$|^\+?[0-9]{10,15}$/, 'Enter a valid phone number')
   });
 
   const validationSchemaStep3 = Yup.object({
-    weightBeforePregnancy: Yup.number()
-      .positive('Weight must be positive')
-      .required('Pre-pregnancy weight is required'),
+    age: Yup.number()
+      .required('Age is required')
+      .positive('Age must be positive')
+      .integer('Age must be a whole number')
+      .min(18, 'You must be at least 18 years old')
+      .max(50, 'Please consult with your doctor for pregnancies over 50')
+      .typeError('Age must be a number'),
+    height: Yup.number()
+      .required('Height is required')
+      .positive('Height must be positive')
+      .typeError('Height must be a number'),
     currentWeight: Yup.number()
-      .positive('Weight must be positive'),
-    medicalConditions: Yup.array(),
+      .required('Current weight is required')
+      .positive('Weight must be positive')
+      .typeError('Weight must be a number'),
+    medicalConditions: Yup.array()
+      .min(1, 'Please select at least one medical condition or "None"')
+      .required('Please select your medical conditions'),
     dietType: Yup.string()
-      .required('Please select your diet type'),
+      .required('Please select your diet type')
+      .oneOf(['vegetarian', 'non-vegetarian'], 'Please select a valid diet type'),
+    hasJointPain: Yup.string()
+      .required('Please indicate if you have joint pain')
+      .oneOf(['yes', 'no'], 'Please select Yes or No'),
+    jointPainType: Yup.string()
+      .when('hasJointPain', {
+        is: 'yes',
+        then: () => Yup.string()
+          .required('Please select the type of joint pain')
+          .oneOf(['knee', 'hip', 'ankle', 'wrist', 'elbow', 'shoulder', 'back', 'neck', 'other'], 'Please select a valid joint pain type')
+      })
   });
 
   const validationSchemaStep4 = Yup.object({
     notificationPreference: Yup.string()
-      .required('Please select your notification preference'),
+      .required('Please select your notification preference')
+      .oneOf(['email', 'sms', 'both'], 'Please select a valid notification preference'),
     termsAccepted: Yup.boolean()
       .oneOf([true], 'You must accept the terms and conditions')
   });
@@ -227,10 +306,13 @@ function Signup() {
       doctorContact: '',
 
       // Health Information
-      weightBeforePregnancy: '',
+      age: '',
       currentWeight: '',
+      height: '',
       medicalConditions: [],
       dietType: '',
+      hasJointPain: '',
+      jointPainType: '',
 
       // Preferences
       notificationPreference: '',
@@ -248,16 +330,70 @@ function Signup() {
       setError('');
       
       try {
-        const result = await signup({
+        // Force age to be a number (default to 25 if not provided)
+        const age = values.age ? Number(values.age) : 25;
+        
+        // Calculate BMR, calories, and macronutrients
+        const { bmr, calories, trimester, protein, carbohydrates, fats } = calculateBMRAndCalories(
+          Number(values.currentWeight),
+          Number(values.height),
+          age,
+          values.isPregnant === 'yes' ? values.dueDate : null
+        );
+        
+        // Create userData object with all required fields including macronutrients
+        const userData = {
           name: values.fullName,
           email: values.email,
-          password: values.password
+          password: values.password,
+          phone: values.phone || '',
+          age: age,
+          height: Number(values.height),
+          weight: Number(values.currentWeight),
+          bmr: bmr,
+          calories: calories,
+          protein: protein,
+          carbohydrates: carbohydrates,
+          fats: fats,
+          pregnancyDetails: {
+            dueDate: values.isPregnant === 'yes' ? values.dueDate : new Date().toISOString().split('T')[0],
+            firstPregnancy: values.firstPregnancy === 'yes',
+            trimester: trimester
+          },
+          dietType: values.dietType,
+          notificationPreference: values.notificationPreference,
+          healthInfo: {
+            age: age,
+            medicalConditions: values.medicalConditions || [],
+            hasJointPain: values.hasJointPain === 'yes',
+            jointPainType: values.hasJointPain === 'yes' ? values.jointPainType : null,
+            nutrition: {
+              calories: calories,
+              protein: protein,
+              carbohydrates: carbohydrates,
+              fats: fats
+            }
+          }
+        };
+
+        console.log('Sending user data with macronutrients:', userData);
+        
+        // Make API call
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userData),
         });
         
-        if (result.success) {
+        const data = await response.json();
+        
+        if (data.success) {
           navigate('/dashboard');
         } else {
-          setError(result.error || 'Registration failed. Please try again.');
+          setError(data.message || 'Registration failed. Please try again.');
         }
       } catch (err) {
         console.error('Signup error:', err);
@@ -495,29 +631,54 @@ function Signup() {
       case 2:
         return (
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box sx={{ border: '2px solid #f50057', p: 2, borderRadius: 1, mb: 2 }}>
+                <Typography variant="subtitle1" color="error" gutterBottom>
+                  Important: Please enter your age
+                </Typography>
+                <TextField
+                  required
+                  fullWidth
+                  id="age"
+                  label="Age (years)"
+                  name="age"
+                  type="number"
+                  inputProps={{ min: 18, max: 50, step: "1" }}
+                  value={formik.values.age}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.age && Boolean(formik.errors.age)}
+                  helperText={formik.touched.age && formik.errors.age}
+                />
+              </Box>
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 required
                 fullWidth
-                id="weightBeforePregnancy"
-                label="Weight Before Pregnancy (kg)"
-                name="weightBeforePregnancy"
+                id="height"
+                label="Height (cm)"
+                name="height"
                 type="number"
-                value={formik.values.weightBeforePregnancy}
+                inputProps={{ min: 0, step: "1" }}
+                value={formik.values.height}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.weightBeforePregnancy && Boolean(formik.errors.weightBeforePregnancy)}
-                helperText={formik.touched.weightBeforePregnancy && formik.errors.weightBeforePregnancy}
+                error={formik.touched.height && Boolean(formik.errors.height)}
+                helperText={formik.touched.height && formik.errors.height}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
+                required
                 fullWidth
                 id="currentWeight"
-                label="Current Weight (kg) (Optional)"
+                label="Current Weight (kg)"
                 name="currentWeight"
                 type="number"
+                inputProps={{ min: 0, step: "0.1" }}
                 value={formik.values.currentWeight}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -549,42 +710,257 @@ function Signup() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="medicalConditions-label">Medical Conditions (Optional)</InputLabel>
+              <FormControl fullWidth required error={formik.touched.medicalConditions && Boolean(formik.errors.medicalConditions)}>
+                <InputLabel id="medicalConditions-label">Medical Conditions</InputLabel>
                 <Select
                   labelId="medicalConditions-label"
                   id="medicalConditions"
                   name="medicalConditions"
                   multiple
                   value={formik.values.medicalConditions}
-                  label="Medical Conditions (Optional)"
+                  label="Medical Conditions"
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Box 
+                          key={value} 
+                          sx={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            border: '1px solid #e0e0e0',
+                            borderRadius: 1,
+                            px: 1,
+                            py: 0.5
+                          }}
+                        >
+                          {value === 'none' ? 'None' : value.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 300
+                      }
+                    }
+                  }}
                 >
-                  <MenuItem value="gestational-diabetes">Gestational Diabetes</MenuItem>
-                  <MenuItem value="hypertension">High Blood Pressure</MenuItem>
-                  <MenuItem value="thyroid">Thyroid Condition</MenuItem>
-                  <MenuItem value="anemia">Anemia</MenuItem>
-                  <MenuItem value="celiac">Celiac Disease</MenuItem>
-                  <MenuItem value="lactose-intolerant">Lactose Intolerance</MenuItem>
-                  <MenuItem value="preeclampsia">Preeclampsia</MenuItem>
-                  <MenuItem value="gestational-hypertension">Gestational Hypertension</MenuItem>
-                  <MenuItem value="hyperemesis-gravidarum">Hyperemesis Gravidarum</MenuItem>
-                  <MenuItem value="placenta-previa">Placenta Previa</MenuItem>
-                  <MenuItem value="preterm-labor">Preterm Labor</MenuItem>
-                  <MenuItem value="fetal-growth-restriction">Fetal Growth Restriction</MenuItem>
-                  <MenuItem value="chronic-kidney-disease">Chronic Kidney Disease</MenuItem>
-                  <MenuItem value="autoimmune-disorder">Autoimmune Disorder</MenuItem>
-                  <MenuItem value="morning-sickness">Severe Morning Sickness</MenuItem>
-                  <MenuItem value="diabetes">Diabetes</MenuItem>
-                  <MenuItem value="tuberculosis">Tuberculosis</MenuItem>
-                  <MenuItem value="malaria">Malaria</MenuItem>
-                  <MenuItem value="dengue">Dengue Fever</MenuItem>
-                  <MenuItem value="cardiovascular-disease">Cardiovascular Disease</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                  <MenuItem value="none">None</MenuItem>
+                  <MenuItem value="gestational-diabetes">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Gestational Diabetes
+                      {formik.values.medicalConditions.includes('gestational-diabetes') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="hypertension">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      High Blood Pressure
+                      {formik.values.medicalConditions.includes('hypertension') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="thyroid">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Thyroid Condition
+                      {formik.values.medicalConditions.includes('thyroid') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="anemia">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Anemia
+                      {formik.values.medicalConditions.includes('anemia') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="celiac">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Celiac Disease
+                      {formik.values.medicalConditions.includes('celiac') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="lactose-intolerant">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Lactose Intolerance
+                      {formik.values.medicalConditions.includes('lactose-intolerant') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="preeclampsia">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Preeclampsia
+                      {formik.values.medicalConditions.includes('preeclampsia') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="gestational-hypertension">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Gestational Hypertension
+                      {formik.values.medicalConditions.includes('gestational-hypertension') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="other">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      Other
+                      {formik.values.medicalConditions.includes('other') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="none">
+                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                      None
+                      {formik.values.medicalConditions.includes('none') && (
+                        <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                      )}
+                    </Box>
+                  </MenuItem>
                 </Select>
+                {formik.touched.medicalConditions && formik.errors.medicalConditions && (
+                  <FormHelperText error>{formik.errors.medicalConditions}</FormHelperText>
+                )}
               </FormControl>
             </Grid>
+
+            <Grid item xs={12}>
+              <FormControl component="fieldset" required>
+                <Typography variant="subtitle1" gutterBottom>
+                  Do you have joint pain?
+                </Typography>
+                <RadioGroup
+                  name="hasJointPain"
+                  value={formik.values.hasJointPain}
+                  onChange={formik.handleChange}
+                >
+                  <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                  <FormControlLabel value="no" control={<Radio />} label="No" />
+                </RadioGroup>
+                {formik.touched.hasJointPain && formik.errors.hasJointPain && (
+                  <FormHelperText error>{formik.errors.hasJointPain}</FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+
+            {formik.values.hasJointPain === 'yes' && (
+              <Grid item xs={12}>
+                <FormControl fullWidth required>
+                  <InputLabel id="jointPainType-label">Type of Joint Pain</InputLabel>
+                  <Select
+                    labelId="jointPainType-label"
+                    id="jointPainType"
+                    name="jointPainType"
+                    value={formik.values.jointPainType}
+                    label="Type of Joint Pain"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.jointPainType && Boolean(formik.errors.jointPainType)}
+                  >
+                    <MenuItem value="knee">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Knee Pain
+                        {formik.values.jointPainType === 'knee' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="hip">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Hip Pain
+                        {formik.values.jointPainType === 'hip' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="ankle">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Ankle Pain
+                        {formik.values.jointPainType === 'ankle' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="wrist">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Wrist Pain
+                        {formik.values.jointPainType === 'wrist' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="elbow">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Elbow Pain
+                        {formik.values.jointPainType === 'elbow' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="shoulder">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Shoulder Pain
+                        {formik.values.jointPainType === 'shoulder' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="back">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Back Pain
+                        {formik.values.jointPainType === 'back' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="neck">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Neck Pain
+                        {formik.values.jointPainType === 'neck' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="other">
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                        Other
+                        {formik.values.jointPainType === 'other' && (
+                          <CheckCircle sx={{ fontSize: 14, ml: 1, color: 'primary.main' }} />
+                        )}
+                      </Box>
+                    </MenuItem>
+                  </Select>
+                  {formik.touched.jointPainType && formik.errors.jointPainType && (
+                    <FormHelperText error>{formik.errors.jointPainType}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+            )}
+
+            {formik.values.hasJointPain === 'no' && (
+              <Grid item xs={12}>
+                <Box sx={{ 
+                  p: 2, 
+                  border: '1px solid #e0e0e0', 
+                  borderRadius: 1,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  <Typography>None</Typography>
+                </Box>
+              </Grid>
+            )}
           </Grid>
         );
 

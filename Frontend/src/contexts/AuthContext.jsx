@@ -67,7 +67,44 @@ export const AuthProvider = ({ children }) => {
   const signup = async (userData) => {
     try {
       setError(null);
-      const response = await authAPI.register(userData);
+      // Transform the userData to match the backend schema
+      const transformedData = {
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+        phone: userData.phone || '',
+        height: Number(userData.height),
+        weight: Number(userData.weight),
+        pregnancyDetails: {
+          dueDate: userData.pregnancyDetails.dueDate,
+          firstPregnancy: userData.pregnancyDetails.firstPregnancy,
+          medicalConditions: userData.pregnancyDetails.medicalConditions || []
+        },
+        dietType: userData.dietType,
+        notificationPreference: userData.notificationPreference,
+        healthInfo: {
+          medicalConditions: userData.healthInfo?.medicalConditions || []
+        },
+        notifications: {
+          email: userData.notifications?.email || false,
+          sms: userData.notifications?.sms || false,
+          push: true
+        },
+        preferences: {
+          dietaryRestrictions: [userData.dietType],
+          notificationSettings: {
+            email: userData.notifications?.email || false,
+            push: true
+          },
+          language: 'English',
+          theme: 'Light',
+          units: 'Imperial'
+        }
+      };
+
+      console.log('Sending registration data:', transformedData);
+
+      const response = await authAPI.register(transformedData);
       const { data, success } = response.data;
       
       if (success && data) {
@@ -84,8 +121,8 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Signup error:', error);
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.errors?.[0]?.msg || 
+      const errorMessage = error.response?.data?.error?.message || 
+                          error.response?.data?.message || 
                           'Registration failed';
       setError(errorMessage);
       return { success: false, error: errorMessage };

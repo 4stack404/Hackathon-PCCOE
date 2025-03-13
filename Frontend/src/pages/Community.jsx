@@ -492,13 +492,13 @@ function Community() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar 
-                          src={question.author.avatar} 
-                          alt={question.author.name}
+                          src={question.author?.avatar || '/avatars/default-avatar.jpg'} 
+                          alt={question.author?.name || 'Anonymous User'}
                           sx={{ width: 40, height: 40, mr: 1 }}
                         />
                         <Box>
                           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                            {question.author.name}
+                            {question.author?.name || 'Anonymous User'}
                           </Typography>
                           <Typography variant="caption" color="textSecondary">
                             {new Date(question.date).toLocaleDateString()}
@@ -586,13 +586,13 @@ function Community() {
                               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                   <Avatar 
-                                    src={answer.author.avatar} 
-                                    alt={answer.author.name}
-                                    sx={{ width: 32, height: 32, mr: 1 }}
+                                    src={answer.author?.avatar || '/avatars/default-avatar.jpg'} 
+                                    alt={answer.author?.name || 'Anonymous User'}
+                                    sx={{ width: 40, height: 40, mr: 1 }}
                                   />
                                   <Box>
                                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                      {answer.author.name}
+                                      {answer.author?.name || 'Anonymous User'}
                                     </Typography>
                                     <Typography variant="caption" color="textSecondary">
                                       {new Date(answer.date).toLocaleDateString()}
@@ -634,13 +634,13 @@ function Community() {
                             <CardContent>
                               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <Avatar 
-                                  src={answer.author.avatar} 
-                                  alt={answer.author.name}
-                                  sx={{ width: 32, height: 32, mr: 1 }}
+                                  src={answer.author?.avatar || '/avatars/default-avatar.jpg'} 
+                                  alt={answer.author?.name || 'Anonymous User'}
+                                  sx={{ width: 40, height: 40, mr: 1 }}
                                 />
                                 <Box>
                                   <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                    {answer.author.name}
+                                    {answer.author?.name || 'Anonymous User'}
                                   </Typography>
                                   <Typography variant="caption" color="textSecondary">
                                     {new Date(answer.date).toLocaleDateString()}
