@@ -4,7 +4,7 @@ const api = axios.create({
   // Use the production URL in production environment, otherwise use localhost
   baseURL: import.meta.env.PROD 
     ? 'https://hackathon-pccoe-vh1l.vercel.app/api'
-    : 'http://localhost:5000/api',
+    : 'http://localhost:5000/api', 
   headers: {
     'Content-Type': 'application/json'
   }
