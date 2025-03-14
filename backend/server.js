@@ -45,11 +45,11 @@ app.use(helmet.contentSecurityPolicy({
 
 // Configure CORS to allow all origins
 app.use(cors({
-  origin: "https://hackathon-pccoe.vercel.app", // Only allow frontend
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 }));
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
