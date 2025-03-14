@@ -44,13 +44,13 @@ app.use(helmet.contentSecurityPolicy({
 }));
 
 // Configure CORS to allow all origins
-app.use(cors({
-  origin: '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
-}));
+// app.use(cors({
+//   origin: '*',
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   optionsSuccessStatus: 200
+// }));
 
 // app.use(cors({
 //   origin: "https://hackathon-pccoe.vercel.app",  // Change * to your frontend URL
@@ -58,6 +58,26 @@ app.use(cors({
 //   methods: ["GET", "POST", "PUT", "DELETE"],  // Allowed HTTP methods
 //   allowedHeaders: ["Content-Type", "Authorization"],  // Allowed headers
 // }));
+
+const allowedOrigins = [
+  "https://hackathon-pccoe.vercel.app",
+  "http://localhost:3000"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
