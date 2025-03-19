@@ -94,37 +94,21 @@ A comprehensive pregnancy wellness platform designed to provide support, informa
 - Performance optimization and edge caching
 
 ## 📸 Screenshots
-
-### Home Page with Nutrition Advice
-![Home Page]![image1](https://github.com/user-attachments/assets/cadf0f04-449d-4cf3-b1fa-af754bfba59b)
-*Home page featuring expert nutrition advice and week-by-week pregnancy tracking*
-
-### Appointment Management
-![Appointments]![image2](https://github.com/user-attachments/assets/9c055591-2d1b-49f5-b256-6b1ca992ce9d)
-*Appointment scheduling and tracking interface with upcoming and past appointments*
-
-### Care Options
-![Care Options]![image3](https://github.com/user-attachments/assets/b6a68f73-bfee-49e3-9d3e-67e49f120692)
-*Prenatal and postnatal care options with comprehensive guidance*
-
-### Diet Planning & Recipes
-![Diet Planning]![image4](https://github.com/user-attachments/assets/1edb4ed8-0084-41ae-a40e-76aea8705ce2)
-*Personalized diet planning and healthy recipe recommendations*
-
-### Community Forums
-![Community]![image5](https://github.com/user-attachments/assets/ecacf22c-f681-468c-b7ce-bedf21d21783)
-*Community forum for expectant mothers to share experiences and get advice*
-
-### About Us
-![About Us]![image6](https://github.com/user-attachments/assets/71269f35-742f-4016-9fa9-79c0ced84886)
-*Our mission and comprehensive pregnancy support information*
+![Image](https://github.com/user-attachments/assets/f312099a-c7f9-4e6a-9317-ed6a5d41139b)
+![Image](https://github.com/user-attachments/assets/4bc63e27-9201-4b88-87dc-554f8edff330)
+![Image](https://github.com/user-attachments/assets/34dc5ca8-92ee-4a2d-84a6-f7b1f0800984)
+![Image](https://github.com/user-attachments/assets/285affb9-9941-4d0b-8f81-e466db750c23)
+![Image](https://github.com/user-attachments/assets/0dc695fa-0bd7-4bc9-8d73-2415398fe94c)
+![Image](https://github.com/user-attachments/assets/a759a4d2-fc0a-454e-aedb-8fae21fe70f3)
+![Image](https://github.com/user-attachments/assets/32479932-9419-442d-98bb-217e367e0d7e)
+![Image](https://github.com/user-attachments/assets/78058ddd-3061-46c1-b915-9186493a1da8)
+![Image](https://github.com/user-attachments/assets/f1558318-d49e-4fc9-a4ed-391d23bd6ca0)
+![Image](https://github.com/user-attachments/assets/e8b129ab-0d8e-4fb0-97ad-841322a5f58e)
 
 
-## 🌐 Deployed Url
-https://hm-0034-4stack.vercel.app/
 
 ## 🎥 Video Url
-https://drive.google.com/file/d/1bjV29Zs3U6zaCwDLrxLyaVUIvq5a_h1G/view?usp=sharing
+https://shorturl.at/JGB5n
 
 ## 💡 Remarks
 - 🎯 The application features a modern UI with a responsive design that works seamlessly across desktop, tablet, and mobile devices
